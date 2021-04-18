@@ -24,6 +24,21 @@ If you want to customize your own image:
 * run ./bootstrap.sh
 
 
+## Config
+Configuration (i.e. the "receipe" to cook the image) is done by defining
+bash key/value pairs in *./bootstrap.cfg* (must be in same directory as the *bootstrap.sh* script)
+
+## default config variables
+Some standard variables are:
+* **RPI_PLUGINDIR** - where plugins are located (default: *./bootstrap-plugins*)
+* **RPI_DISTDIR** - s. [dist dir](#dist-dir) (default: ./bootstrap_dist)
+* **RPI_WORKDIR** - temporary work dir. can be removed at any time to start from scratch (default: *./.bootstrap-work*)
+* **RPI_ROOT** - mountpoint for root partition (default: *./.bootstrap-work/root*)
+* **RPI_BOOT** - mountpoint for boot partition (default: *./.bootstrap-work/boot*)
+* **RPI_HOSTNAME** - hostname (default: unnamed)
+* **RPI_BOOTSTRAP_PLUGINS** - array of plugin names to run in order (default: () )
+
+
 ## Plugins
 
 Plugins are run sequentially. Execution order matters, so e.g.
@@ -44,18 +59,11 @@ So a plugin named "foo" would define functions "rpi_foo_prerun" and "rpi_foo_run
 
 All plugins can read/write all variables and share one context.
 
-## default config variables
-Some standard variables are:
-* **RPI_PLUGINDIR** - where plugins are located (default: *./bootstrap-plugins*)
-* **RPI_DISTDIR** - s. [dist dir](#dist-dir) (default: ./bootstrap_dist)
-* **RPI_WORKDIR** - temporary work dir. can be removed at any time to start from scratch (default: *./.bootstrap-work*)
-* **RPI_ROOT** - mountpoint for root partition (default: *./.bootstrap-work/root*)
-* **RPI_BOOT** - mountpoint for boot partition (default: *./.bootstrap-work/boot*)
-* **RPI_HOSTNAME** - hostname (default: unnamed)
-* **RPI_BOOTSTRAP_PLUGINS** - array of plugin names to run in order (default: () )
 
 ## plugin config variables
-''TBD''
+All plugins should read variables starting with RPI_ followed by the capitalized plugin name.
+So a plugin named "foo" would use RPI_FOO_* and thus could have something like
+"RPI_FOO_SOME_VAR=123" in [bootstrap.cfg](#config)
 
 ## dist dir
 The dist dir resembles a root directory tree for plugins to copy files
