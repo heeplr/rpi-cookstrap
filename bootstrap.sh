@@ -112,7 +112,7 @@ function append_file_to_file() {
 
 # append string to file
 function append_to_file() {
-    if [ -z "$1" ] || [ -z "$2" ] ; then error "missing argument. append" ; exit 1 ; fi
+    if [ -z "$1" ] || [ -z "$2" ] ; then error "missing argument. append" ; fi
     # already appended ?
     [ -f "$2" ] && [ -n "$(sudo grep "$1" "$2")" ] && return
     # append
