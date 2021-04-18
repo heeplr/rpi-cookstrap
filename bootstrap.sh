@@ -230,9 +230,9 @@ for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
 done
 
 # cleanup
-#~ echo "cleaning up..."
-#~ umount_image
-#~ loopback_cleanup "${dev}"
+echo "cleaning up..."
+umount_image
+loopback_cleanup "${dev}"
 
 echo "Image creation successful. Copy \"${RPI_IMG_NAME}\" to an SD card." \
      "(e.g. dd if=${RPI_IMG_NAME} of=/dev/sdcard bs=256M status=progress )"
