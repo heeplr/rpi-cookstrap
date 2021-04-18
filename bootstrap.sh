@@ -67,15 +67,17 @@ function mount_image() {
     echo "mounting image..."
     # already mounted?
     if [ -n "$(mount | grep "$device")" ] ; then
-        return
+        return 0
     fi
     # wait for sync
     sync
     # mount
-    sudo mount "${device}p1" "${RPI_BOOT}" || error "mount"
-    sudo mount "${device}p2" "${RPI_ROOT}" || error "mount"
+    sudo mount "${device}p1" "${RPI_BOOT}" || return 1
+    sudo mount "${device}p2" "${RPI_ROOT}" || return 1
     # read os-release
     . "${RPI_ROOT}/etc/os-release"
+
+    return 0
 }
 
 # unmount raspberry image
