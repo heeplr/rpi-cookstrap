@@ -6,7 +6,6 @@
 
 
 RPI_WORKDIR="${RPI_WORKDIR:=.bootstrap-work}"
-RPI_TMPDIR="${RPI_TMPDIR:=.}"
 RPI_PLUGINDIR="${RPI_PLUGINDIR:=bootstrap-plugins}"
 RPI_DISTDIR="${RPI_DISTDIR:=bootstrap-dist}"
 RPI_ROOT="${RPI_ROOT:=.bootstrap-work/root}"
