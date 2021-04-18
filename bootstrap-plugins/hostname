@@ -1,0 +1,24 @@
+# bootstrap hostname of rpi image
+
+
+function rpi_hostname_prerun() {
+    if [ -z "${RPI_HOSTNAME}" ] ; then
+        error "RPI_HOSTNAME not set."
+        return 1
+    fi
+
+    return 0
+}
+
+function rpi_hostname_run() {
+    echo " setting hostname to \"${RPI_HOSTNAME}\""
+    # create from config parameters
+    if [ -n "${RPI_HOSTNAME}" ] ; then
+        sudo rm -f "${RPI_ROOT}/etc/hostname"
+        append_to_file "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hostname"
+    fi
+    # copy distfile
+    cp_from_dist_if_exist /etc/hostname
+
+    return 0
+}

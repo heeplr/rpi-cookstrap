@@ -1,0 +1,53 @@
+# download & mount raspbian image
+
+RPI_DOWNLOAD_RASPBIAN_FLAVOR="${RPI_DOWNLOAD_RASPBIAN_FLAVOR:=lite}"
+RPI_DOWNLOAD_RASPBIAN_URL="${RPI_DOWNLOAD_RASPBIAN_URL:="https://downloads.raspberrypi.org/raspbian_${RPI_DOWNLOAD_RASPBIAN_FLAVOR}_latest"}"
+
+
+function rpi_download_raspbian_prerun() {
+    true
+}
+
+function rpi_download_raspbian_run() {
+
+    name="raspbian-${RPI_DOWNLOAD_RASPBIAN_FLAVOR}.img"
+
+    warn "downloading ${url} ..."
+    dest="${RPI_WORKDIR}/${name}"
+
+    # already downloaded?
+    if ! [ -f "${dest}" ] ; then
+      tmpfile="$(TMPDIR=$RPI_TMPDIR mktemp || error mktemp)"
+      # fetch image
+      if which wget >/dev/null 2>&1 ; then
+        wget --show-progress --quiet --output-document "${tmpfile}" "${RPI_DOWNLOAD_RASPBIAN_URL}" || error "wget"
+      elif which curl >/dev/null 2>&1 ; then
+        curl --output "${tmpfile}" "${url}" || error "curl"
+      else
+        error "no wget or curl found. $url fetch"
+      fi
+      warn "unzipping \"${tmpfile}\""
+      unzip "${tmpfile}" || error unzip
+      sync
+      rm "${tmpfile}" || error rm
+      mv *raspbian-*.img "${dest}" || error mv
+    fi
+
+    #~ sfdisk --list "${dest}" || error sfdisk
+
+    #~ echo -e "\n\n================================================================================\n"\
+            #~ "Really overwrite ${DEST} with ${IMG_NAME}? <enter> to continue, <ctrl+c> to abort\n"
+    #~ read abook
+
+    #~ echo "Writing image to sdcard $(du -h "${IMG_NAME}")..."
+    #~ dd bs=64M if="${IMG_NAME}" of="${DEST}" conv=fsync status=progress || error "dd image write"
+    #~ partprobe "${DEST}"
+    #~ echo "${IMG_NAME} successfully written to \"${DEST}\""
+
+
+    # mount image
+    dev="$(loopback_setup "${dest}" || error "loopback setup")"
+    mount_image "${dev}" || error "image mount"
+
+    RPI_IMG_NAME="${dest}"
+}

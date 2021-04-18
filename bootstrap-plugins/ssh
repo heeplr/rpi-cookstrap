@@ -1,0 +1,52 @@
+# bootstrap ssh access and key for pi user
+
+# default options
+RPI_SSH_KEY_TYPE="${RPI_SSH_KEY_TYPE:=ed25519}"
+RPI_SSH_KEY_ROUNDS="${RPI_SSH_KEY_ROUNDS:=100}"
+RPI_SSH_KEYGEN="${RPI_SSH_KEYGEN:=""}"
+RPI_SSH_AUTHORIZE="${RPI_SSH_AUTHORIZE:=()}"
+
+function rpi_ssh_prerun() {
+    true
+}
+
+function rpi_ssh_run() {
+    # enable ssh if not enabled, yet
+    sudo touch "${RPI_BOOT}/ssh" || error "touch ${RPI_BOOT}/ssh"
+
+    # create .ssh dir
+    if ! [ -d "${RPI_ROOT}/home/pi/.ssh" ] ; then
+      mkdir -p "${RPI_ROOT}/home/pi/.ssh" || error "mkdir"
+      sudo chmod 0700 "${RPI_ROOT}/home/pi/.ssh" || error "chmod"
+      chown_pi "${PI_ROOT}/home/pi/.ssh" || error "chown"
+    fi
+
+    # copy dist files
+    cp_from_dist_if_exist /etc/ssh/sshd_config 0600 || error "cp"
+    cp_from_dist_if_exist /home/pi/.ssh/authorized_keys 0600 || error "cp"
+    cp_from_dist_if_exist /home/pi/.ssh/config 0600 || error "cp"
+    cp_from_dist_if_exist /home/pi/.ssh/known_hosts 0600 || error "cp"
+
+    # generate ssh key?
+    if [ -n "${RPI_SSH_KEYGEN}" ] ; then
+        keyname="${RPI_ROOT}/home/pi/.ssh/id_${RPI_SSH_KEY_TYPE}"
+        if ! [ -f "${keyname}" ] ; then
+            # create key
+            ssh-keygen \
+                -t "${RPI_SSH_KEY_TYPE}" \
+                -a "${RPI_SSH_KEY_ROUNDS}" \
+                -q -N \'\' \
+                -f "${keyname}" || error "ssh-keygen"
+            # replace hostname
+            sudo sed "s|$(hostname)|${RPI_HOSTNAME}|g" -i "${keyname}.pub" || "sed"
+        fi
+    fi
+
+    # authorize configured keys?
+    if [ -n "${RPI_SSH_AUTHORIZE}" ] ; then
+        for key in "${RPI_SSH_AUTHORIZE[@]}" ; do
+            append_to_file "${key}" "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "append"
+            sudo chmod 0600 "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "chmod"
+        done
+    fi
+}
