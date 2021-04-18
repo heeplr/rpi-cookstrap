@@ -203,7 +203,7 @@ function install_package() {
 # ---------------------------------------------------------------------
 
 # load config
-if [ -e bootstrap.cfg ] ; then . bootstrap.cfg ; fi
+if [ -e "$(dirname $0)/bootstrap.cfg" ] ; then . "$(dirname $0)/bootstrap.cfg" ; fi
 
 # say hello
 banner
