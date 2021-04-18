@@ -28,7 +28,13 @@ If you want to customize your own image:
 Configuration (i.e. the "receipe" to cook the image) is done by defining
 bash key/value pairs in *./bootstrap.cfg* (must be in same directory as the *bootstrap.sh* script)
 
-## default config variables
+a minimal working example *bootstrap.cfg* file would look like this:
+```
+RPI_HOSTNAME="myraspberry"
+RPI_PLUGINS=("hostname")
+```
+
+## built in config variables
 Some standard variables are:
 * **RPI_PLUGINDIR** - where plugins are located (default: *./bootstrap-plugins*)
 * **RPI_DISTDIR** - s. [dist dir](#dist-dir) (default: ./bootstrap_dist)
