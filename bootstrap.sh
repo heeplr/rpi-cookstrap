@@ -18,7 +18,7 @@ RPI_BOOTSTRAP_PLUGINS=()
 function banner() {
     echo -e \
         " ----------------------------------------\n" \
-        " ${RPI_HOSTNAME} rpi bootstrap script\n" \
+        " ${RPI_HOSTNAME} bootstrap script\n" \
         "----------------------------------------\n"
 }
 
