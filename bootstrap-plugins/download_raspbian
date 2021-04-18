@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # download & mount raspbian image
 
 RPI_DOWNLOAD_RASPBIAN_FLAVOR="${RPI_DOWNLOAD_RASPBIAN_FLAVOR:=lite}"

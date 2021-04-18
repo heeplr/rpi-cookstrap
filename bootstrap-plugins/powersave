@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # reduce power usage in default configuration
 
 disable_services=( \

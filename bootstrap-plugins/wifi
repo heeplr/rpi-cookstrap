@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # bootstrap wifi configuation for rpi image
 
 function rpi_wifi_prerun() {

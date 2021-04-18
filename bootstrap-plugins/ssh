@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # bootstrap ssh access and key for pi user
 
 # default options
