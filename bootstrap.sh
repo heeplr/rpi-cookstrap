@@ -120,6 +120,14 @@ function append_to_file() {
     echo -e "$1" | sudo tee -a "$2" >/dev/null || error "sudo_append $1 $2"
 }
 
+# append input from stdin to file
+function append_stdin() {
+    [ -n "$1" ] || error "missing argument. append"
+    while read appendix ; do
+        append_to_file "${appendix}" "$1"
+    done
+}
+
 # remove string from file (remove line where pattern matches)
 function remove_line_from_file() {
     [ -n "$1" ] || error "missing argument. remove line"
