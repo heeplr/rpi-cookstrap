@@ -193,8 +193,8 @@ function append_to_config_txt() {
 
 # install a package
 function install_package() {
-    run_once "sudo apt update"
-    run_once "sudo apt upgrade"
+    run_once "sudo apt update" || error "install_package"
+    run_once "sudo DEBIAN_FRONTEND=noninteractive apt upgrade --yes --quiet" || error "install_package"
     for package in "$@" ; do
         run_once "sudo DEBIAN_FRONTEND=noninteractive apt install --yes --quiet ${package}" || error "install_package"
     done
