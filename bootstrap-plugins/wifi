@@ -24,5 +24,8 @@ EOF
     # copy from distfiles
     cp_from_dist_if_exist "/etc/wpa_supplicant/wpa_supplicant.conf"
 
+    # copy to boot
+    sudo cp "${RPI_ROOT}/etc/wpa_supplicant/wpa_supplicant.conf" "${RPI_BOOT}/"
+
     return 0
 }
