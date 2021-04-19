@@ -43,10 +43,10 @@ function loopback_setup() {
     # valid ?
     [ -f "$1" ] || error "$1 not found"
     # already attached?
-    device="$(losetup -l | grep "$(basename "$1")" | cut -d " " -f1)"
+    device="$(sudo losetup -l | grep "$(basename "$1")" | cut -d " " -f1)"
     if [ -z "${device}" ] ; then
         # attach image
-        device="$(losetup --show --find --partscan "${1}")"
+        device="$(sudo losetup --show --find --partscan "${1}")"
         [ $? == 0 ] || error losetup
     fi
     warn "using \"${device}\""
