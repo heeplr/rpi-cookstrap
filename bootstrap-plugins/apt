@@ -4,6 +4,9 @@
 
 RPI_APT_UPDATE="${RPI_APT_UPDATE:=true}"
 RPI_APT_UPGRADE="${RPI_APT_UPGRADE:=true}"
+RPI_APT_INSTALL="${RPI_APT_INSTALL:=""}"
+RPI_APT_REMOVE="${RPI_APT_REMOVE:=""}"
+RPI_APT_AUTOREMOVE="${RPI_APT_AUTOREMOVE:=""}"
 RPI_APT_INTERACTIVE="${RPI_APT_INTERACTIVE:=true}"
 
 
@@ -11,34 +14,57 @@ rpi_apt_prerun() {
     {
       [ -n "${RPI_APT_INSTALL}" ] || \
       [ -n "${RPI_APT_UPDATE}" ] || \
-      [ -n "${RPI_APT_UPGRADE}" ]
+      [ -n "${RPI_APT_UPGRADE}" ] || \
+      [ -n "${RPI_APT_REMOVE}" ] || \
+      [ -n "${RPI_APT_AUTOREMOVE}" ]
     } || return 1
 
     return 0
 }
 
 rpi_apt_run() {
+    # run apt update ?
     if [ "${RPI_APT_UPDATE}" == "true" ] ; then
         if [ "${RPI_APT_INTERACTIVE}" == "true" ] ; then
             run_once "sudo apt update" || error "install_package"
         else
-            run_once "sudo DEBIAN_FRONTEND=noninteractive apt update --yes --quiet" || error "install_package"
+            run_once "sudo DEBIAN_FRONTEND=noninteractive apt update --yes --quiet" || error "install apt update"
         fi
     fi
 
+    # run apt upgrade ?
     if [ "${RPI_APT_UPGRADE}" == "true" ] ; then
         if [ "${RPI_APT_INTERACTIVE}" == "true" ] ; then
             run_once "sudo apt upgrade" || error "install_package"
         else
-            run_once "sudo DEBIAN_FRONTEND=noninteractive apt upgrade --yes --quiet" || error "install_package"
+            run_once "sudo DEBIAN_FRONTEND=noninteractive apt upgrade --yes --quiet" || error "install apt upgrade"
         fi
     fi
 
+    # run apt install ?
     if [ -n "${RPI_APT_INSTALL}" ] ; then
         if [ "${RPI_APT_INTERACTIVE}" == "true" ] ; then
             install_package_interactive "${RPI_APT_INSTALL[@]}" || error "$p install"
         else
             install_package "${RPI_APT_INSTALL[@]}" || error "$p install"
+        fi
+    fi
+
+    # run apt remove ?
+    if [ -n "${RPI_APT_REMOVE}" ] ; then
+        if [ "${RPI_APT_INTERACTIVE}" == "true" ] ; then
+            run_once "sudo apt remove ${RPI_APT_REMOVE[@]}" || error "install apt remove"
+        else
+            run_once "sudo DEBIAN_FRONTEND=noninteractive apt remove --yes --quiet ${RPI_APT_REMOVE[@]}" || error "install apt remove"
+        fi
+    fi
+
+    # run apt autoremove
+    if [ -n "${RPI_APT_AUTOREMOVE}" ] ; then
+        if [ "${RPI_APT_INTERACTIVE}" == "true" ] ; then
+            run_once "sudo apt autoremove ${RPI_APT_AUTOREMOVE[@]}" || error "install apt remove"
+        else
+            run_once "sudo DEBIAN_FRONTEND=noninteractive apt autoremove --yes --quiet ${RPI_APT_AUTOREMOVE[@]}" || error "install apt remove"
         fi
     fi
 }
