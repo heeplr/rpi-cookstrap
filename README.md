@@ -41,7 +41,7 @@ bash key/value pairs in *./bootstrap.cfg* (must be in same directory as the *boo
 a minimal working example *bootstrap.cfg* file would look like this:
 ```
 RPI_HOSTNAME="myraspberry"
-RPI_PLUGINS=("hostname")
+RPI_PLUGINS=("download_raspbian" "hostname")
 ```
 
 ## built in config variables
