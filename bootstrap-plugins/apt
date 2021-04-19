@@ -1,0 +1,44 @@
+#!/bin/sh
+
+# apt jobs to run upon first login
+
+RPI_APT_UPDATE="${RPI_APT_UPDATE:=true}"
+RPI_APT_UPGRADE="${RPI_APT_UPGRADE:=true}"
+RPI_APT_INTERACTIVE="${RPI_APT_INTERACTIVE:=true}"
+
+
+rpi_apt_prerun() {
+    {
+      [ -n "${RPI_APT_INSTALL}" ] || \
+      [ -n "${RPI_APT_UPDATE}" ] || \
+      [ -n "${RPI_APT_UPGRADE}" ]
+    } || return 1
+
+    return 0
+}
+
+rpi_apt_run() {
+    if [ "${RPI_APT_UPDATE}" == "true" ] ; then
+        if [ "${RPI_APT_INTERACTIVE}" == "true" ] ; then
+            run_once "sudo apt update" || error "install_package"
+        else
+            run_once "sudo DEBIAN_FRONTEND=noninteractive apt update --yes --quiet" || error "install_package"
+        fi
+    fi
+
+    if [ "${RPI_APT_UPGRADE}" == "true" ] ; then
+        if [ "${RPI_APT_INTERACTIVE}" == "true" ] ; then
+            run_once "sudo apt upgrade" || error "install_package"
+        else
+            run_once "sudo DEBIAN_FRONTEND=noninteractive apt upgrade --yes --quiet" || error "install_package"
+        fi
+    fi
+
+    if [ -n "${RPI_APT_INSTALL}" ] ; then
+        if [ "${RPI_APT_INTERACTIVE}" == "true" ] ; then
+            install_package_interactive "${RPI_APT_INSTALL[@]}" || error "$p install"
+        else
+            install_package "${RPI_APT_INSTALL[@]}" || error "$p install"
+        fi
+    fi
+}
