@@ -11,8 +11,16 @@ If you want to build a disk image:
 cd examples/vanilla-ssh
 ./bootstrap.sh
 dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX
+eject /dev/sdX
 ```
 where /dev/sdX points to your sdcard, (e.g. /dev/sda)
+
+Then boot that image in your raspberrypi.
+Trigger one-time self-setup by logging in:
+```
+ssh pi@host
+```
+you can replace "host" by an IP address or by a valid domain.
 
 
 If you want to customize your own image:
