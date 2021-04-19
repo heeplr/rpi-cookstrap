@@ -49,6 +49,7 @@ function rpi_ssh_run() {
         for key in "${RPI_SSH_AUTHORIZE[@]}" ; do
             append_to_file "${key}" "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "append"
             sudo chmod 0600 "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "chmod"
+            chown_pi "/home/pi/.ssh/authorized_keys" || error "chown"
         done
     fi
 }
