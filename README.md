@@ -22,6 +22,8 @@ ssh pi@host
 ```
 you can replace "host" by an IP address or by a valid domain.
 
+When the script finished, ```reboot``` or ```poweroff```.
+
 
 If you want to customize your own image:
 
