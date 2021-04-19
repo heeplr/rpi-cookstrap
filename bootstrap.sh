@@ -33,6 +33,28 @@ function error() {
     exit 1
 }
 
+# download a file from the internet
+function download_file() {
+    url="$1"
+    dstfile="$2"
+    if [ -z "${url}" ] || [ -z "${dstfile}" ] ; then error "missing parameters. download_file" ; fi
+
+    # got URL?
+    if [ -n "$(echo "${url}" | grep -E '^(https|http|ftp):/.+$')" ] ; then
+        # download image
+        if which wget >/dev/null 2>&1 ; then
+            wget --show-progress --quiet --output-document "${dstfile}" "${url}" || error "wget"
+        elif which curl >/dev/null 2>&1 ; then
+            curl --output "${dstfile}" "${url}" || error "curl"
+        else
+            error "no wget or curl found. $url fetch"
+        fi
+    # treat url as path
+    else
+        cp "${url}" "${dstfile}" || error "cp"
+    fi
+}
+
 # check if plugin has function
 function check_for_plugin_function() {
     type "$2">/dev/null 2>&1 || error "plugin \"$1\" needs a \"$2\" function."
