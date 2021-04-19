@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# apt install packages upon first login
+
+
+rpi_apt_install_prerun() {
+    [ -n "${RPI_APT_INSTALL_PACKAGES}" ] || return 1
+
+    return 0
+}
+
+rpi_apt_install_run() {
+    for p in "${RPI_APT_INSTALL_PACKAGES[@]}" ; do
+        install_package "$p" || error "$p install"
+    done
+}
