@@ -20,14 +20,9 @@ function rpi_download_raspbian_run() {
     # already downloaded?
     if ! [ -f "${dest}" ] ; then
       tmpfile="$(TMPDIR=$RPI_TMPDIR mktemp || error mktemp)"
-      # fetch image
-      if which wget >/dev/null 2>&1 ; then
-        wget --show-progress --quiet --output-document "${tmpfile}" "${RPI_DOWNLOAD_RASPBIAN_URL}" || error "wget"
-      elif which curl >/dev/null 2>&1 ; then
-        curl --output "${tmpfile}" "${url}" || error "curl"
-      else
-        error "no wget or curl found. $url fetch"
-      fi
+      # download
+      download_file "${RPI_DOWNLOAD_RASPBIAN_URL}" "${tmpfile}"
+      # unzip
       warn "unzipping \"${tmpfile}\""
       unzip "${tmpfile}" || error unzip
       sync
