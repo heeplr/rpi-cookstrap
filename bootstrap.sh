@@ -161,7 +161,7 @@ function cp_from_dist() {
     [ -n "$1" ] || error "missing parameter. cp_to_dist"
     sudo cp "${RPI_DISTDIR}/$1" "${RPI_ROOT}/$(dirname "$1")" || error "cp ${RPI_DISTDIR}/$1 to ${RPI_ROOT}/$(dirname "$1")"
     # chmod?
-    [ -n "$2" ] && sudo chmod "$2" "${RPI_ROOT}/$1"
+    [ -n "$2" ] && chmod_pi "$2" "$1"
 }
 
 # copy if existing
