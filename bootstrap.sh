@@ -167,6 +167,7 @@ function run_once() {
     fi
     append_to_file "echo 'executing: $1'" "${RPI_ROOT}/${once_script}"
     append_to_file "$1 || exit 1"         "${RPI_ROOT}/${once_script}"
+    chown_pi "${once_script}" || error "chown"
     echo "run once cmd installed: \"$1\""
 }
 
