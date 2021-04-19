@@ -40,7 +40,7 @@ function check_for_plugin_function() {
 
 # setup loopback device to mount image
 function loopback_setup() {
-    # valid ?
+    # argument valid?
     [ -f "$1" ] || error "$1 not found"
     # already attached?
     device="$(sudo losetup -l | grep "$(basename "$1")" | cut -d " " -f1)"
@@ -55,8 +55,8 @@ function loopback_setup() {
 
 # tear down loopback device
 function loopback_cleanup() {
-    losetup -d "$1"
-    sync
+    losetup -d "$1" || warn "loopback cleanup"
+    sync || warn "sync"
 }
 
 # mount raspberry image
@@ -75,14 +75,13 @@ function mount_image() {
     sudo mount "${device}p2" "${RPI_ROOT}" || return 1
     # read os-release
     . "${RPI_ROOT}/etc/os-release"
-
     return 0
 }
 
 # unmount raspberry image
 function umount_image() {
-    if ! sudo "umount" "${RPI_BOOT}" ; then warn "${RPI_BOOT} not mounted" ; fi
-    if ! sudo "umount" "${RPI_ROOT}" ; then warn "${RPI_ROOT} not mounted" ; fi
+    sudo "umount" "${RPI_BOOT}" || warn "${RPI_BOOT} not mounted"
+    sudo "umount" "${RPI_ROOT}" || warn "${RPI_ROOT} not mounted"
     unset PRETTY_NAME
     unset NAME
     unset VERSION_ID
@@ -151,24 +150,41 @@ function cp_from_dist_if_exist() {
 
 # chown for pi user
 function chown_pi() {
-    if [ -z "$1" ] ; then warn "missing argument" ; exit 1 ; fi
-    sudo chown 1000:1000 "${RPI_ROOT}/$1" || error "chown ${RPI_ROOT}/$1"
+    [ -n "$1" ] || error "missing argument"
+    if [ "$2" == "-R" ] ; then
+        sudo chown -R 1000:1000 "${RPI_ROOT}/$1" || error "chown ${RPI_ROOT}/$1"
+    else
+        sudo chown 1000:1000 "${RPI_ROOT}/$1" || error "chown ${RPI_ROOT}/$1"
+    fi
+}
+
+# chmod wrapper
+function chmod_pi() {
+    if [ -z "$1" ] && [ -z "$2" ] ; then error "missing argument" ; fi
+    # directory ?
+    if [ "$3" == "-R" ] ; then
+        find "${RPI_ROOT}/$2" -type f -exec sudo chmod "$1" {} \;
+    else
+        sudo chmod "$1" "${RPI_ROOT}/$2"
+    fi
 }
 
 # run command once upon first login
 function run_once() {
-    if [ -z "$1" ] ; then warn "missing argument" ; exit 1 ; fi
+    [ -n "$1" ] || error "missing argument"
     once_script="/home/pi/.bootstrap_run_once"
+    # prepare script
     if ! [ -f "${RPI_ROOT}/${once_script}" ] ; then
         sudo touch "${RPI_ROOT}/${once_script}" || error "sudo touch"
         append_to_file "if [ -f \"${once_script}\" ] ; then echo \"executing first-time setup...\" ; ${once_script} && rm ${once_script} ; fi" "${RPI_ROOT}/home/pi/.bashrc"
         sudo chmod +x "${RPI_ROOT}/${once_script}" || error "sudo chmod +x"
         sudo chown root:root "${RPI_ROOT}/${once_script}"
     fi
-    append_to_file "echo 'executing: $1'" "${RPI_ROOT}/${once_script}"
-    append_to_file "$1 || exit 1"         "${RPI_ROOT}/${once_script}"
+    # append to script
+    append_to_file "echo 'executing: $@'" "${RPI_ROOT}/${once_script}"
+    append_to_file "$@ || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
-    echo "run once cmd installed: \"$1\""
+    echo "run once cmd installed: \"$@\""
 }
 
 #~ # append string to rc.local
@@ -193,13 +209,13 @@ function append_to_config_txt() {
 
 # install a package
 function install_package() {
-    run_once "sudo apt update" || error "install_package"
-    run_once "sudo DEBIAN_FRONTEND=noninteractive apt upgrade --yes --quiet" || error "install_package"
-    for package in "$@" ; do
-        run_once "sudo DEBIAN_FRONTEND=noninteractive apt install --yes --quiet ${package}" || error "install_package"
-    done
+    run_once "sudo DEBIAN_FRONTEND=noninteractive apt install --yes --quiet $@" || error "install_package"
 }
 
+# install a package with user input
+function install_package_interactive() {
+    run_once "sudo apt install $@" || error "install_package"
+}
 
 # ---------------------------------------------------------------------
 
