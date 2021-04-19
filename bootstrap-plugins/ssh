@@ -19,7 +19,7 @@ function rpi_ssh_run() {
     # create .ssh dir
     if ! [ -d "${RPI_ROOT}/home/pi/.ssh" ] ; then
       sudo mkdir -p "${RPI_ROOT}/home/pi/.ssh" || error "mkdir"
-      sudo chmod 0770 "${RPI_ROOT}/home/pi/.ssh" || error "chmod"
+      sudo chmod 0700 "${RPI_ROOT}/home/pi/.ssh" || error "chmod"
       chown_pi "${PI_ROOT}/home/pi/.ssh" || error "chown"
     fi
 
