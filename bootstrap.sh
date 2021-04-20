@@ -292,4 +292,4 @@ umount_image
 loopback_cleanup "${dev}"
 
 echo -e "\n\nImage creation successful. Copy \"${RPI_IMG_NAME}\" to an SD card." \
-     "(e.g. dd if=${RPI_IMG_NAME} of=/dev/sdcard bs=256M status=progress )"
+     "(e.g. dd if=${RPI_IMG_NAME} of=/dev/sdcard bs=32M status=progress )"
