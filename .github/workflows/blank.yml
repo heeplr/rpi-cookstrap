@@ -30,8 +30,8 @@ jobs:
       - name: Add to disk group
         run: sudo gpasswd -a "$USER" disk
 
-      # test examples
-      - name: vanilla-ssh
+      # some tests
+      - name: test examples
         run: |
-          cd examples/vanilla-ssh
+          cd examples/wifi+ssh
           ./bootstrap.sh
