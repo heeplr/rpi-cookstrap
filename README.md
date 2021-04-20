@@ -8,6 +8,8 @@ and a LOT of **sudo** is used. Nothing bad happened, yet but it's just
 waiting to happen. Use at your own risk and do provide fixes ;) !!
 ```
 
+<div align="center" style="font-size:larger;">&#160;</div>
+
 
 ## Why?
 Ever been annoyed of customizing your fresh raspberry setup although
@@ -19,6 +21,9 @@ image for your project. When creating a new project, you now have
 building blocks to simply re-use your customization from the past.
 
 You can even create new [plugins](#plugins) for your complex tasks.
+
+
+<div align="center" style="font-size:larger;">&#160;</div>
 
 
 ## Getting started
@@ -56,6 +61,9 @@ all the files you want to copy unchanged to your raspi.
 * run ```./bootstrap.sh```
 
 
+<div align="center" style="font-size:larger;">&#160;</div>
+
+
 ## Config
 Configuration (i.e. the "receipe" to cook the image) is done by defining
 bash key/value pairs in *"bootstrap.cfg"* (must be in same directory as the *"bootstrap.sh"* script)
@@ -68,7 +76,7 @@ RPI_PLUGINS=("download_raspbian")
 It would just download the default latest raspbian-lite and extract the image.
 
 
-## built in config variables
+### built in config variables
 Some standard variables are:
 * **RPI_PLUGINDIR** - where plugins are located (default: *./bootstrap-plugins*)
 * **RPI_DISTDIR** - s. [dist dir](#dist-dir) (default: ./bootstrap_dist)
@@ -77,6 +85,9 @@ Some standard variables are:
 * **RPI_BOOT** - mountpoint for boot partition (default: *./.bootstrap-work/boot*)
 * **RPI_HOSTNAME** - hostname (default: unnamed)
 * **RPI_BOOTSTRAP_PLUGINS** - array of plugin names to run in order (default: () )
+
+
+<div align="center" style="font-size:larger;">&#160;</div>
 
 
 ## Plugins
@@ -100,10 +111,14 @@ So a plugin named "foo" would define functions "rpi_foo_prerun" and "rpi_foo_run
 All plugins can read/write all variables and share one context.
 
 
-## plugin config variables
+### plugin config variables
 All plugins should read variables starting with RPI_ followed by the capitalized plugin name.
 So a plugin named "foo" would use RPI_FOO_* and thus could have something like
 "RPI_FOO_SOME_VAR=123" in [bootstrap.cfg](#config)
+
+
+<div align="center" style="font-size:larger;">&#160;</div>
+
 
 ## dist dir
 The dist dir resembles a root directory tree for plugins to copy files
@@ -112,6 +127,10 @@ to the image while preserving the path. Default ''RPI_DISTDIR'' is "./bootstrap_
 e.g. the file "./bootstrap_dist/etc/wpa_supplicant/wpa_supplicant.conf"
 would be detected by the wifi plugin and end up in "/etc/wpa_supplicant/"
 on the image.
+
+
+<div align="center" style="font-size:larger;">&#160;</div>
+
 
 # Examples
 see [examples/](examples/) for further examples
