@@ -23,6 +23,10 @@ You can even create new [plugins](#plugins) for your complex tasks.
 
 ## Getting started
 
+Your user must be part of the *"disk"* group to use losetup for mounting
+the disk image.
+
+
 ### bootstrapping an image
 
 ```
