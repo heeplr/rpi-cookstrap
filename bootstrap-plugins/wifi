@@ -10,6 +10,8 @@ function rpi_wifi_run() {
     # create wpa_supplicant.conf from config parameters
     if [ -n "${RPI_WIFI_SSID}" ] && [ -n "${RPI_WIFI_PSK}" ] ; then
         echo " creating /etc/wpa_supplicant.conf"
+        # optionally set country
+        country=""
         [ -n "${RPI_WIFI_COUNTRY}" ] && country="country=\"${RPI_WIFI_COUNTRY}\""
         append_stdin "${RPI_ROOT}/etc/wpa_supplicant/wpa_supplicant.conf" << EOF
 $country
