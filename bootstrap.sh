@@ -192,15 +192,36 @@ function chmod_pi() {
 }
 
 # run command once upon first login
-function run_once() {
+function run_on_first_login() {
     [ -n "$1" ] || error "missing argument"
-    once_script="/home/pi/.bootstrap_run_once"
+    once_script="/home/pi/.bootstrap_run_on_first_login"
     # prepare script
     if ! [ -f "${RPI_ROOT}/${once_script}" ] ; then
-        sudo touch "${RPI_ROOT}/${once_script}" || error "sudo touch"
-        append_to_file "if [ -f \"${once_script}\" ] ; then echo \"executing first-time setup...\" ; ${once_script} && rm ${once_script} ; fi" "${RPI_ROOT}/home/pi/.bashrc"
+        # call script from .bashrc
+        append_to_file "if [ -f \"${once_script}\" ] ; then echo \"executing first-time setup...\" ; ${once_script} && rm ${once_script} ; echo \"Done. Please reboot now.\" ; fi" "${RPI_ROOT}/home/pi/.bashrc"
+        sudo touch "${RPI_ROOT}/${once_script}" || error "touch"
         sudo chmod +x "${RPI_ROOT}/${once_script}" || error "sudo chmod +x"
-        sudo chown root:root "${RPI_ROOT}/${once_script}"
+        sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
+    fi
+    # append to script
+    append_to_file "echo 'executing: $@'" "${RPI_ROOT}/${once_script}"
+    append_to_file "$@ || exit 1"         "${RPI_ROOT}/${once_script}"
+    chown_pi "${once_script}" || error "chown"
+    echo "run once cmd installed: \"$@\""
+}
+
+# run command once upon first boot
+function run_on_first_boot() {
+    [ -n "$1" ] || error "missing argument"
+    once_script="/home/pi/.bootstrap_run_on_first_boot"
+    # prepare script
+    if ! [ -f "${RPI_ROOT}/${once_script}" ] ; then
+        # call script from /etc/rc.local
+        remove_line_from_file "exit 0" "${RPI_ROOT}/etc/rc.local" || error "remove exit from rc.local"
+        append_to_file "if [ -f \"${once_script}\" ] ; then echo \"executing first-time setup...\" ; ${once_script} && rm ${once_script} ; echo \"Done. Please reboot now.\" ; fi" "${RPI_ROOT}/etc/rc.local"
+        sudo touch "${RPI_ROOT}/${once_script}" || error "touch"
+        sudo chmod +x "${RPI_ROOT}/${once_script}" || error "sudo chmod +x"
+        sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
     fi
     # append to script
     append_to_file "echo 'executing: $@'" "${RPI_ROOT}/${once_script}"
@@ -219,7 +240,7 @@ function run_on_boot() {
 
 # disable system service permanently
 function disable_service() {
-    run_once "sudo systemctl disable \"$1\"" || error "disable_service \"$1\""
+    run_on_first_boot "sudo systemctl disable \"$1\"" || error "disable_service \"$1\""
 }
 
 #~ # append string to config.txt
@@ -227,16 +248,6 @@ function append_to_config_txt() {
     for l in "$@" ; do
         append_to_file "$l" "${RPI_BOOT}/config.txt" || error "append"
     done
-}
-
-# install a package
-function install_package() {
-    run_once "sudo DEBIAN_FRONTEND=noninteractive apt install --yes --quiet $@" || error "install_package"
-}
-
-# install a package with user input
-function install_package_interactive() {
-    run_once "sudo apt install $@" || error "install_package"
 }
 
 # ---------------------------------------------------------------------
@@ -280,5 +291,5 @@ echo "cleaning up..."
 umount_image
 loopback_cleanup "${dev}"
 
-echo "Image creation successful. Copy \"${RPI_IMG_NAME}\" to an SD card." \
+echo -e "\n\nImage creation successful. Copy \"${RPI_IMG_NAME}\" to an SD card." \
      "(e.g. dd if=${RPI_IMG_NAME} of=/dev/sdcard bs=256M status=progress )"
