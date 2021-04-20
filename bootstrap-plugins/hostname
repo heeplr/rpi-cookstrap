@@ -19,13 +19,17 @@ function rpi_hostname_run() {
         # /etc/hostname
         sudo rm -f "${RPI_ROOT}/etc/hostname"
         append_to_file "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hostname"
-        # /etc/hosts
-        remove_line_from_file "127\.0\.0\.1\sraspberrypi" "/etc/hosts"
-        append_to_file "127.0.0.1     ${RPI_HOSTNAME}" "/etc/hosts"
     fi
     # copy distfile
     cp_from_dist_if_exist /etc/hostname
     cp_from_dist_if_exist /etc/hosts
 
+    # /etc/hosts
+    RPI_HOSTNAME="$(cat "${RPI_ROOT}/etc/hostname")"
+    # hostname already in /etc/hosts?
+    if ! grep "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hosts" ; then
+        remove_line_from_file "^127.0.1.1\sraspberrypi.*$" "/etc/hosts" || error "remove /etc/hosts"
+        append_to_file "127.0.0.1     ${RPI_HOSTNAME}" "/etc/hosts" || error "append /etc/hosts"
+    fi
     return 0
 }
