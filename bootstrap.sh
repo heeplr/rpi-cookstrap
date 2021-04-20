@@ -127,12 +127,6 @@ function umount_image() {
     unset BUG_REPORT_URL
 }
 
-# check if dist file exists
-function dist_exist() {
-    [ -e "${RPI_DISTDIR}/$1" ] || return 1
-    return 0
-}
-
 # append file to file
 function append_file_to_file() {
     if [ -z "$1" ] || [ -z "$2" ] ; then error "missing argument. append" ; fi
@@ -168,6 +162,12 @@ function remove_line_from_file() {
     done
 }
 
+# check if dist file exists
+function dist_exist() {
+    [ -e "${RPI_DISTDIR}/$1" ] || return 1
+    return 0
+}
+
 # copy from dist directory to root directory
 function cp_from_dist() {
     [ -n "$1" ] || error "missing parameter. cp_to_dist"
@@ -177,7 +177,7 @@ function cp_from_dist() {
     [ -n "$2" ] && chmod_pi "$2" "$1"
 }
 
-# copy if existing
+# copy if srcfile exists
 function cp_from_dist_if_exist() {
     if dist_exist "$1" ; then
         cp_from_dist "$1"
