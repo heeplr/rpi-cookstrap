@@ -123,9 +123,9 @@ function dist_exist() {
 
 # append file to file
 function append_file_to_file() {
-    if [ -z "$1" ] || [ -z "$2" ] ; then error "missing argument. append" ; exit 1 ; fi
+    if [ -z "$1" ] || [ -z "$2" ] ; then error "missing argument. append" ; fi
     # already appended ?
-    [ -f "$1" ] && [ -f "$2" ] && [ -n "$(grep --fixed-strings --file="$1" "$2")" ] && return
+    [ -f "$1" ] && [ -f "$2" ] && [ -n "$(grep --fixed-strings --file="$1" "$2")" ] && return 0
     # append
     sudo tee -a "$2" < "$1" >/dev/null || error "sudo_append $1 $2"
 }
@@ -134,7 +134,7 @@ function append_file_to_file() {
 function append_to_file() {
     if [ -z "$1" ] || [ -z "$2" ] ; then error "missing argument. append" ; fi
     # already appended ?
-    [ -f "$2" ] && [ -n "$(sudo grep "$1" "$2")" ] && return
+    [ -f "$2" ] && [ -n "$(sudo grep "$1" "$2")" ] && return 0
     # append
     sudo touch "$2"
     echo -e "$1" | sudo tee -a "$2" >/dev/null || error "sudo_append $1 $2"
@@ -166,8 +166,12 @@ function cp_from_dist() {
 
 # copy if existing
 function cp_from_dist_if_exist() {
-    dist_exist "$1" && cp_from_dist "$@"
-    return 0
+    if dist_exist "$1" ; then
+        echo " copying $1 ..."
+        cp_from_dist "$1"
+        return 0
+    fi
+    return 1
 }
 
 # chown for pi user
