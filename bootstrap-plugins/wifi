@@ -3,15 +3,16 @@
 # bootstrap wifi configuation for rpi image
 
 function rpi_wifi_prerun() {
-    echo
+    true
 }
 
 function rpi_wifi_run() {
     # create wpa_supplicant.conf from config parameters
-    if [ -n "${RPI_WIFI_COUNTRY}" ] && [ -n "${RPI_WIFI_SSID}" ] && [ -n "${RPI_WIFI_PSK}" ] ; then
+    if [ -n "${RPI_WIFI_SSID}" ] && [ -n "${RPI_WIFI_PSK}" ] ; then
         echo " creating /etc/wpa_supplicant.conf"
+        [ -n "${RPI_WIFI_COUNTRY}" ] && country="country=\"${RPI_WIFI_COUNTRY}\""
         append_stdin "${RPI_ROOT}/etc/wpa_supplicant/wpa_supplicant.conf" << EOF
-country="$RPI_WIFI_COUNTRY"
+$country
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 network=\{
