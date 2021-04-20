@@ -246,7 +246,7 @@ function run_on_first_boot() {
     echo "run once cmd installed: \"$@\""
 }
 
-#~ # append string to rc.local
+# append string to rc.local
 function run_on_boot() {
     if [ -z "$1" ] ; then warn "missing argument" ; exit 1 ; fi
     rc_local="${RPI_ROOT}/etc/rc.local"
@@ -254,12 +254,7 @@ function run_on_boot() {
     echo "run boot cmd installed: \"$1\""
 }
 
-# disable system service permanently
-function disable_service() {
-    run_on_first_boot "sudo systemctl disable \"$1\"" || error "disable_service \"$1\""
-}
-
-#~ # append string to config.txt
+# append string to config.txt
 function append_to_config_txt() {
     for l in "$@" ; do
         append_to_file "$l" "${RPI_BOOT}/config.txt" || error "append"
