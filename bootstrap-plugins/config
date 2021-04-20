@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# customize config.txt
+
+
+function rpi_config_prerun() {
+    true
+}
+
+function rpi_config_run() {
+    for c in "${RPI_CONFIG_ADD[@]}" ; do
+        echo " setting $c ..."
+        append_to_file "$c" "${RPI_BOOT}/config.txt" || error "adding $c"
+    done
+
+    for c in "${RPI_CONFIG_REMOVE[@]}" ; do
+        echo " removing $c ..."
+        remove_line_from_file "$c" "${RPI_BOOT}/config.txt" || error "removing $f"
+    done
+}
