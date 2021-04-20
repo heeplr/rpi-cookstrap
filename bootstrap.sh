@@ -57,7 +57,19 @@ function download_file() {
 
 # check if plugin has function
 function check_for_plugin_function() {
-    type "$2">/dev/null 2>&1 || error "plugin \"$1\" needs a \"$2\" function."
+    type "$2">/dev/null 2>&1 || return 1
+}
+
+# load plugin and make sure it's not loaded twice
+function load_plugin() {
+    # already loaded?
+    check_for_plugin_function "$1" "rpi_$1_run" && return
+    # load plugin
+    . "${RPI_PLUGINDIR}/$1"
+    # check for mandatory functions
+    check_for_plugin_function "$1" "rpi_$1_run" || ( warn "plugin \"$1\" needs a \"rpi_$1_run\" function." ; return 1 )
+    # run prerun checks
+    check_for_plugin_function "$1" "rpi_$1_prerun" || ( error "plugin \"$1\" needs a \"rpi_$1_prerun\" function." ; return 1 )
 }
 
 # setup loopback device to mount image
@@ -255,6 +267,7 @@ function append_to_config_txt() {
 }
 
 # ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 
 # load config
 if [ -e "$(dirname $0)/bootstrap.cfg" ] ; then . "$(dirname $0)/bootstrap.cfg" ; fi
@@ -268,12 +281,11 @@ if [ "${#RPI_BOOTSTRAP_PLUGINS[@]}" == "0" ] ; then
 fi
 # load plugins
 for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
+    # file existing?
     [ -f "${RPI_PLUGINDIR}/$p" ] || error "plugin \"${RPI_PLUGINDIR}/$p\" not found."
-    . "${RPI_PLUGINDIR}/$p"
-    # check for mandatory functions
-    check_for_plugin_function "${p}" "rpi_${p}_run" || error "plugin"
-    # run prerun checks
-    check_for_plugin_function "${p}" "rpi_${p}_prerun" || error "plugin"
+    # load plugin
+    load_plugin "$p" || error "plugin load $p"
+    # preflight check
     "rpi_${p}_prerun" || error "preflight check for plugin \"${p}\""
 done
 
