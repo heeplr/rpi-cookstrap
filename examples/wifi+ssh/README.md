@@ -3,10 +3,9 @@ Example to use rpi-cookstrap to bootstrap a minimal image:
 
 * the "download_raspbian" plugin downloads and decompresses the
   latest raspbian lite image
-* the "hostname" plugin sets the hostname to **RPI_HOSTNAME** configured
-  in *bootstrap.cfg*
+* the "hostname" plugin sets a random hostname
 * the "wifi" plugin configures wireless networking using **RPI_WIFI_***
-  settings in *bootstrap.cfg*
+  settings from *bootstrap.cfg*
 * the "ssh" plugin configures openssh by
   * copying the config file from *bootstrap-dist/etc/ssh/sshd_config* to
     */etc/ssh* and overwriting the shipped openssh config
