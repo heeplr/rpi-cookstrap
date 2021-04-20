@@ -35,19 +35,19 @@ function error() {
 
 # check if plugin has function
 function check_for_plugin_function() {
-    type "$2">/dev/null 2>&1 || return 1
+    type "$1">/dev/null 2>&1
 }
 
 # load plugin and make sure it's not loaded twice
 function load_plugin() {
     # already loaded?
-    check_for_plugin_function "$1" "rpi_$1_run" && return
+    check_for_plugin_function "rpi_$1_run" && return
     # load plugin
     . "${RPI_PLUGINDIR}/$1"
     # check for mandatory functions
-    check_for_plugin_function "$1" "rpi_$1_run" || ( warn "plugin \"$1\" needs a \"rpi_$1_run\" function." ; return 1 )
+    check_for_plugin_function "rpi_$1_run" || ( warn "plugin \"$1\" needs a \"rpi_$1_run\" function." ; return 1 )
     # run prerun checks
-    check_for_plugin_function "$1" "rpi_$1_prerun" || ( error "plugin \"$1\" needs a \"rpi_$1_prerun\" function." ; return 1 )
+    check_for_plugin_function "rpi_$1_prerun" || ( warn "plugin \"$1\" needs a \"rpi_$1_prerun\" function." ; return 1 )
 }
 
 # download a file from the internet
