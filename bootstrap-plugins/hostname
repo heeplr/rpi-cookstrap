@@ -28,7 +28,7 @@ function rpi_hostname_run() {
     # /etc/hosts
     RPI_HOSTNAME="$(cat "${RPI_ROOT}/etc/hostname")"
     # hostname already in /etc/hosts?
-    if ! grep "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hosts" ; then
+    if ! grep "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hosts" >/dev/null ; then
         echo " processing /etc/hosts"
         sudo sed "s|raspberrypi|${RPI_HOSTNAME}|g" -i "${RPI_ROOT}/etc/hosts"
     fi
