@@ -254,13 +254,6 @@ function run_on_boot() {
     echo "run boot cmd installed: \"$1\""
 }
 
-# append string to config.txt
-function append_to_config_txt() {
-    for l in "$@" ; do
-        append_to_file "$l" "${RPI_BOOT}/config.txt" || error "append"
-    done
-}
-
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 
