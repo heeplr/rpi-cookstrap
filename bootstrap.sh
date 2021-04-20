@@ -185,7 +185,7 @@ function chmod_pi() {
     if [ -z "$1" ] && [ -z "$2" ] ; then error "missing argument" ; fi
     # directory ?
     if [ "$3" == "-R" ] ; then
-        find "${RPI_ROOT}/$2" -type f -exec sudo chmod "$1" {} \;
+        sudo find "${RPI_ROOT}/$2" -type f -exec chmod "$1" {} \;
     else
         sudo chmod "$1" "${RPI_ROOT}/$2"
     fi
