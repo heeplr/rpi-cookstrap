@@ -16,11 +16,16 @@ function rpi_hostname_run() {
     echo " setting hostname to \"${RPI_HOSTNAME}\""
     # create from config parameters
     if [ -n "${RPI_HOSTNAME}" ] ; then
+        # /etc/hostname
         sudo rm -f "${RPI_ROOT}/etc/hostname"
         append_to_file "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hostname"
+        # /etc/hosts
+        remove_line_from_file "127\.0\.0\.1\sraspberrypi" "/etc/hosts"
+        append_to_file "127.0.0.1     ${RPI_HOSTNAME}" "/etc/hosts"
     fi
     # copy distfile
     cp_from_dist_if_exist /etc/hostname
+    cp_from_dist_if_exist /etc/hosts
 
     return 0
 }
