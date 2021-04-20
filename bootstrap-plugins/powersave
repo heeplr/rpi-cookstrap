@@ -18,21 +18,24 @@ disable_services=( \
 
 # ---------------------------------------------------------------------
 function rpi_powersave_prerun() {
-    true
+    load_plugin "systemctl"
+    load_plugin "config"
 }
 
 function rpi_powersave_run() {
-    for s in "${disable_services[@]}" ; do
-        disable_service "$s"
-    done
+    services="${disable_services[@]}"
+    RPI_SYSTEMCTL_CMDS=("disable ${services}")
+    rpi_systemctl_run || error "systemctl disable"
 
     # turn off unneeded things
-    append_to_config_txt \
+    RPI_CONFIG_ADD=(
         "dtparam=audio=off" \
         "disable_auto_turbo=1" \
         "dtoverlay=disable-bluetooth" \
         "dtparam=i2c_arm=off" \
         "dtparam=i2s=off" \
         "dtparam=spi=off" \
-        "start_x=0" || error "config.txt modification"
+        "start_x=0"
+    )
+    rpi_config_run || error "config.txt modification"
 }
