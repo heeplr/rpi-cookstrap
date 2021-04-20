@@ -159,6 +159,7 @@ function remove_line_from_file() {
 # copy from dist directory to root directory
 function cp_from_dist() {
     [ -n "$1" ] || error "missing parameter. cp_to_dist"
+    echo " copying $1 ..."
     sudo cp "${RPI_DISTDIR}/$1" "${RPI_ROOT}/$(dirname "$1")" || error "cp ${RPI_DISTDIR}/$1 to ${RPI_ROOT}/$(dirname "$1")"
     # chmod?
     [ -n "$2" ] && chmod_pi "$2" "$1"
@@ -167,7 +168,6 @@ function cp_from_dist() {
 # copy if existing
 function cp_from_dist_if_exist() {
     if dist_exist "$1" ; then
-        echo " copying $1 ..."
         cp_from_dist "$1"
         return 0
     fi
