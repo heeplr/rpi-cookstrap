@@ -17,6 +17,7 @@ function rpi_hostname_run() {
     # create from config parameters
     if [ -n "${RPI_HOSTNAME}" ] ; then
         # /etc/hostname
+        echo " setting /etc/hostname"
         sudo rm -f "${RPI_ROOT}/etc/hostname"
         append_to_file "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hostname"
     fi
@@ -28,8 +29,8 @@ function rpi_hostname_run() {
     RPI_HOSTNAME="$(cat "${RPI_ROOT}/etc/hostname")"
     # hostname already in /etc/hosts?
     if ! grep "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hosts" ; then
-        remove_line_from_file "^127.0.1.1\sraspberrypi.*$" "/etc/hosts" || error "remove /etc/hosts"
-        append_to_file "127.0.0.1     ${RPI_HOSTNAME}" "/etc/hosts" || error "append /etc/hosts"
+        echo " processing /etc/hosts"
+        sudo sed "s|raspberrypi|${RPI_HOSTNAME}|g" -i "${RPI_ROOT}/etc/hosts"
     fi
     return 0
 }
