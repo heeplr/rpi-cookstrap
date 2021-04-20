@@ -252,6 +252,42 @@ function run_on_first_boot() {
 # load config
 if [ -e "$(dirname $0)/bootstrap.cfg" ] ; then . "$(dirname $0)/bootstrap.cfg" ; fi
 
+# parse cmdline options
+while getopts "hl" arg ; do
+    case "${arg}" in
+        "h")
+            # print main help
+            echo -e "Usage: $0 [-h] [-l]\n" \
+                    "-h    print help text\n" \
+                    "-l    leave loopback mounted, don't clean up\n\n"
+            # print plugin help
+            for f in "${RPI_PLUGINDIR}"/* ; do
+                # plugin name from path
+                p="$(basename "$f")"
+                # load this plugin
+                load_plugin "$p"
+                echo "Plugin: \"$p\""
+                if check_for_plugin_function "rpi_${p}_help" ; then
+                    "rpi_${p}_help"
+                else
+                    echo "no help available"
+                fi
+                echo
+            done
+            exit 1
+            ;;
+
+        "l")
+            dont_cleanup=true
+            ;;
+
+        "?")
+            echo "Usage: $0 [-h] [-l]"
+            exit 1
+            ;;
+    esac
+done
+
 # say hello
 banner
 
@@ -283,9 +319,13 @@ for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
 done
 
 # cleanup
-echo "cleaning up..."
-umount_image
-loopback_cleanup "${dev}"
+if [ "${dont_cleanup}" != "true" ] ; then
+    echo "cleaning up..."
+    umount_image
+    loopback_cleanup "${dev}"
+else
+    echo "not cleaning up! don't forget to umount & losetup -d"
+fi
 
 echo -e "\n\nImage creation successful. Copy \"${RPI_IMG_NAME}\" to an SD card." \
      "(e.g. dd if=${RPI_IMG_NAME} of=/dev/sdcard bs=32M status=progress )"
