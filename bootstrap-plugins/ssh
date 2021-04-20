@@ -24,10 +24,10 @@ function rpi_ssh_run() {
     fi
 
     # copy dist files
-    cp_from_dist_if_exist /etc/ssh/sshd_config 0600 || error "cp"
-    cp_from_dist_if_exist /home/pi/.ssh/authorized_keys 0600 || error "cp"
-    cp_from_dist_if_exist /home/pi/.ssh/config 0600 || error "cp"
-    cp_from_dist_if_exist /home/pi/.ssh/known_hosts 0600 || error "cp"
+    cp_from_dist_if_exist /etc/ssh/sshd_config 0600
+    cp_from_dist_if_exist /home/pi/.ssh/authorized_keys 0600
+    cp_from_dist_if_exist /home/pi/.ssh/config 0600
+    cp_from_dist_if_exist /home/pi/.ssh/known_hosts 0600
 
     # generate ssh key?
     if [ -n "${RPI_SSH_KEYGEN}" ] ; then
