@@ -1,12 +1,23 @@
-# RPi CookStrap
-[![CI](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml/badge.svg)](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml)
+# RPi CookStrap - [![CI](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml/badge.svg)](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml)
 
-shell script framework to bootstrap & provision raspberry pi OS disk images with ease.
+A basic shell script framework to bootstrap & provision raspberry pi OS disk images with ease.
+
+
+## Why?
+Ever been annoyed of customizing your fresh raspberry setup although
+you've done the same repetitive tasks already on your past projects?
+Not anymore!
+
+Just run *bootstrap.sh* inside your project directory to build a fresh
+image for your project. When creating a new project, you now have
+building blocks to simply re-use your customization from the past.
+
+You can even create new [plugins](#plugins) for your complex tasks.
 
 
 ## Getting started
 
-If you want to build a disk image:
+### bootstrapping an image
 
 ```
 cd examples/vanilla-ssh
@@ -26,24 +37,27 @@ you can replace "host" by an IP address or by a valid domain.
 When the script finished, ```reboot``` or ```poweroff```.
 
 
-If you want to customize your own image:
+### customizing your own image
 
-* copy "bootstrap.sh" to your root directory
-* place overlay files/directory into "bootstrap-dist" directory
-* place needed plugins into "bootstrap-plugins" directory
-* create a bootstrap.cfg
-* run ./bootstrap.sh
+* copy *"bootstrap.sh"* to your project directory
+* create a *["bootstrap-dist"](#dist-dir)* directory with
+all the files you want to copy unchanged to your raspi.
+* copy the [plugins](#plugins) you need to *"bootstrap-plugins"* directory
+* create a *[bootstrap.cfg](#config)*
+* run ```./bootstrap.sh```
 
 
 ## Config
 Configuration (i.e. the "receipe" to cook the image) is done by defining
-bash key/value pairs in *./bootstrap.cfg* (must be in same directory as the *bootstrap.sh* script)
+bash key/value pairs in *"bootstrap.cfg"* (must be in same directory as the *"bootstrap.sh"* script)
 
-a minimal working example *bootstrap.cfg* file would look like this:
+a minimal working example *"bootstrap.cfg"* file would look like this:
 ```
 RPI_HOSTNAME="myraspberry"
-RPI_PLUGINS=("download_raspbian" "hostname")
+RPI_PLUGINS=("download_raspbian")
 ```
+It would just download the default latest raspbian-lite and extract the image.
+
 
 ## built in config variables
 Some standard variables are:
@@ -59,18 +73,18 @@ Some standard variables are:
 ## Plugins
 
 Plugins are run sequentially. Execution order matters, so e.g.
-download plugins need always to run first. They are defined by
-the RPI_BOOTSTRAP_PLUGINS config variable in bootstrap.cfg
+download plugins always need to run first. They are defined by
+the **RPI_BOOTSTRAP_PLUGINS** config variable in bootstrap.cfg
 
-Say you want to run the "raspbian_download" to download the image and
+Say you want to run the "raspbian_download" plugin to download the image and
 configure wireless networking using the "wifi" plugin afterwards. You
 would set: ```RPI_BOOTSTRAP_PLUGINS=( "raspbian_download" "wifi" )```
 
-Plugins reside in RPI_PLUGINDIR (default: "./bootstrap-plugins").
+Plugins reside in **RPI_PLUGINDIR**.
 They all provide a set of functions prefixed by rpi_ and their name:
 
-* *_prerun() - runs before anything is done (before download etc.) Will halt execution when failing
-* *_run() - execute main plugin task. Will also halt exection when failing
+* *_prerun() - runs before anything is done (before download etc.) Will halt execution when failing.
+* *_run() - execute main plugin task. Will also halt execution when failing.
 
 So a plugin named "foo" would define functions "rpi_foo_prerun" and "rpi_foo_run".
 
@@ -91,4 +105,4 @@ would be detected by the wifi plugin and end up in "/etc/wpa_supplicant/"
 on the image.
 
 # Examples
-see examples/ for further examples
+see [examples/](examples/) for further examples
