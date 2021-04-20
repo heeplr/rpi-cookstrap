@@ -20,7 +20,7 @@ You can even create new [plugins](#plugins) for your complex tasks.
 ### bootstrapping an image
 
 ```
-cd examples/ssh
+cd examples/wifi+ssh
 ./bootstrap.sh
 dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX
 eject /dev/sdX
