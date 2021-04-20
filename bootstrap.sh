@@ -33,6 +33,23 @@ function error() {
     exit 1
 }
 
+# check if plugin has function
+function check_for_plugin_function() {
+    type "$2">/dev/null 2>&1 || return 1
+}
+
+# load plugin and make sure it's not loaded twice
+function load_plugin() {
+    # already loaded?
+    check_for_plugin_function "$1" "rpi_$1_run" && return
+    # load plugin
+    . "${RPI_PLUGINDIR}/$1"
+    # check for mandatory functions
+    check_for_plugin_function "$1" "rpi_$1_run" || ( warn "plugin \"$1\" needs a \"rpi_$1_run\" function." ; return 1 )
+    # run prerun checks
+    check_for_plugin_function "$1" "rpi_$1_prerun" || ( error "plugin \"$1\" needs a \"rpi_$1_prerun\" function." ; return 1 )
+}
+
 # download a file from the internet
 function download_file() {
     url="$1"
@@ -53,23 +70,6 @@ function download_file() {
     else
         cp "${url}" "${dstfile}" || error "cp"
     fi
-}
-
-# check if plugin has function
-function check_for_plugin_function() {
-    type "$2">/dev/null 2>&1 || return 1
-}
-
-# load plugin and make sure it's not loaded twice
-function load_plugin() {
-    # already loaded?
-    check_for_plugin_function "$1" "rpi_$1_run" && return
-    # load plugin
-    . "${RPI_PLUGINDIR}/$1"
-    # check for mandatory functions
-    check_for_plugin_function "$1" "rpi_$1_run" || ( warn "plugin \"$1\" needs a \"rpi_$1_run\" function." ; return 1 )
-    # run prerun checks
-    check_for_plugin_function "$1" "rpi_$1_prerun" || ( error "plugin \"$1\" needs a \"rpi_$1_prerun\" function." ; return 1 )
 }
 
 # setup loopback device to mount image
