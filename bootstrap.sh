@@ -223,7 +223,7 @@ function run_on_first_login() {
     append_to_file "echo 'executing: $@'" "${RPI_ROOT}/${once_script}"
     append_to_file "$@ || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
-    echo "run once cmd installed: \"$@\""
+    echo " run (login) cmd installed: \"$@\""
 }
 
 # run command once upon first boot
@@ -243,15 +243,7 @@ function run_on_first_boot() {
     append_to_file "echo 'executing: $@'" "${RPI_ROOT}/${once_script}"
     append_to_file "$@ || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
-    echo "run once cmd installed: \"$@\""
-}
-
-# append string to rc.local
-function run_on_boot() {
-    if [ -z "$1" ] ; then warn "missing argument" ; exit 1 ; fi
-    rc_local="${RPI_ROOT}/etc/rc.local"
-    append_to_file "$1" "${rc_local}"
-    echo "run boot cmd installed: \"$1\""
+    echo " run (boot) cmd installed: \"$@\""
 }
 
 # ---------------------------------------------------------------------
