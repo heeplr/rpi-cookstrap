@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# run systemctl commands
+
+RPI_SYSTEMCTL_CMDS="${RPI_SYSTEMCTL_CMDS:=""}"
+RPI_SYSTEMCTL_RUN_ON_BOOT="${RPI_SYSTEMCTL_RUN_ON_BOOT:=false}"
+
+function rpi_systemctl_prerun() {
+    [ -n "${RPI_SYSTEMCTL_CMDS}" ] || return 1
+    return 0
+}
+
+function rpi_systemctl_run() {
+    # choose runner
+    if [ "${RPI_SYSTEMCTL_RUN_ON_BOOT}" == "true" ] ; then
+        runner="run_on_first_boot"
+    else
+        runner="run_on_first_login"
+    fi
+
+    for cmd in "${RPI_SYSTEMCTL_CMDS[@]}" ; do
+        $runner "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
+    done
+}
