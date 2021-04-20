@@ -26,9 +26,11 @@ jobs:
 
       - name: Install cracklib
         run: sudo apt install cracklib-runtime
-      
+
       - name: Add to disk group
-        run: sudo -a "${USER}" disk
+        run: |
+          whoami
+          sudo gpasswd -a "$USER" disk
 
       # test examples
       - name: vanilla-ssh
