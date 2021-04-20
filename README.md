@@ -2,6 +2,12 @@
 
 A basic shell script framework to bootstrap & provision raspberry pi OS disk images with ease.
 
+```
+!! Use with caution. This is "works-for-me" state, mediocre code quality
+and a LOT of **sudo** is used. Nothing bad happened, yet but it's just
+waiting to happen. Use at your own risk and do provide fixes ;) !!
+```
+
 
 ## Why?
 Ever been annoyed of customizing your fresh raspberry setup although
