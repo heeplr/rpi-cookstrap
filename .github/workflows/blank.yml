@@ -26,15 +26,12 @@ jobs:
 
       - name: Install cracklib
         run: sudo apt install cracklib-runtime
+      
+      - name: Add to disk group
+        run: sudo -a "${USER}" disk
 
       # test examples
       - name: vanilla-ssh
         run: |
           cd examples/vanilla-ssh
           ./bootstrap.sh
-
-      - name: powersave
-        run: |
-          cd examples/powersave
-          ./bootstrap.sh
-
