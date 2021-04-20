@@ -28,13 +28,12 @@ eject /dev/sdX
 where /dev/sdX points to your sdcard, (e.g. /dev/sda)
 
 Then boot that image in your raspberrypi.
-Trigger one-time self-setup by logging in:
+Trigger one-time self-setup by logging in locally or remotely:
 ```
 ssh pi@host
 ```
 you can replace "host" by an IP address or by a valid domain.
 
-When the script finished, ```reboot``` or ```poweroff```.
 
 
 ### customizing your own image
