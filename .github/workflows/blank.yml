@@ -28,9 +28,7 @@ jobs:
         run: sudo apt install cracklib-runtime
 
       - name: Add to disk group
-        run: |
-          whoami
-          sudo gpasswd -a "$USER" disk
+        run: sudo gpasswd -a "$USER" disk
 
       # test examples
       - name: vanilla-ssh
