@@ -33,6 +33,24 @@ function error() {
     exit 1
 }
 
+# print help msg
+function help_for_vars() {
+    vars="$1"
+    for v in "${vars[@]}" ; do
+        IFS="|" read name description default <<< "${v}"
+        printf "%25s - %s (default: \"%s\")\n" "${name}" "${description}" "${default}"
+    done
+}
+
+# print help msg
+function help_for_distfiles() {
+    files="$1"
+    for f in "${vars[@]}" ; do
+        IFS="|" read name description <<< "${f}"
+        printf "%30s - %s\n"
+    done
+}
+
 # check if plugin has function
 function check_for_plugin_function() {
     type "$1">/dev/null 2>&1
@@ -259,20 +277,31 @@ while getopts "hl" arg ; do
             # print main help
             echo -e "Usage: $0 [-h] [-l]\n" \
                     "-h    print help text\n" \
-                    "-l    leave loopback mounted, don't clean up\n\n"
+                    "-l    leave loopback mounted, don't clean up\n"
             # print plugin help
+            echo -e "Plugins:\n"
             for f in "${RPI_PLUGINDIR}"/* ; do
                 # plugin name from path
                 p="$(basename "$f")"
                 # load this plugin
                 load_plugin "$p"
-                echo "Plugin: \"$p\""
-                if check_for_plugin_function "rpi_${p}_help" ; then
-                    "rpi_${p}_help"
+                # general description
+                if check_for_plugin_function "rpi_${p}_description" ; then
+                    echo -n "\"$p\" - "
+                    "rpi_${p}_description"
                 else
-                    echo "no help available"
+                    echo "\"$p\""
                 fi
-                echo
+                # config var description
+                if check_for_plugin_function "rpi_${p}_help_vars" ; then
+                    "rpi_${p}_help_vars"
+                    echo
+                fi
+                # distfile description
+                if check_for_plugin_function "rpi_${p}_help_distfiles" ; then
+                    "rpi_${p}_help_distfiles"
+                    echo
+                fi
             done
             exit 1
             ;;
