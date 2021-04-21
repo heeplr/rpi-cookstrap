@@ -32,3 +32,20 @@ EOF
 
     return 0
 }
+
+function rpi_wifi_description() {
+    echo "configure wifi"
+}
+
+function rpi_wifi_help_vars() {
+    vars=( \
+        "RPI_WIFI_SSID|SSID of network|${RPI_WIFI_SSID}" \
+        "RPI_WIFI_PSK|network password|${RPI_WIFI_PSK}" \
+        "RPI_WIFI_COUNTRY|wifi country standard. optional.|${RPI_WIFI_COUNTRY}" \
+    )
+    help_for_vars "${vars}"
+}
+
+function rpi_wifi_help_distfiles() {
+    help_for_distfiles "/etc/wpa_supplicant/wpa_supplicant.conf"
+}
