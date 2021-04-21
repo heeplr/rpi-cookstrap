@@ -38,16 +38,15 @@ function help_for_vars() {
     vars="$1"
     for v in "${vars[@]}" ; do
         IFS="|" read name description default <<< "${v}"
-        printf "%25s - %s (default: \"%s\")\n" "${name}" "${description}" "${default}"
+        printf "%30s - %s (default: \"%s\")\n" "${name}" "${description}" "${default}"
     done
 }
 
 # print help msg
 function help_for_distfiles() {
     files="$1"
-    for f in "${vars[@]}" ; do
-        IFS="|" read name description <<< "${f}"
-        printf "%30s - %s\n"
+    for f in "${files[@]}" ; do
+        printf "%30s\n" "${f}"
     done
 }
 
