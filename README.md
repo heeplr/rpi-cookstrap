@@ -105,8 +105,16 @@ They all provide a set of functions prefixed by rpi_ and their name:
 
 * *_prerun() - runs before anything is done (before download etc.) Will halt execution when failing.
 * *_run() - execute main plugin task. Will also halt execution when failing.
+* *_description() - print a general short description of the plugin
+* *_help_vars() - call "help_for_vars" function passing an array of "name|helptext|default_value" strings.
+* *_help_distfiles() - call "help_for_distfiles" passing an array of "name|helptext" strings
 
-So a plugin named "foo" would define functions "rpi_foo_prerun" and "rpi_foo_run".
+So for example, a plugin named "foo" would define functions
+* rpi_foo_prerun
+* rpi_foo_run
+* rpi_foo_description
+* rpi_foo_help_vars
+* rpi_foo_help_distfiles
 
 All plugins can read/write all variables and share one context.
 
