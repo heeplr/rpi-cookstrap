@@ -96,8 +96,8 @@ Plugins are run sequentially. Execution order matters, so e.g.
 download plugins always need to run first. They are defined by
 the **RPI_BOOTSTRAP_PLUGINS** config variable in bootstrap.cfg
 
-Say you want to run the "raspbian_download" plugin to download the image and
-configure wireless networking using the "wifi" plugin afterwards. You
+If you want to run the "raspbian_download" plugin to download the image and
+configure wireless networking using the "wifi" plugin afterwards for example, you
 would set: ```RPI_BOOTSTRAP_PLUGINS=( "raspbian_download" "wifi" )```
 
 Plugins reside in **RPI_PLUGINDIR**.
