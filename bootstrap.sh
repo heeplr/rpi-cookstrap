@@ -106,7 +106,7 @@ function loopback_setup() {
 
 # tear down loopback device
 function loopback_cleanup() {
-    losetup -d "$1" || warn "loopback cleanup"
+    sudo losetup -d "$1" || warn "loopback cleanup failed"
     sync || warn "sync"
 }
 
