@@ -354,7 +354,7 @@ if [ "${dont_cleanup}" != "true" ] ; then
     umount_image
     loopback_cleanup "${dev}"
 else
-    echo "not cleaning up! don't forget to umount & losetup -d"
+    echo -e "\nNOT CLEANING UP! Don't forget to umount & losetup -d"
 fi
 
 echo -e "\n\nImage creation successful. Copy \"${RPI_IMG_NAME}\" to an SD card." \
