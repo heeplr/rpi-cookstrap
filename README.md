@@ -8,7 +8,7 @@ and a LOT of **sudo** is used. Nothing bad happened, yet but it's just
 waiting to happen. Use at your own risk and do provide fixes ;) !!
 ```
 
-<div align="center" style="font-size:larger;">&#160;</div>
+<div style="font-size:larger;">&#160;</div>
 
 
 ## Why?
@@ -23,7 +23,7 @@ building blocks to simply re-use your customization from the past.
 You can even create new [plugins](#plugins) for your complex tasks.
 
 
-<div align="center" style="font-size:larger;">&#160;</div>
+<div style="font-size:larger;">&#160;</div>
 
 
 ## Getting started
@@ -62,7 +62,7 @@ all the files you want to copy unchanged to your raspi.
 * run ```./bootstrap.sh```
 
 
-<div align="center" style="font-size:larger;">&#160;</div>
+<div style="font-size:larger;">&#160;</div>
 
 
 ## Config
@@ -71,7 +71,6 @@ bash key/value pairs in *"bootstrap.cfg"* (must be in same directory as the *"bo
 
 a minimal working example *"bootstrap.cfg"* file would look like this:
 ```
-RPI_HOSTNAME="myraspberry"
 RPI_PLUGINS=("download_raspbian")
 ```
 It would just download the default latest raspbian-lite and extract the image.
@@ -88,7 +87,7 @@ Some standard variables are:
 * **RPI_BOOTSTRAP_PLUGINS** - array of plugin names to run in order (default: () )
 
 
-<div align="center" style="font-size:larger;">&#160;</div>
+<div style="font-size:larger;">&#160;</div>
 
 
 ## Plugins
@@ -126,7 +125,7 @@ So a plugin named "foo" would use RPI_FOO_* and thus could have something like
 "RPI_FOO_SOME_VAR=123" in [bootstrap.cfg](#config)
 
 
-<div align="center" style="font-size:larger;">&#160;</div>
+<div style="font-size:larger;">&#160;</div>
 
 
 ## dist dir
@@ -138,7 +137,7 @@ would be detected by the wifi plugin and end up in "/etc/wpa_supplicant/"
 on the image.
 
 
-<div align="center" style="font-size:larger;">&#160;</div>
+<div style="font-size:larger;">&#160;</div>
 
 
 # Examples
