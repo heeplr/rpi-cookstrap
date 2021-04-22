@@ -46,7 +46,7 @@ function help_for_vars() {
 function help_for_distfiles() {
     files="$1"
     for f in "${files[@]}" ; do
-        printf "%30s\n" "${f}"
+        printf "%40s\n" "${f}"
     done
 }
 
@@ -298,6 +298,7 @@ while getopts "hl" arg ; do
                 fi
                 # distfile description
                 if check_for_plugin_function "rpi_${p}_help_distfiles" ; then
+                    echo " distfiles:"
                     "rpi_${p}_help_distfiles"
                     echo
                 fi
