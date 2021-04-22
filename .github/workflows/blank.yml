@@ -24,14 +24,11 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Install cracklib
-        run: sudo apt install cracklib-runtime
-
-      - name: Add to disk group
+      - name: Add user to disk group
         run: sudo gpasswd -a "$USER" disk
 
       # some tests
       - name: test examples
         run: |
-          cd examples/wifi+ssh
+          cd examples/complete-test
           ./bootstrap.sh
