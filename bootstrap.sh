@@ -50,7 +50,7 @@ function help_for_distfiles() {
     done
 }
 
-# check if plugin has function
+# check if plugin provides function
 function check_for_plugin_function() {
     type "$1">/dev/null 2>&1
 }
@@ -144,6 +144,7 @@ function umount_image() {
     unset BUG_REPORT_URL
 }
 
+# ---------------------------------------------------------------------
 # append file to file
 function append_file_to_file() {
     if [ -z "$1" ] || [ -z "$2" ] ; then error "missing argument. append" ; fi
