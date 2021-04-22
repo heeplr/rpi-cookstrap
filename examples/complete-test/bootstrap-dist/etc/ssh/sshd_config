@@ -1,0 +1,18 @@
+Protocol 2
+LogLevel INFO
+PermitRootLogin no
+StrictModes yes
+AuthenticationMethods publickey
+AuthorizedKeysFile      %h/.ssh/authorized_keys
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+UsePAM yes
+GatewayPorts yes
+PrintMotd no
+TCPKeepAlive yes
+ClientAliveInterval 30
+ClientAliveCountMax 2
+
+Subsystem       sftp    internal-sftp
+
+AcceptEnv COLORTERM LANG LC_ALL LC_COLLATE LC_CTYPE LC_MESSAGES LC_MONETARY LC_NUMERIC LC_TIME LANGUAGE LC_ADDRESS LC_IDENTIFICATION LC_MEASUREMENT LC_NAME LC_PAPER LC_TELEPHONE
