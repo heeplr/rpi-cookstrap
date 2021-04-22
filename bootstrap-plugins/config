@@ -19,6 +19,8 @@ function rpi_config_run() {
     done
 
     cp_from_dist_if_exist "/boot/config.txt"
+
+    return 0
 }
 
 function rpi_config_description() {
