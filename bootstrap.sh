@@ -174,9 +174,10 @@ function append_stdin() {
 
 # remove string from file (remove line where pattern matches)
 function remove_line_from_file() {
-    [ -n "$1" ] || error "missing argument. remove line"
-    for pattern in "$@" ; do
-        sudo sed -i "/$1/d" "$2" || error "sudo_remove $1 $2"
+    ( [ -n "$1" ] && [ -n "$2" ] ) || error "missing argument. remove line"
+    patterns="$1"
+    for pattern in "${patterns[@]}" ; do
+        sudo sed "/${pattern}/d" -i "$2" || error "sudo_remove ${pattern} $2"
     done
 }
 
