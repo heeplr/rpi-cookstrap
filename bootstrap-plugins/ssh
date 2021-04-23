@@ -16,7 +16,7 @@ function rpi_ssh_run() {
     # enable ssh if not enabled, yet
     sudo touch "${RPI_BOOT}/ssh" || error "touch ${RPI_BOOT}/ssh"
 
-    # create .ssh dir
+    # create ~/.ssh dir
     if ! [ -d "${RPI_ROOT}/home/pi/.ssh" ] ; then
       sudo mkdir -p "${RPI_ROOT}/home/pi/.ssh" || error "mkdir"
       chmod_pi 0700 "/home/pi/.ssh" || error "chmod"
