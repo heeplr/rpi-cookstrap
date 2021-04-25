@@ -325,7 +325,7 @@ while getopts "hl" arg ; do
             dont_cleanup=true
             ;;
 
-        "?")
+        *)
             echo "Usage: $0 [-h] [-l]"
             exit 1
             ;;
