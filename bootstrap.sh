@@ -174,7 +174,7 @@ function append_stdin() {
 
 # remove string from file (remove line where pattern matches)
 function remove_line_from_file() {
-    { [ -n "$1" ] && [ -n "$2" ] } || error "missing arguments. remove line"
+    { [ -n "$1" ] && [ -n "$2" ]; } || error "missing arguments. remove line"
     patterns="$1"
     for pattern in "${patterns[@]}" ; do
         sudo sed "/${pattern}/d" -i "$2" || error "remove_line ${pattern} $2"
@@ -183,7 +183,7 @@ function remove_line_from_file() {
 
 # replace string in file (sed pattern)
 function replace_string_in_file() {
-    { [ -n "$1" ] && [ -n "$2" ] } || error "missing arguments. replace line"
+    { [ -n "$1" ] && [ -n "$2" ]; } || error "missing arguments. replace line"
     patterns="$1"
     for pattern in "${patterns[@]}" ; do
         sudo sed -E "s/${pattern}/g" -i "$2" || error "replace_string ${pattern} $2"
