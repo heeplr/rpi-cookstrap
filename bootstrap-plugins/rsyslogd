@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# setup remote logging
+
+RPI_RSYSLOGD_TYPE="${RPI_RSYSLOGD_TYPE:=omfwd}"
+RPI_RSYSLOGD_TARGET="${RPI_RSYSLOGD_TARGET:=127.0.0.1}"
+RPI_RSYSLOGD_PORT="${RPI_RSYSLOGD_PORT:=55514}"
+RPI_RSYSLOGD_LOCAL="${RPI_RSYSLOGD_LOCAL:=false}"
+RPI_RSYSLOGD_PROTOCOL="${RPI_RSYSLOGD_PROTOCOL:=tcp}"
+RPI_RSYSLOGD_RESUME_RETRY_COUNT="${RPI_RSYSLOGD_RESUME_RETRY_COUNT:=100}"
+RPI_RSYSLOGD_QUEUE_TYPE="${RPI_RSYSLOGD_QUEUE_TYPE:=linkedList}"
+RPI_RSYSLOGD_QUEUE_SIZE="${RPI_RSYSLOGD_QUEUE_SIZE:=10000}"
+
+function rpi_rsyslogd_prerun() {
+    true
+}
+
+function rpi_rsyslogd_run() {
+    # disable local logging ?
+    if [ "${RPI_RSYSLOGD_LOCAL}" == "false" ] ; then
+        local patterns=(
+            "^(auth,authpriv.*)/#\1"
+            "^(\*\.\*;auth,authpriv\.none.*)/#\1"
+            "^(daemon\.\*.*)/#\1"
+            "^(kern\.\*.*)/#\1"
+            "^(lpr\.\*.*)/#\1"
+            "^(mail\.\*.*)/#\1"
+            "^(user\.\*.*)/#\1"
+            "^(mail\.info.*)/#\1"
+            "^(mail\.warn.*)/#\1"
+            "^(mail\.err.*)/#\1"
+            "^(\*\.=debug.*)/#\1"
+            "^(\s+auth,authpriv\.none.*)/#\1"
+            "^(\s+news\.none;mail\.none.*)/#\1"
+            "^(\*\.=info.*)/#\1"
+            "^(\s+auth,authpriv\.none.*)/#\1"
+            "^(\s+cron,daemon\.none.*)/#\1"
+            "^(\s+mail,news\.none.*)/#\1"
+        )
+        local pattern
+        for pattern in "${patterns[@]}" ; do
+            replace_string_in_file "${pattern}" "${RPI_ROOT}/etc/rsyslog.conf"
+        done
+    fi
+
+    # configure remote logging
+    append_stdin "${RPI_ROOT}/etc/rsyslog.d/remote_log.conf" << EOF
+module(load="imjournal")
+\
+*.* action(type="${RPI_RSYSLOGD_TYPE}", target="${RPI_RSYSLOGD_TARGET}" port="${RPI_RSYSLOGD_PORT}" protocol="${RPI_RSYSLOGD_PROTOCOL}" action.resumeRetryCount="${RPI_RSYSLOGD_RESUME_RETRY_COUNT}" queue.type="${RPI_RSYSLOGD_QUEUE_TYPE}" queue.size="${RPI_RSYSLOGD_QUEUE_SIZE}")
+EOF
+
+    # copy distfiles
+    cp_from_dist_if_exist "/etc/rsyslog.conf"
+    cp_from_dist_if_exist "/etc/rsyslog.d"
+
+    return 0
+}
+
+function rpi_rsyslogd_description() {
+    echo "configure remote logging"
+}
+
+function rpi_rsyslogd_help_vars() {
+    local vars=(
+        "RPI_RSYSLOGD_TARGET|target syslog server|${RPI_RSYSLOGD_TARGET}"
+        "RPI_RSYSLOGD_PORT|target port|${RPI_RSYSLOGD_PORT}"
+        "RPI_RSYSLOGD_LOCAL|enable/disable local logfiles|${RPI_RSYSLOGD_LOCAL}"
+        "RPI_RSYSLOGD_PROTOCOL|network protocol|${RPI_RSYSLOGD_PROTOCOL}"
+        "RPI_RSYSLOGD_RESUME_RETRY_COUNT|amount of resume retries|${RPI_RSYSLOGD_RESUME_RETRY_COUNT}"
+        "RPI_RSYSLOGD_QUEUE_TYPE|message queue type|${RPI_RSYSLOGD_QUEUE_TYPE}"
+        "RPI_RSYSLOGD_QUEUE_SIZE|message queue size|${RPI_RSYSLOGD_QUEUE_SIZE}"
+    )
+    help_for_vars "${vars[@]}"
+}
+
+function rpi_rsyslogd_help_distfiles() {
+    local distfiles=(
+        "/etc/rsyslog.conf"
+        "/etc/rsyslog.d/*"
+    )
+    help_for_distfiles "${distfiles[@]}"
+}
