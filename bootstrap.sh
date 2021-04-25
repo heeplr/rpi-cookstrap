@@ -181,6 +181,15 @@ function remove_line_from_file() {
     done
 }
 
+# replace string in file (sed pattern)
+function replace_string_in_file() {
+    ( [ -n "$1" ] && [ -n "$2" ] ) || error "missing arguments. replace line"
+    patterns="$1"
+    for pattern in "${patterns[@]}" ; do
+        sudo sed -E "s/${pattern}/g" -i "$2" || error "replace_string ${pattern} $2"
+    done
+}
+
 # check if dist file exists
 function dist_exist() {
     [ -e "${RPI_DISTDIR}/$1" ] || return 1
