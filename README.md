@@ -34,10 +34,37 @@ the disk image.
 ### bootstrapping an image
 
 ```
-cd examples/wifi+ssh
-./bootstrap.sh
-dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX
-eject /dev/sdX
+$ cd examples/wifi+ssh
+$ ./bootstrap.sh
+ ----------------------------------------
+  example bootstrap script
+ ----------------------------------------
+running plugin: download_raspbian
+downloading https://downloads.raspberrypi.org/raspbian_lite_latest ...
+/tmp/tmp.nyYe5qv7xp                                  100%[=====================================================================================================================>] 433,01M  10,7MB/s    in 44s     
+unzipping "/tmp/tmp.nyYe5qv7xp"
+Archive:  /tmp/tmp.nyYe5qv7xp
+  inflating: 2020-02-13-raspbian-buster-lite.img  
+setting up loopback for .bootstrap-work/raspbian-lite.img
+Password: 
+using "/dev/loop0"
+mounting image...
+running plugin: hostname
+ setting hostname to "example"
+ setting /etc/hostname
+ processing /etc/hosts
+running plugin: wifi
+ creating /etc/wpa_supplicant.conf
+running plugin: ssh
+ copying /etc/ssh/sshd_config ...
+cleaning up...
+
+
+Image creation successful. Copy ".bootstrap-work/raspbian-lite.img" to an SD card.
+(e.g. dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard bs=32M status=progress )
+
+$ dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX
+$ eject /dev/sdX
 ```
 where /dev/sdX points to your sdcard, (e.g. /dev/sda)
 
