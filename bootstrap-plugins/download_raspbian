@@ -14,7 +14,7 @@ function rpi_download_raspbian_run() {
 
     name="raspbian-${RPI_DOWNLOAD_RASPBIAN_FLAVOR}.img"
 
-    warn "downloading ${url} ..."
+    warn "downloading ${RPI_DOWNLOAD_RASPBIAN_URL} ..."
     dest="${RPI_WORKDIR}/${name}"
 
     # already downloaded?
