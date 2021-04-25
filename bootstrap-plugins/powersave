@@ -23,8 +23,8 @@ function rpi_powersave_prerun() {
 }
 
 function rpi_powersave_run() {
-    services="${disable_services[@]}"
-    RPI_SYSTEMCTL_CMDS=("disable ${services}")
+    # prefix disable_services with "disable "
+    RPI_SYSTEMCTL_CMDS=("${disable_services[@]/#/disable }")
     rpi_systemctl_run || error "systemctl disable"
 
     # turn off unneeded things
