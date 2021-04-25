@@ -25,7 +25,7 @@ function banner() {
 
 # print warning
 function warn() {
-    echo "$@" >&2
+    echo "$*" >&2
 }
 
 # print error msg
