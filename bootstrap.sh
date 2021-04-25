@@ -2,7 +2,7 @@
 
 # bootstrap self provisioning raspi image
 # GPLv3
-# Author: Daniel Hiepler 2021
+# Author: Daniel Hiepler (d-cookstrap@coderdu.de) - 2021
 
 
 RPI_WORKDIR="${RPI_WORKDIR:=.bootstrap-work}"
