@@ -97,8 +97,7 @@ function loopback_setup() {
     device="$(sudo losetup -l | grep "$(basename "$1")" | cut -d " " -f1)"
     if [ -z "${device}" ] ; then
         # attach image
-        device="$(sudo losetup --show --find --partscan "${1}")"
-        [ $? == 0 ] || error losetup
+        device="$(sudo losetup --show --find --partscan "${1}")" || error losetup
     fi
     warn "using \"${device}\""
     echo "${device}"
