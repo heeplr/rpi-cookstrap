@@ -17,10 +17,11 @@ RPI_BOOTSTRAP_PLUGINS=()
 # ---------------------------------------------------------------------
 # print banner
 function banner() {
-    echo -e \
-        " ----------------------------------------\n" \
-        " ${RPI_HOSTNAME} bootstrap script\n" \
-        "----------------------------------------\n"
+    cat << EOF
+ ----------------------------------------
+  ${RPI_HOSTNAME} bootstrap script
+ ----------------------------------------
+EOF
 }
 
 # print warning
@@ -32,6 +33,16 @@ function warn() {
 function error() {
     echo "error: $* failed." >&2
     exit 1
+}
+
+# print usage info
+function usage() {
+    cat << EOF
+Usage: $0 [-h] [-l]
+ -h    print help text
+ -l    leave loopback mounted, don't clean up
+
+EOF
 }
 
 # print help msg
@@ -60,11 +71,9 @@ function parse_cmdline_args() {
         case "${arg}" in
             "h")
                 # print main help
-                echo -e "Usage: $0 [-h] [-l]\n" \
-                        "-h    print help text\n" \
-                        "-l    leave loopback mounted, don't clean up\n"
+                usage
                 # print plugin help
-                echo -e "Plugins:\n"
+                printf "Plugins:\n\n"
                 local f
                 for f in "${RPI_PLUGINDIR}"/* ; do
                     # plugin name from path
@@ -249,7 +258,7 @@ function append_to_file() {
     [ -f "$2" ] && [ -n "$(sudo grep "$1" "$2")" ] && return 0
     # append
     sudo touch "$2"
-    echo -e "$1" | sudo tee -a "$2" >/dev/null || error "sudo_append $1 $2"
+    printf "$1" | sudo tee -a "$2" >/dev/null || error "sudo_append $1 $2"
 }
 
 # append input from stdin to file
@@ -403,8 +412,10 @@ if [ "${RPI_DONT_CLEANUP}" != "true" ] ; then
     # run postrun
     postrun_all_plugins
 else
-    echo -e "\nNOT CLEANING UP! Don't forget to umount & losetup -d"
+    printf "\nNOT CLEANING UP! Don't forget to umount & losetup -d"
 fi
 
-echo -e "\n\nImage creation successful. Copy \"${RPI_IMG_NAME}\" to an SD card." \
-     "(e.g. dd if=${RPI_IMG_NAME} of=/dev/sdcard bs=32M status=progress )"
+printf "\n\n"
+printf "%s\n" \
+    "Image creation successful. Copy \"${RPI_IMG_NAME}\" to an SD card." \
+    "(e.g. dd if=${RPI_IMG_NAME} of=/dev/sdcard bs=32M status=progress )"
