@@ -166,7 +166,7 @@ function append_to_file() {
 
 # append input from stdin to file
 function append_stdin() {
-    [ -n "$1" ] || error "missing argument. append"
+    [ -n "$1" ] || error "missing argument. append_stdin"
     while read appendix ; do
         append_to_file "${appendix}" "$1"
     done
@@ -174,10 +174,10 @@ function append_stdin() {
 
 # remove string from file (remove line where pattern matches)
 function remove_line_from_file() {
-    ( [ -n "$1" ] && [ -n "$2" ] ) || error "missing argument. remove line"
+    ( [ -n "$1" ] && [ -n "$2" ] ) || error "missing arguments. remove line"
     patterns="$1"
     for pattern in "${patterns[@]}" ; do
-        sudo sed "/${pattern}/d" -i "$2" || error "sudo_remove ${pattern} $2"
+        sudo sed "/${pattern}/d" -i "$2" || error "remove_line ${pattern} $2"
     done
 }
 
@@ -191,7 +191,12 @@ function dist_exist() {
 function cp_from_dist() {
     [ -n "$1" ] || error "missing parameter. cp_to_dist"
     echo " copying $1 ..."
-    sudo cp "${RPI_DISTDIR}/$1" "${RPI_ROOT}/$(dirname "$1")" || error "cp ${RPI_DISTDIR}/$1 to ${RPI_ROOT}/$(dirname "$1")"
+    # directory?
+    if [ -d "$1" ] ; then
+        sudo cp -r "${RPI_DISTDIR}/$1/"* "${RPI_ROOT}/$(dirname "$1")" || error "cp -r $1/* to ${RPI_ROOT}/$(dirname "$1")"
+    else
+        sudo cp "${RPI_DISTDIR}/$1" "${RPI_ROOT}/$(dirname "$1")" || error "cp $1 to ${RPI_ROOT}/$(dirname "$1")"
+    fi
     # chmod?
     [ -n "$2" ] && chmod_pi "$2" "$1"
 }
