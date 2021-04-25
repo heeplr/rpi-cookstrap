@@ -36,7 +36,7 @@ function error() {
 
 # print help msg
 function help_for_vars() {
-    local vars="$1"
+    local vars=("$@")
     local v
     for v in "${vars[@]}" ; do
         IFS="|" read -r name description default <<< "${v}"
@@ -46,7 +46,7 @@ function help_for_vars() {
 
 # print help msg
 function help_for_distfiles() {
-    local files="$1"
+    local files=("$@")
     local f
     for f in "${files[@]}" ; do
         printf "%40s\n" "${f}"

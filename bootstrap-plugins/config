@@ -33,10 +33,10 @@ function rpi_config_help_vars() {
         "RPI_CONFIG_ADD|\"key=value\" pairs to append to config.txt|${RPI_CONFIG_ADD}" \
         "RPI_CONFIG_REMOVE|\"key=value\" pairs to delete from config.txt|${RPI_CONFIG_REMOVE}" \
     )
-    help_for_vars "${vars}"
+    help_for_vars "${vars[@]}"
 }
 
 function rpi_config_help_distfiles() {
     distfiles=( "/boot/config.txt" )
-    help_for_distfiles "${distfiles}"
+    help_for_distfiles "${distfiles[@]}"
 }
