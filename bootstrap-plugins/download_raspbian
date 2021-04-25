@@ -27,7 +27,7 @@ function rpi_download_raspbian_run() {
       unzip "${tmpfile}" || error unzip
       sync
       rm "${tmpfile}" || error rm
-      mv *raspbian-*.img "${dest}" || error mv
+      mv ./*raspbian-*.img "${dest}" || error mv
     fi
 
     # mount image
