@@ -25,7 +25,7 @@ function rpi_powersave_run() {
         "man-db.timer" \
     )
     # prefix disable_services with "disable "
-    RPI_SYSTEMCTL_CMDS=("${disable_services[@]/#/disable }")
+    RPI_SYSTEMCTL_CMDS=("disable ${disable_services[@]}")
     rpi_systemctl_run || error "systemctl disable"
 
     # turn off unneeded things
