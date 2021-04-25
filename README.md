@@ -63,10 +63,10 @@ cleaning up...
 Image creation successful. Copy ".bootstrap-work/raspbian-lite.img" to an SD card.
 (e.g. dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard bs=32M status=progress )
 
-$ dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX
-$ eject /dev/sdX
+$ dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard
+$ eject /dev/sdcard
 ```
-where /dev/sdX points to your sdcard, (e.g. /dev/sda)
+with /dev/sdcard being your sdcard, (e.g. /dev/sda)
 
 Then boot that image in your raspberrypi.
 Trigger one-time self-setup by logging in locally or remotely:
