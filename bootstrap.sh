@@ -376,7 +376,7 @@ function run_on_first_boot() {
 if [ -e "$(dirname "$0")/bootstrap.cfg" ] ; then . "$(dirname "$0")/bootstrap.cfg" ; fi
 
 # parse cmdline options
-parse_cmdline_args
+parse_cmdline_args "$@"
 
 # say hello
 banner
