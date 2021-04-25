@@ -68,7 +68,8 @@ function parse_cmdline_args() {
                 local f
                 for f in "${RPI_PLUGINDIR}"/* ; do
                     # plugin name from path
-                    local p="$(basename "${f}")"
+                    local p
+                    p="$(basename "${f}")"
                     # load this plugin
                     load_plugin "${p}"
                     # general description
@@ -181,7 +182,8 @@ function loopback_setup() {
     # argument valid?
     [ -f "$1" ] || error "$1 not found"
     # already attached?
-    local device="$(sudo losetup -l | grep "$(basename "$1")" | cut -d " " -f1)"
+    local device
+    device="$(sudo losetup -l | grep "$(basename "$1")" | cut -d " " -f1)"
     if [ -z "${device}" ] ; then
         # attach image
         device="$(sudo losetup --show --find --partscan "${1}")" || error losetup

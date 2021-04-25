@@ -19,7 +19,8 @@ function rpi_download_raspbian_run() {
 
     # already downloaded?
     if ! [ -f "${dest}" ] ; then
-      local tmpfile="$(TMPDIR=${RPI_TMPDIR} mktemp || error mktemp)"
+      local tmpfile
+      tmpfile="$(TMPDIR=${RPI_TMPDIR} mktemp || error mktemp)"
       # download
       download_file "${RPI_DOWNLOAD_RASPBIAN_URL}" "${tmpfile}"
       # unzip
