@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # bootstrap ssh access and key for pi user
 
