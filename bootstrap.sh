@@ -76,9 +76,9 @@ function download_file() {
     # got URL?
     if echo "${url}" | grep --quiet -E '^(https|http|ftp):/.+$'; then
         # download image
-        if which wget >/dev/null 2>&1 ; then
+        if command -v wget >/dev/null 2>&1 ; then
             wget --show-progress --quiet --output-document "${dstfile}" "${url}" || error "wget"
-        elif which curl >/dev/null 2>&1 ; then
+        elif command -v curl >/dev/null 2>&1 ; then
             curl --output "${dstfile}" "${url}" || error "curl"
         else
             error "no wget or curl found. $url fetch"
