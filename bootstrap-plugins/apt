@@ -22,10 +22,10 @@ rpi_apt_run() {
     for cmd in "${RPI_APT_CMDS[@]}" ; do
         # run in interactive mode?
         if [ "${RPI_APT_INTERACTIVE}" == "true" ] ; then
-            $runner "sudo apt ${cmd}" || error "apt"
+            "${runner}" "sudo apt ${cmd}" || error "apt"
         # run in non-interactive mode
         else
-            $runner "sudo DEBIAN_FRONTEND=noninteractive apt --yes --quiet ${cmd}" || error "install apt update"
+            "${runner}" "sudo DEBIAN_FRONTEND=noninteractive apt --yes --quiet ${cmd}" || error "install apt update"
         fi
     done
 }

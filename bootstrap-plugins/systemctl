@@ -19,6 +19,6 @@ function rpi_systemctl_run() {
     fi
 
     for cmd in "${RPI_SYSTEMCTL_CMDS[@]}" ; do
-        $runner "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
+        "${runner}" "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
     done
 }
