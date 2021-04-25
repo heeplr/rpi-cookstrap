@@ -283,7 +283,7 @@ function run_on_first_boot() {
 # ---------------------------------------------------------------------
 
 # load config
-if [ -e "$(dirname $0)/bootstrap.cfg" ] ; then . "$(dirname $0)/bootstrap.cfg" ; fi
+if [ -e "$(dirname "$0")/bootstrap.cfg" ] ; then . "$(dirname "$0")/bootstrap.cfg" ; fi
 
 # parse cmdline options
 while getopts "hl" arg ; do
