@@ -81,7 +81,7 @@ function download_file() {
         elif command -v curl >/dev/null 2>&1 ; then
             curl --output "${dstfile}" "${url}" || error "curl"
         else
-            error "no wget or curl found. $url fetch"
+            error "no wget or curl found. ${url} fetch"
         fi
     # treat url as path
     else
@@ -115,7 +115,7 @@ function mount_image() {
 
     echo "mounting image..."
     # already mounted?
-    if mount | grep --quiet "$device"; then
+    if mount | grep --quiet "${device}"; then
         return 0
     fi
     # wait for sync
@@ -296,15 +296,15 @@ while getopts "hl" arg ; do
             echo -e "Plugins:\n"
             for f in "${RPI_PLUGINDIR}"/* ; do
                 # plugin name from path
-                p="$(basename "$f")"
+                p="$(basename "${f}")"
                 # load this plugin
-                load_plugin "$p"
+                load_plugin "${p}"
                 # general description
                 if check_for_plugin_function "rpi_${p}_description" ; then
-                    echo -n "\"$p\" - "
+                    echo -n "\"${p}\" - "
                     "rpi_${p}_description"
                 else
-                    echo "\"$p\""
+                    echo "\"${p}\""
                 fi
                 # config var description
                 if check_for_plugin_function "rpi_${p}_help_vars" ; then
@@ -342,9 +342,9 @@ fi
 # load plugins
 for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
     # file existing?
-    [ -f "${RPI_PLUGINDIR}/$p" ] || error "plugin \"${RPI_PLUGINDIR}/$p\" not found."
+    [ -f "${RPI_PLUGINDIR}/${p}" ] || error "plugin \"${RPI_PLUGINDIR}/${p}\" not found."
     # load plugin
-    load_plugin "$p" || error "plugin load $p"
+    load_plugin "${p}" || error "plugin load ${p}"
     # preflight check
     "rpi_${p}_prerun" || error "preflight check for plugin \"${p}\""
 done
@@ -359,7 +359,7 @@ if ! [ -d "${RPI_WORKDIR}" ]  ; then mkdir -p "${RPI_WORKDIR}" ; fi
 # run plugins
 for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
   echo "running plugin: ${p}"
-  "rpi_${p}_run" || error "plugin \"$p\""
+  "rpi_${p}_run" || error "plugin \"${p}\""
 done
 
 # cleanup
@@ -367,7 +367,7 @@ if [ "${dont_cleanup}" != "true" ] ; then
     # run postrun
     for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
         if check_for_plugin_function "rpi_${p}_postrun" ; then
-            "rpi_${p}_postrun" || error "postrun \"$p\""
+            "rpi_${p}_postrun" || error "postrun \"${p}\""
         fi
     done
 else
