@@ -74,7 +74,7 @@ function download_file() {
     if [ -z "${url}" ] || [ -z "${dstfile}" ] ; then error "missing parameters. download_file" ; fi
 
     # got URL?
-    if [ -n "$(echo "${url}" | grep -E '^(https|http|ftp):/.+$')" ] ; then
+    if echo "${url}" | grep --quiet -E '^(https|http|ftp):/.+$'; then
         # download image
         if which wget >/dev/null 2>&1 ; then
             wget --show-progress --quiet --output-document "${dstfile}" "${url}" || error "wget"
@@ -116,7 +116,7 @@ function mount_image() {
 
     echo "mounting image..."
     # already mounted?
-    if [ -n "$(mount | grep "$device")" ] ; then
+    if mount | grep --quiet "$device"; then
         return 0
     fi
     # wait for sync
@@ -149,7 +149,7 @@ function umount_image() {
 function append_file_to_file() {
     if [ -z "$1" ] || [ -z "$2" ] ; then error "missing argument. append" ; fi
     # already appended ?
-    [ -f "$1" ] && [ -f "$2" ] && [ -n "$(grep --fixed-strings --file="$1" "$2")" ] && return 0
+    [ -f "$1" ] && [ -f "$2" ] && grep --quiet --fixed-strings --file="$1" "$2" && return 0
     # append
     sudo tee -a "$2" < "$1" >/dev/null || error "sudo_append $1 $2"
 }
