@@ -365,9 +365,12 @@ done
 
 # cleanup
 if [ "${dont_cleanup}" != "true" ] ; then
-    echo "cleaning up..."
-    umount_image
-    loopback_cleanup "${dev}"
+    # run postrun
+    for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
+        if check_for_plugin_function "rpi_${p}_postrun" ; then
+            "rpi_${p}_postrun" || error "postrun \"$p\""
+        fi
+    done
 else
     echo -e "\nNOT CLEANING UP! Don't forget to umount & losetup -d"
 fi

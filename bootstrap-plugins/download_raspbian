@@ -38,3 +38,10 @@ function rpi_download_raspbian_run() {
     # set image filename globally
     RPI_IMG_NAME="${dest}"
 }
+
+function rpi_download_raspbian_postrun() {
+    echo "cleaning up..."
+    umount_image
+    loopback_cleanup "${dev}"
+}
+
