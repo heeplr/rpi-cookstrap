@@ -80,7 +80,8 @@ It would just download the default latest raspbian-lite and extract the image.
 Some standard variables are:
 * **RPI_PLUGINDIR** - where plugins are located (default: *./bootstrap-plugins*)
 * **RPI_DISTDIR** - s. [dist dir](#dist-dir) (default: ./bootstrap_dist)
-* **RPI_WORKDIR** - temporary work dir. can be removed at any time to start from scratch (default: *./.bootstrap-work*)
+* **RPI_WORKDIR** - work dir. can be removed at any time to start from scratch (default: *./.bootstrap-work*)
+* **RPI_TMPDIR** - temporary dir (default: */tmp*)
 * **RPI_ROOT** - mountpoint for root partition (default: *./.bootstrap-work/root*)
 * **RPI_BOOT** - mountpoint for boot partition (default: *./.bootstrap-work/boot*)
 * **RPI_HOSTNAME** - hostname (default: unnamed)
