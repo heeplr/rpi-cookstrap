@@ -33,6 +33,8 @@ the disk image.
 
 ### bootstrapping an image
 
+bootstrap.sh will download the latest OS release, mount it via loopback and modifies it. It will change/copy files and add commands to run upon first boot or first login of the pi user (default). The one-time script will delete itself after successful execution leaving you with a clean, pre-configured image.
+
 ```
 $ cd examples/wifi+ssh
 $ ./bootstrap.sh
