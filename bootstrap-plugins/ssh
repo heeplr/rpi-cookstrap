@@ -31,7 +31,7 @@ function rpi_ssh_run() {
 
     # generate ssh key?
     if [ -n "${RPI_SSH_KEYGEN}" ] ; then
-        keyname="${RPI_ROOT}/home/pi/.ssh/id_${RPI_SSH_KEY_TYPE}"
+        local keyname="${RPI_ROOT}/home/pi/.ssh/id_${RPI_SSH_KEY_TYPE}"
         if ! [ -f "${keyname}" ] ; then
             # create key
             sudo ssh-keygen \
@@ -46,6 +46,7 @@ function rpi_ssh_run() {
 
     # authorize configured keys?
     if [ -n "${RPI_SSH_AUTHORIZE}" ] ; then
+        local key
         for key in "${RPI_SSH_AUTHORIZE[@]}" ; do
             append_to_file "${key}" "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "append"
         done

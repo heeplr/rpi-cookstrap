@@ -13,12 +13,14 @@ rpi_apt_prerun() {
 
 rpi_apt_run() {
     # choose runner
+    local runner
     if [ "${RPI_APT_RUN_ON_BOOT}" == "true" ] ; then
         runner="run_on_first_boot"
     else
         runner="run_on_first_login"
     fi
 
+    local cmd
     for cmd in "${RPI_APT_CMDS[@]}" ; do
         # run in interactive mode?
         if [ "${RPI_APT_INTERACTIVE}" == "true" ] ; then

@@ -36,7 +36,8 @@ function error() {
 
 # print help msg
 function help_for_vars() {
-    vars="$1"
+    local vars="$1"
+    local v
     for v in "${vars[@]}" ; do
         IFS="|" read -r name description default <<< "${v}"
         printf "%30s - %s (default: \"%s\")\n" "${name}" "${description}" "${default}"
@@ -45,9 +46,62 @@ function help_for_vars() {
 
 # print help msg
 function help_for_distfiles() {
-    files="$1"
+    local files="$1"
+    local f
     for f in "${files[@]}" ; do
         printf "%40s\n" "${f}"
+    done
+}
+
+# parse commandline arguments
+function parse_cmdline_args() {
+    local arg
+    while getopts "hl" arg ; do
+        case "${arg}" in
+            "h")
+                # print main help
+                echo -e "Usage: $0 [-h] [-l]\n" \
+                        "-h    print help text\n" \
+                        "-l    leave loopback mounted, don't clean up\n"
+                # print plugin help
+                echo -e "Plugins:\n"
+                local f
+                for f in "${RPI_PLUGINDIR}"/* ; do
+                    # plugin name from path
+                    local p="$(basename "${f}")"
+                    # load this plugin
+                    load_plugin "${p}"
+                    # general description
+                    if check_for_plugin_function "rpi_${p}_description" ; then
+                        echo -n "\"${p}\" - "
+                        "rpi_${p}_description"
+                    else
+                        echo "\"${p}\""
+                    fi
+                    # config var description
+                    if check_for_plugin_function "rpi_${p}_help_vars" ; then
+                        "rpi_${p}_help_vars"
+                        echo
+                    fi
+                    # distfile description
+                    if check_for_plugin_function "rpi_${p}_help_distfiles" ; then
+                        echo " distfiles:"
+                        "rpi_${p}_help_distfiles"
+                        echo
+                    fi
+                done
+                exit 1
+                ;;
+
+            "l")
+                RPI_DONT_CLEANUP=true
+                ;;
+
+            *)
+                echo "Usage: $0 [-h] [-l]"
+                exit 1
+                ;;
+        esac
     done
 }
 
@@ -68,10 +122,42 @@ function load_plugin() {
     check_for_plugin_function "rpi_$1_prerun" || ( warn "plugin \"$1\" needs a \"rpi_$1_prerun\" function." ; return 1 )
 }
 
+# load all plugins
+function load_all_plugins() {
+    local p
+    for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
+        # file existing?
+        [ -f "${RPI_PLUGINDIR}/${p}" ] || error "plugin \"${RPI_PLUGINDIR}/${p}\" not found."
+        # load plugin
+        load_plugin "${p}" || error "plugin load ${p}"
+        # preflight check
+        "rpi_${p}_prerun" || error "preflight check for plugin \"${p}\""
+    done
+}
+
+# run all plugins
+function run_all_plugins() {
+    local p
+    for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
+        echo "running plugin: ${p}"
+        "rpi_${p}_run" || error "plugin \"${p}\""
+    done
+}
+
+# run rpi_*_postrun() if existing
+function postrun_all_plugins() {
+    local p
+    for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
+        if check_for_plugin_function "rpi_${p}_postrun" ; then
+            "rpi_${p}_postrun" || error "postrun \"${p}\""
+        fi
+    done
+}
+
 # download a file from the internet
 function download_file() {
-    url="$1"
-    dstfile="$2"
+    local url="$1"
+    local dstfile="$2"
     if [ -z "${url}" ] || [ -z "${dstfile}" ] ; then error "missing parameters. download_file" ; fi
 
     # got URL?
@@ -95,7 +181,7 @@ function loopback_setup() {
     # argument valid?
     [ -f "$1" ] || error "$1 not found"
     # already attached?
-    device="$(sudo losetup -l | grep "$(basename "$1")" | cut -d " " -f1)"
+    local device="$(sudo losetup -l | grep "$(basename "$1")" | cut -d " " -f1)"
     if [ -z "${device}" ] ; then
         # attach image
         device="$(sudo losetup --show --find --partscan "${1}")" || error losetup
@@ -112,7 +198,7 @@ function loopback_cleanup() {
 
 # mount raspberry image
 function mount_image() {
-    device="$1"
+    local device="$1"
 
     echo "mounting image..."
     # already mounted?
@@ -175,7 +261,8 @@ function append_stdin() {
 # remove string from file (remove line where pattern matches)
 function remove_line_from_file() {
     { [ -n "$1" ] && [ -n "$2" ]; } || error "missing arguments. remove line"
-    patterns="$1"
+    local patterns="$1"
+    local pattern
     for pattern in "${patterns[@]}" ; do
         sudo sed "/${pattern}/d" -i "$2" || error "remove_line ${pattern} $2"
     done
@@ -184,7 +271,8 @@ function remove_line_from_file() {
 # replace string in file (sed pattern)
 function replace_string_in_file() {
     { [ -n "$1" ] && [ -n "$2" ]; } || error "missing arguments. replace line"
-    patterns="$1"
+    local patterns="$1"
+    local pattern
     for pattern in "${patterns[@]}" ; do
         sudo sed -E "s/${pattern}/g" -i "$2" || error "replace_string ${pattern} $2"
     done
@@ -243,7 +331,7 @@ function chmod_pi() {
 # run command once upon first login
 function run_on_first_login() {
     [ -n "$1" ] || error "missing argument"
-    once_script="/home/pi/.bootstrap_run_on_first_login"
+    local once_script="/home/pi/.bootstrap_run_on_first_login"
     # prepare script
     if ! [ -f "${RPI_ROOT}/${once_script}" ] ; then
         # call script from .bashrc
@@ -262,7 +350,7 @@ function run_on_first_login() {
 # run command once upon first boot
 function run_on_first_boot() {
     [ -n "$1" ] || error "missing argument"
-    once_script="/home/pi/.bootstrap_run_on_first_boot"
+    local once_script="/home/pi/.bootstrap_run_on_first_boot"
     # prepare script
     if ! [ -f "${RPI_ROOT}/${once_script}" ] ; then
         # call script from /etc/rc.local
@@ -286,52 +374,7 @@ function run_on_first_boot() {
 if [ -e "$(dirname "$0")/bootstrap.cfg" ] ; then . "$(dirname "$0")/bootstrap.cfg" ; fi
 
 # parse cmdline options
-while getopts "hl" arg ; do
-    case "${arg}" in
-        "h")
-            # print main help
-            echo -e "Usage: $0 [-h] [-l]\n" \
-                    "-h    print help text\n" \
-                    "-l    leave loopback mounted, don't clean up\n"
-            # print plugin help
-            echo -e "Plugins:\n"
-            for f in "${RPI_PLUGINDIR}"/* ; do
-                # plugin name from path
-                p="$(basename "${f}")"
-                # load this plugin
-                load_plugin "${p}"
-                # general description
-                if check_for_plugin_function "rpi_${p}_description" ; then
-                    echo -n "\"${p}\" - "
-                    "rpi_${p}_description"
-                else
-                    echo "\"${p}\""
-                fi
-                # config var description
-                if check_for_plugin_function "rpi_${p}_help_vars" ; then
-                    "rpi_${p}_help_vars"
-                    echo
-                fi
-                # distfile description
-                if check_for_plugin_function "rpi_${p}_help_distfiles" ; then
-                    echo " distfiles:"
-                    "rpi_${p}_help_distfiles"
-                    echo
-                fi
-            done
-            exit 1
-            ;;
-
-        "l")
-            dont_cleanup=true
-            ;;
-
-        *)
-            echo "Usage: $0 [-h] [-l]"
-            exit 1
-            ;;
-    esac
-done
+parse_cmdline_args
 
 # say hello
 banner
@@ -341,14 +384,7 @@ if [ "${#RPI_BOOTSTRAP_PLUGINS[@]}" == "0" ] ; then
     error "no plugins configured. set RPI_BOOTSTRAP_PLUGINS"
 fi
 # load plugins
-for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
-    # file existing?
-    [ -f "${RPI_PLUGINDIR}/${p}" ] || error "plugin \"${RPI_PLUGINDIR}/${p}\" not found."
-    # load plugin
-    load_plugin "${p}" || error "plugin load ${p}"
-    # preflight check
-    "rpi_${p}_prerun" || error "preflight check for plugin \"${p}\""
-done
+load_all_plugins
 
 # create root mountpoint
 if ! [ -d "${RPI_ROOT}" ]  ; then mkdir -p "${RPI_ROOT}" ; fi
@@ -358,19 +394,12 @@ if ! [ -d "${RPI_BOOT}" ]  ; then mkdir -p "${RPI_BOOT}" ; fi
 if ! [ -d "${RPI_WORKDIR}" ]  ; then mkdir -p "${RPI_WORKDIR}" ; fi
 
 # run plugins
-for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
-  echo "running plugin: ${p}"
-  "rpi_${p}_run" || error "plugin \"${p}\""
-done
+run_all_plugins
 
 # cleanup
-if [ "${dont_cleanup}" != "true" ] ; then
+if [ "${RPI_DONT_CLEANUP}" != "true" ] ; then
     # run postrun
-    for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
-        if check_for_plugin_function "rpi_${p}_postrun" ; then
-            "rpi_${p}_postrun" || error "postrun \"${p}\""
-        fi
-    done
+    postrun_all_plugins
 else
     echo -e "\nNOT CLEANING UP! Don't forget to umount & losetup -d"
 fi

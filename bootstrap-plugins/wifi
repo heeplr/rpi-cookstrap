@@ -11,7 +11,7 @@ function rpi_wifi_run() {
     if [ -n "${RPI_WIFI_SSID}" ] && [ -n "${RPI_WIFI_PSK}" ] ; then
         echo " creating /etc/wpa_supplicant.conf"
         # optionally set country
-        country="#country=\"${RPI_WIFI_COUNTRY}\""
+        local country="#country=\"${RPI_WIFI_COUNTRY}\""
         [ -n "${RPI_WIFI_COUNTRY}" ] && country="country=\"${RPI_WIFI_COUNTRY}\""
         append_stdin "${RPI_ROOT}/etc/wpa_supplicant/wpa_supplicant.conf" << EOF
 ${country}
@@ -38,7 +38,7 @@ function rpi_wifi_description() {
 }
 
 function rpi_wifi_help_vars() {
-    vars=( \
+    local vars=( \
         "RPI_WIFI_SSID|SSID of network|${RPI_WIFI_SSID}" \
         "RPI_WIFI_PSK|network password|${RPI_WIFI_PSK}" \
         "RPI_WIFI_COUNTRY|wifi country standard. optional.|${RPI_WIFI_COUNTRY}" \

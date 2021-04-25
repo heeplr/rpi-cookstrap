@@ -8,6 +8,7 @@ function rpi_config_prerun() {
 }
 
 function rpi_config_run() {
+    local c
     for c in "${RPI_CONFIG_ADD[@]}" ; do
         echo " setting ${c} ..."
         append_to_file "${c}" "${RPI_BOOT}/config.txt" || error "adding ${c}"
@@ -28,7 +29,7 @@ function rpi_config_description() {
 }
 
 function rpi_config_help_vars() {
-    vars=( \
+    local vars=( \
         "RPI_CONFIG_ADD|\"key=value\" pairs to append to config.txt|${RPI_CONFIG_ADD}" \
         "RPI_CONFIG_REMOVE|\"key=value\" pairs to delete from config.txt|${RPI_CONFIG_REMOVE}" \
     )

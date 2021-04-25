@@ -12,6 +12,7 @@ function rpi_systemctl_prerun() {
 
 function rpi_systemctl_run() {
     # choose runner
+    local runner
     if [ "${RPI_SYSTEMCTL_RUN_ON_BOOT}" == "true" ] ; then
         runner="run_on_first_boot"
     else

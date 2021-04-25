@@ -2,19 +2,6 @@
 
 # reduce power usage in default configuration
 
-disable_services=( \
-    "avahi-daemon" \
-    "triggerhappy" \
-    "bluetooth" \
-    "hciuart" \
-    "bluetooth.target" \
-    "dbus" \
-    "keyboard-setup" \
-    "cryptsetup.target" \
-    "nfs-client.target" \
-    "apt-daily-upgrade.timer" \
-    "apt-daily.timer" \
-    "man-db.timer")
 
 # ---------------------------------------------------------------------
 function rpi_powersave_prerun() {
@@ -23,6 +10,20 @@ function rpi_powersave_prerun() {
 }
 
 function rpi_powersave_run() {
+    local disable_services=( \
+        "avahi-daemon" \
+        "triggerhappy" \
+        "bluetooth" \
+        "hciuart" \
+        "bluetooth.target" \
+        "dbus" \
+        "keyboard-setup" \
+        "cryptsetup.target" \
+        "nfs-client.target" \
+        "apt-daily-upgrade.timer" \
+        "apt-daily.timer" \
+        "man-db.timer" \
+    )
     # prefix disable_services with "disable "
     RPI_SYSTEMCTL_CMDS=("${disable_services[@]/#/disable }")
     rpi_systemctl_run || error "systemctl disable"
