@@ -29,7 +29,7 @@ function warn() {
 
 # print error msg
 function error() {
-    echo "error: $@ failed." >&2
+    echo "error: $* failed." >&2
     exit 1
 }
 
@@ -253,10 +253,10 @@ function run_on_first_login() {
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
     fi
     # append to script
-    append_to_file "echo 'executing: $@'" "${RPI_ROOT}/${once_script}"
-    append_to_file "$@ || exit 1"         "${RPI_ROOT}/${once_script}"
+    append_to_file "echo 'executing: $*'" "${RPI_ROOT}/${once_script}"
+    append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
-    echo " run (login) cmd installed: \"$@\""
+    echo " run (login) cmd installed: \"$*\""
 }
 
 # run command once upon first boot
@@ -273,10 +273,10 @@ function run_on_first_boot() {
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
     fi
     # append to script
-    append_to_file "echo 'executing: $@'" "${RPI_ROOT}/${once_script}"
-    append_to_file "$@ || exit 1"         "${RPI_ROOT}/${once_script}"
+    append_to_file "echo 'executing: $*'" "${RPI_ROOT}/${once_script}"
+    append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
-    echo " run (boot) cmd installed: \"$@\""
+    echo " run (boot) cmd installed: \"$*\""
 }
 
 # ---------------------------------------------------------------------
