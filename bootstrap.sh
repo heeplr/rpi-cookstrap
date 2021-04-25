@@ -255,7 +255,7 @@ function append_file_to_file() {
 function append_to_file() {
     if [ -z "$1" ] || [ -z "$2" ] ; then error "missing argument. append" ; fi
     # already appended ?
-    [ -f "$2" ] && [ -n "$(sudo grep "$1" "$2")" ] && return 0
+    [ -f "$2" ] && sudo grep --fixed-strings --quiet "$1" "$2" && return 0
     # append
     sudo touch "$2"
     printf "$1" | sudo tee -a "$2" >/dev/null || error "sudo_append $1 $2"
