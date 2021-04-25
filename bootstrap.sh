@@ -167,7 +167,7 @@ function append_to_file() {
 # append input from stdin to file
 function append_stdin() {
     [ -n "$1" ] || error "missing argument. append_stdin"
-    while read appendix ; do
+    while read -r appendix ; do
         append_to_file "${appendix}" "$1"
     done
 }
