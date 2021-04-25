@@ -40,3 +40,7 @@ function rpi_powersave_run() {
     )
     rpi_config_run || error "config.txt modification"
 }
+
+function rpi_powersave_description() {
+    echo "configure image for optimized power usage"
+}

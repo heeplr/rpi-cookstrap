@@ -2,6 +2,9 @@
 
 # transfer files from dist directory to the disk image
 
+RPI_DIST_COPY="${RPI_DIST_COPY:=}"
+RPI_DIST_APPEND="${RPI_DIST_APPEND:=}"
+
 
 function rpi_dist_prerun() {
     true
@@ -17,4 +20,16 @@ function rpi_dist_run() {
         echo " appending ${f} ..."
         append_file_to_file "${f}" "${RPI_ROOT}/${f}" || error "append ${f}"
     done
+}
+
+function rpi_dist_description() {
+    echo "transfer files from dist directory to disk image"
+}
+
+function rpi_dist_help_vars() {
+    local vars=(
+        "RPI_DIST_COPY|array of files to copy to disk image|${RPI_DIST_COPY}"
+        "RPI_DIST_APPEND|array of files to append to files on disk image|${RPI_DIST_APPEND}"
+    )
+    help_for_vars "${vars[@]}"
 }

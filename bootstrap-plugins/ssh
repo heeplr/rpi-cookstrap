@@ -6,7 +6,7 @@
 RPI_SSH_KEY_TYPE="${RPI_SSH_KEY_TYPE:=ed25519}"
 RPI_SSH_KEY_ROUNDS="${RPI_SSH_KEY_ROUNDS:=100}"
 RPI_SSH_KEYGEN="${RPI_SSH_KEYGEN:=""}"
-RPI_SSH_AUTHORIZE="${RPI_SSH_AUTHORIZE:=()}"
+RPI_SSH_AUTHORIZE="${RPI_SSH_AUTHORIZE:=}"
 
 function rpi_ssh_prerun() {
     true
@@ -55,4 +55,28 @@ function rpi_ssh_run() {
     # permissions
     chmod_pi 0600 "/home/pi/.ssh" -R || error "chmod"
     chown_pi "/home/pi/.ssh" -R || error "chown"
+}
+
+function rpi_ssh_description() {
+    echo "configure ssh"
+}
+
+function rpi_ssh_help_vars() {
+    local vars=(
+        "RPI_SSH_KEY_TYPE|key type to generate|${RPI_SSH_KEY_TYPE}"
+        "RPI_SSH_KEY_ROUNDS|KDF rounds for generated key|${RPI_SSH_KEY_ROUNDS}"
+        "RPI_SSH_KEYGEN|generate a key for pi user|${RPI_SSH_KEYGEN}"
+        "RPI_SSH_AUTHORIZE|array of public keys to add to authorized_keys|${RPI_SSH_AUTHORIZE}"
+    )
+    help_for_vars "${vars[@]}"
+}
+
+function rpi_ssh_help_distfiles() {
+    local distfiles=(
+        "/etc/ssh/sshd_config"
+        "/home/pi/.ssh/authorized_keys"
+        "/home/pi/.ssh/config"
+        "/home/pi/.ssh/known_hosts"
+    )
+    help_for_distfiles "${distfiles[@]}"
 }

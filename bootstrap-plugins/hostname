@@ -2,6 +2,8 @@
 
 # bootstrap hostname of rpi image
 
+RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
+
 
 function rpi_hostname_prerun() {
     if [ -z "${RPI_HOSTNAME}" ] ; then
@@ -33,4 +35,23 @@ function rpi_hostname_run() {
         sudo sed "s|raspberrypi|${RPI_HOSTNAME}|g" -i "${RPI_ROOT}/etc/hosts"
     fi
     return 0
+}
+
+function rpi_hostname_description() {
+    echo "configure hostname"
+}
+
+function rpi_hostname_help_vars() {
+    local vars=(
+        "RPI_HOSTNAME|hostname to set|${RPI_HOSTNAME}"
+    )
+    help_for_vars "${vars[@]}"
+}
+
+function rpi_hostname_help_distfiles() {
+    local distfiles=(
+        "/etc/hostname"
+        "/etc/hosts"
+    )
+    help_for_distfiles "${distfiles[@]}"
 }

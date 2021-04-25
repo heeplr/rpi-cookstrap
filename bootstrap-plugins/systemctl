@@ -23,3 +23,15 @@ function rpi_systemctl_run() {
         "${runner}" "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
     done
 }
+
+function rpi_systemctl_description() {
+    echo "run systemctl commands once"
+}
+
+function rpi_systemctl_help_vars() {
+    local vars=(
+        "RPI_SYSTEMCTL_CMDS|array of systemctl commands|${RPI_SYSTEMCTL_CMDS}"
+        "RPI_SYSTEMCTL_RUN_ON_BOOT|run on first boot instead first login|${RPI_SYSTEMCTL_RUN_ON_BOOT}"
+    )
+    help_for_vars "${vars[@]}"
+}
