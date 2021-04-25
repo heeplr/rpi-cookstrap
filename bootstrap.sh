@@ -272,21 +272,13 @@ function append_stdin() {
 # remove string from file (remove line where pattern matches)
 function remove_line_from_file() {
     { [ -n "$1" ] && [ -n "$2" ]; } || error "missing arguments. remove line"
-    local patterns="$1"
-    local pattern
-    for pattern in "${patterns[@]}" ; do
-        sudo sed "/${pattern}/d" -i "$2" || error "remove_line ${pattern} $2"
-    done
+    sudo sed "/$1/d" -i "$2" || error "remove_line $1 $2"
 }
 
 # replace string in file (sed pattern)
 function replace_string_in_file() {
     { [ -n "$1" ] && [ -n "$2" ]; } || error "missing arguments. replace line"
-    local patterns="$1"
-    local pattern
-    for pattern in "${patterns[@]}" ; do
-        sudo sed -E "s/${pattern}/g" -i "$2" || error "replace_string ${pattern} $2"
-    done
+    sudo sed -E "s/$1/g" -i "$2" || error "replace_string $1 $2"
 }
 
 # check if dist file exists
