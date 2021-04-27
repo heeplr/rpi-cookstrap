@@ -373,7 +373,7 @@ function run_on_first_login() {
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
     fi
     # append to script
-    append_to_file "echo 'executing: $*'" "${RPI_ROOT}/${once_script}"
+    append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
     append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
     echo " run (login) cmd installed: \"$*\""
@@ -401,7 +401,7 @@ function run_on_first_boot() {
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
     fi
     # append to script
-    append_to_file "echo 'executing: $*'" "${RPI_ROOT}/${once_script}"
+    append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
     append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
     echo " run (boot) cmd installed: \"$*\""
