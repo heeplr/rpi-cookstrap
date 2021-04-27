@@ -43,12 +43,12 @@ $ ./bootstrap.sh
  ----------------------------------------
 running plugin: download_raspbian
 downloading https://downloads.raspberrypi.org/raspbian_lite_latest ...
-/tmp/tmp.nyYe5qv7xp                                  100%[=====================================================================================================================>] 433,01M  10,7MB/s    in 44s     
+/tmp/tmp.nyYe5qv7xp                                  100%[=====================================================================================================================>] 433,01M  10,7MB/s    in 44s
 unzipping "/tmp/tmp.nyYe5qv7xp"
 Archive:  /tmp/tmp.nyYe5qv7xp
-  inflating: 2020-02-13-raspbian-buster-lite.img  
+  inflating: 2020-02-13-raspbian-buster-lite.img
 setting up loopback for .bootstrap-work/raspbian-lite.img
-Password: 
+Password:
 using "/dev/loop0"
 mounting image...
 running plugin: hostname
@@ -65,7 +65,7 @@ cleaning up...
 Image creation successful. Copy ".bootstrap-work/raspbian-lite.img" to an SD card.
 (e.g. dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard bs=32M status=progress )
 
-$ dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard
+$ dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard bs=4M conv=fsync status=progress
 $ eject /dev/sdcard
 ```
 with /dev/sdcard being your sdcard, (e.g. /dev/sda)
