@@ -137,7 +137,7 @@ function load_all_plugins() {
     local p
     for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
         # file existing?
-        [ -f "${RPI_PLUGINDIR}/${p}" ] || error "plugin \"${RPI_PLUGINDIR}/${p}\" not found."
+        [[ -f "${RPI_PLUGINDIR}/${p}" ]] || error "plugin \"${RPI_PLUGINDIR}/${p}\" not found."
         # load plugin
         load_plugin "${p}" || error "plugin load ${p}"
         # preflight check
@@ -168,7 +168,7 @@ function postrun_all_plugins() {
 function download_file() {
     local url="$1"
     local dstfile="$2"
-    if [ -z "${url}" ] || [ -z "${dstfile}" ] ; then error "missing parameters. download_file" ; fi
+    if [[ -z "${url}" ]] || [[ -z "${dstfile}" ]] ; then error "missing parameters. download_file" ; fi
 
     # got URL?
     if echo "${url}" | grep --quiet -E '^(https|http|ftp):/.+$'; then
@@ -189,11 +189,11 @@ function download_file() {
 # setup loopback device to mount image
 function loopback_setup() {
     # argument valid?
-    [ -f "$1" ] || error "$1 not found"
+    [[ -f "$1" ]] || error "$1 not found"
     # already attached?
     local device
     device="$(sudo losetup -l | grep "$(basename "$1")" | cut -d " " -f1)"
-    if [ -z "${device}" ] ; then
+    if [[ -z "${device}" ]] ; then
         # attach image
         device="$(sudo losetup --show --find --partscan "${1}")" || error losetup
     fi
@@ -244,18 +244,18 @@ function umount_image() {
 # ---------------------------------------------------------------------
 # append file to file
 function append_file_to_file() {
-    if [ -z "$1" ] || [ -z "$2" ] ; then error "missing argument. append" ; fi
+    if [[ -z "$1" ]] || [[ -z "$2" ]] ; then error "missing argument. append" ; fi
     # already appended ?
-    [ -f "$1" ] && [ -f "$2" ] && grep --quiet --fixed-strings --file="$1" "$2" && return 0
+    [[ -f "$1" ]] && [[ -f "$2" ]] && grep --quiet --fixed-strings --file="$1" "$2" && return 0
     # append
     sudo tee -a "$2" < "$1" >/dev/null || error "sudo_append $1 $2"
 }
 
 # append string to file
 function append_to_file() {
-    if [ -z "$1" ] || [ -z "$2" ] ; then error "missing argument. append" ; fi
+    if [[ -z "$1" ]] || [[ -z "$2" ]] ; then error "missing argument. append" ; fi
     # already appended ?
-    [ -f "$2" ] && sudo grep --fixed-strings --quiet "$1" "$2" && return 0
+    [[ -f "$2" ]] && sudo grep --fixed-strings --quiet "$1" "$2" && return 0
     # append
     sudo touch "$2"
     printf "%s\n" "$1" | sudo tee -a "$2" >/dev/null || error "sudo_append $1 $2"
@@ -263,7 +263,7 @@ function append_to_file() {
 
 # append input from stdin to file
 function append_stdin() {
-    [ -n "$1" ] || error "missing argument. append_stdin"
+    [[ -n "$1" ]] || error "missing argument. append_stdin"
     while read -r appendix ; do
         append_to_file "${appendix}" "$1"
     done
@@ -271,34 +271,34 @@ function append_stdin() {
 
 # remove string from file (remove line where pattern matches)
 function remove_line_from_file() {
-    { [ -n "$1" ] && [ -n "$2" ]; } || error "missing arguments. remove line"
+    { [[ -n "$1" ]] && [[ -n "$2" ]]; } || error "missing arguments. remove line"
     sudo sed "/$1/d" -i "$2" || error "remove_line $1 $2"
 }
 
 # replace string in file (sed pattern)
 function replace_string_in_file() {
-    { [ -n "$1" ] && [ -n "$2" ]; } || error "missing arguments. replace line"
+    { [[ -n "$1" ]] && [[ -n "$2" ]]; } || error "missing arguments. replace line"
     sudo sed -E "s/$1/g" -i "$2" || error "replace_string $1 $2"
 }
 
 # check if dist file exists
 function dist_exist() {
-    [ -e "${RPI_DISTDIR}/$1" ] || return 1
+    [[ -e "${RPI_DISTDIR}/$1" ]] || return 1
     return 0
 }
 
 # copy from dist directory to root directory
 function cp_from_dist() {
-    [ -n "$1" ] || error "missing parameter. cp_to_dist"
+    [[ -n "$1" ]] || error "missing parameter. cp_to_dist"
     echo " copying $1 ..."
     # directory?
-    if [ -d "$1" ] ; then
+    if [[ -d "$1" ]] ; then
         sudo cp -r "${RPI_DISTDIR}/$1/"* "${RPI_ROOT}/$(dirname "$1")" || error "cp -r $1/* to ${RPI_ROOT}/$(dirname "$1")"
     else
         sudo cp "${RPI_DISTDIR}/$1" "${RPI_ROOT}/$(dirname "$1")" || error "cp $1 to ${RPI_ROOT}/$(dirname "$1")"
     fi
     # chmod?
-    [ -n "$2" ] && chmod_pi "$2" "$1"
+    [[ -n "$2" ]] && chmod_pi "$2" "$1"
 }
 
 # copy if srcfile exists
@@ -312,8 +312,8 @@ function cp_from_dist_if_exist() {
 
 # chown for pi user
 function chown_pi() {
-    [ -n "$1" ] || error "missing argument"
-    if [ "$2" == "-R" ] ; then
+    [[ -n "$1" ]] || error "missing argument"
+    if [[ "$2" == "-R" ]] ; then
         sudo chown -R 1000:1000 "${RPI_ROOT}/$1" || error "chown ${RPI_ROOT}/$1"
     else
         sudo chown 1000:1000 "${RPI_ROOT}/$1" || error "chown ${RPI_ROOT}/$1"
@@ -322,9 +322,9 @@ function chown_pi() {
 
 # chmod wrapper
 function chmod_pi() {
-    if [ -z "$1" ] && [ -z "$2" ] ; then error "missing argument" ; fi
+    if [[ -z "$1" ]] && [[ -z "$2" ]] ; then error "missing argument" ; fi
     # directory ?
-    if [ "$3" == "-R" ] ; then
+    if [[ "$3" == "-R" ]] ; then
         sudo find "${RPI_ROOT}/$2" -type f -exec chmod "$1" {} \;
     else
         sudo chmod "$1" "${RPI_ROOT}/$2"
@@ -333,12 +333,12 @@ function chmod_pi() {
 
 # run command once upon first login
 function run_on_first_login() {
-    [ -n "$1" ] || error "missing argument"
+    [[ -n "$1" ]] || error "missing argument"
     local once_script="/home/pi/.bootstrap_run_on_first_login"
     # prepare script
-    if ! [ -f "${RPI_ROOT}/${once_script}" ] ; then
+    if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
         # call script from .bashrc
-        append_to_file "if [ -f \"${once_script}\" ] ; then echo \"executing first-time setup...\" ; ${once_script} && rm ${once_script} ; echo \"Done. Please reboot now.\" ; fi" "${RPI_ROOT}/home/pi/.bashrc"
+        append_to_file "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ; ${once_script} && rm ${once_script} ; echo \"Done. Please reboot now.\" ; fi" "${RPI_ROOT}/home/pi/.bashrc"
         sudo touch "${RPI_ROOT}/${once_script}" || error "touch"
         sudo chmod +x "${RPI_ROOT}/${once_script}" || error "sudo chmod +x"
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
@@ -361,12 +361,12 @@ function run_on_boot() {
 
 # run command once upon first boot
 function run_on_first_boot() {
-    [ -n "$1" ] || error "missing argument"
+    [[ -n "$1" ]] || error "missing argument"
     local once_script="/home/pi/.bootstrap_run_on_first_boot"
     # prepare script
-    if ! [ -f "${RPI_ROOT}/${once_script}" ] ; then
+    if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
         # call script from /etc/rc.local
-        run_on_boot "if [ -f \"${once_script}\" ] ; then echo \"executing first-time setup...\" ; ${once_script} && rm ${once_script} ; echo \"Done. Please reboot now.\" ; fi"
+        run_on_boot "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ; ${once_script} && rm ${once_script} ; echo \"Done. Please reboot now.\" ; fi"
         sudo touch "${RPI_ROOT}/${once_script}" || error "touch"
         sudo chmod +x "${RPI_ROOT}/${once_script}" || error "sudo chmod +x"
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
@@ -382,7 +382,7 @@ function run_on_first_boot() {
 # ---------------------------------------------------------------------
 
 # load config
-if [ -e "$(dirname "$0")/bootstrap.cfg" ] ; then . "$(dirname "$0")/bootstrap.cfg" ; fi
+if [[ -e "$(dirname "$0")/bootstrap.cfg" ]] ; then . "$(dirname "$0")/bootstrap.cfg" ; fi
 
 # parse cmdline options
 parse_cmdline_args "$@"
@@ -391,24 +391,24 @@ parse_cmdline_args "$@"
 banner
 
 # check if there are plugins
-if [ "${#RPI_BOOTSTRAP_PLUGINS[@]}" == "0" ] ; then
+if [[ "${#RPI_BOOTSTRAP_PLUGINS[@]}" == "0" ]] ; then
     error "no plugins configured. set RPI_BOOTSTRAP_PLUGINS"
 fi
 # load plugins
 load_all_plugins
 
 # create root mountpoint
-if ! [ -d "${RPI_ROOT}" ]  ; then mkdir -p "${RPI_ROOT}" ; fi
+if ! [[ -d "${RPI_ROOT}" ]]  ; then mkdir -p "${RPI_ROOT}" ; fi
 # create boot mountpoint
-if ! [ -d "${RPI_BOOT}" ]  ; then mkdir -p "${RPI_BOOT}" ; fi
+if ! [[ -d "${RPI_BOOT}" ]]  ; then mkdir -p "${RPI_BOOT}" ; fi
 # create workdir
-if ! [ -d "${RPI_WORKDIR}" ]  ; then mkdir -p "${RPI_WORKDIR}" ; fi
+if ! [[ -d "${RPI_WORKDIR}" ]]  ; then mkdir -p "${RPI_WORKDIR}" ; fi
 
 # run plugins
 run_all_plugins
 
 # cleanup
-if [ "${RPI_DONT_CLEANUP}" != "true" ] ; then
+if [[ "${RPI_DONT_CLEANUP}" != "true" ]] ; then
     # run postrun
     postrun_all_plugins
 else

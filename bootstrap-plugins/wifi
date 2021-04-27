@@ -13,14 +13,13 @@ function rpi_wifi_prerun() {
 }
 
 function rpi_wifi_run() {
-    local powersave
 
     # create wpa_supplicant.conf from config parameters
-    if [ -n "${RPI_WIFI_SSID}" ] && [ -n "${RPI_WIFI_PSK}" ] ; then
+    if [[ -n "${RPI_WIFI_SSID}" ]] && [[ -n "${RPI_WIFI_PSK}" ]] ; then
         echo " creating /etc/wpa_supplicant.conf"
         # optionally set country
         local country="#country=\"${RPI_WIFI_COUNTRY}\""
-        [ -n "${RPI_WIFI_COUNTRY}" ] && country="country=\"${RPI_WIFI_COUNTRY}\""
+        [[ -n "${RPI_WIFI_COUNTRY}" ]] && country="country=\"${RPI_WIFI_COUNTRY}\""
         append_stdin "${RPI_ROOT}/etc/wpa_supplicant/wpa_supplicant.conf" << EOF
 ${country}
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
@@ -33,12 +32,12 @@ EOF
     fi
 
     # turn off powersaving?
-    if [ "${RPI_WIFI_POWERSAVE}" == "false" ] ; then
+    local powersave
+    if [[ "${RPI_WIFI_POWERSAVE}" == "false" ]] ; then
         powersave="on"
-    elif [ "${RPI_WIFI_POWERSAVE}" == "true" ] ; then
+    elif [[ "${RPI_WIFI_POWERSAVE}" == "true" ]] ; then
         powersave="off"
     fi
-
     run_on_boot "# turn off wifi power saving" || error "run_on_boot"
     run_on_boot "iw dev wlan0 set power_save ${powersave}" || error "run_on_boot"
 

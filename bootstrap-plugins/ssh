@@ -17,7 +17,7 @@ function rpi_ssh_run() {
     sudo touch "${RPI_BOOT}/ssh" || error "touch ${RPI_BOOT}/ssh"
 
     # create ~/.ssh dir
-    if ! [ -d "${RPI_ROOT}/home/pi/.ssh" ] ; then
+    if ! [[ -d "${RPI_ROOT}/home/pi/.ssh" ]] ; then
       sudo mkdir -p "${RPI_ROOT}/home/pi/.ssh" || error "mkdir"
       chmod_pi 0700 "/home/pi/.ssh" || error "chmod"
       chown_pi "/home/pi/.ssh" -R || error "chown"
@@ -30,9 +30,9 @@ function rpi_ssh_run() {
     cp_from_dist_if_exist /home/pi/.ssh/known_hosts 0600
 
     # generate ssh key?
-    if [ -n "${RPI_SSH_KEYGEN}" ] ; then
+    if [[ -n "${RPI_SSH_KEYGEN}" ]] ; then
         local keyname="${RPI_ROOT}/home/pi/.ssh/id_${RPI_SSH_KEY_TYPE}"
-        if ! [ -f "${keyname}" ] ; then
+        if ! [[ -f "${keyname}" ]] ; then
             # create key
             sudo ssh-keygen \
                 -t "${RPI_SSH_KEY_TYPE}" \
@@ -45,7 +45,7 @@ function rpi_ssh_run() {
     fi
 
     # authorize configured keys?
-    if [ -n "${RPI_SSH_AUTHORIZE}" ] ; then
+    if [[ -n "${RPI_SSH_AUTHORIZE}" ]] ; then
         local key
         for key in "${RPI_SSH_AUTHORIZE[@]}" ; do
             append_to_file "${key}" "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "append"

@@ -45,7 +45,8 @@ function rpi_powersave_run() {
     run_on_boot "/usr/bin/tvservice -o" || error "run_on_boot"
     # turn on USB power saving
     run_on_boot "# usb power saving" || error "run_on_boot"
-    run_on_boot "echo 'auto' > '/sys/bus/usb/devices/usb1/power/control'" "run_on_boot"
+    run_on_boot "echo 'auto' > '/sys/bus/usb/devices/usb1/power/control'" || error "run_on_boot"
+
 }
 
 function rpi_powersave_description() {

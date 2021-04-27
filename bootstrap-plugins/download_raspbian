@@ -18,7 +18,7 @@ function rpi_download_raspbian_run() {
     warn "downloading ${RPI_DOWNLOAD_RASPBIAN_URL} ..."
 
     # already downloaded?
-    if ! [ -f "${dest}" ] ; then
+    if ! [[ -f "${dest}" ]] ; then
       local tmpfile
       tmpfile="$(TMPDIR=${RPI_TMPDIR} mktemp || error mktemp)"
       # download

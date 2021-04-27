@@ -6,7 +6,7 @@ RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
 
 
 function rpi_hostname_prerun() {
-    if [ -z "${RPI_HOSTNAME}" ] ; then
+    if [[ -z "${RPI_HOSTNAME}" ]] ; then
         error "RPI_HOSTNAME not set."
         return 1
     fi
@@ -17,7 +17,7 @@ function rpi_hostname_prerun() {
 function rpi_hostname_run() {
     echo " setting hostname to \"${RPI_HOSTNAME}\""
     # create from config parameters
-    if [ -n "${RPI_HOSTNAME}" ] ; then
+    if [[ -n "${RPI_HOSTNAME}" ]] ; then
         # /etc/hostname
         echo " setting /etc/hostname"
         sudo rm -f "${RPI_ROOT}/etc/hostname"

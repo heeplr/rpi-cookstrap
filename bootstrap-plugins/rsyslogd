@@ -17,7 +17,7 @@ function rpi_rsyslogd_prerun() {
 
 function rpi_rsyslogd_run() {
     # disable local logging ?
-    if [ "${RPI_RSYSLOGD_LOCAL}" == "false" ] ; then
+    if [[ "${RPI_RSYSLOGD_LOCAL}" == "false" ]] ; then
         local patterns=(
             "^(auth,authpriv.*)/#\1"
             "^(\*\.\*;auth,authpriv\.none.*)/#\1"
