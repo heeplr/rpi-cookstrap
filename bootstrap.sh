@@ -447,4 +447,4 @@ fi
 printf "\n\n"
 printf "%s\n" \
     "Image creation successful. Copy \"${RPI_IMG_NAME}\" to an SD card." \
-    "(e.g. dd if=${RPI_IMG_NAME} of=/dev/sdcard bs=32M status=progress )"
+    "(e.g. dd if=${RPI_IMG_NAME} of=/dev/sdcard bs=4M conv=fsync status=progress )"
