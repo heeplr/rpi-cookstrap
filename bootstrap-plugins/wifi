@@ -35,7 +35,7 @@ EOF
     # turn off powersaving?
     if [ "${RPI_WIFI_POWERSAVE}" == "false" ] ; then
         powersave="on"
-    else if [ "${RPI_WIFI_POWERSAVE}" == "true" ] ; then
+    elif [ "${RPI_WIFI_POWERSAVE}" == "true" ] ; then
         powersave="off"
     fi
 
