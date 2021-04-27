@@ -39,7 +39,8 @@ EOF
         powersave="off"
     fi
 
-    run_on_boot "# turn off wifi power saving\niw dev wlan0 set power_save ${powersave}" || error "run_on_boot"
+    run_on_boot "# turn off wifi power saving" || error "run_on_boot"
+    run_on_boot "iw dev wlan0 set power_save ${powersave}" || error "run_on_boot"
 
     # copy from distfiles
     cp_from_dist_if_exist "/etc/wpa_supplicant/wpa_supplicant.conf"
