@@ -117,19 +117,21 @@ function parse_cmdline_args() {
 
 # check if plugin provides function
 function check_for_plugin_function() {
-    type "$1">/dev/null 2>&1
+    local plugin="$1"
+    type "${plugin}">/dev/null 2>&1
 }
 
 # load plugin and make sure it's not loaded twice
 function load_plugin() {
+    local plugin="$1"
     # already loaded?
-    check_for_plugin_function "rpi_$1_run" && return
+    check_for_plugin_function "rpi_${plugin}_run" && return
     # load plugin
     . "${RPI_PLUGINDIR}/$1"
     # check for mandatory functions
-    check_for_plugin_function "rpi_$1_run" || ( warn "plugin \"$1\" needs a \"rpi_$1_run\" function." ; return 1 )
+    check_for_plugin_function "rpi_${plugin}_run" || ( warn "plugin \"${plugin}\" needs a \"rpi_${plugin}_run\" function." ; return 1 )
     # run prerun checks
-    check_for_plugin_function "rpi_$1_prerun" || ( warn "plugin \"$1\" needs a \"rpi_$1_prerun\" function." ; return 1 )
+    check_for_plugin_function "rpi_${plugin}_prerun" || ( warn "plugin \"${plugin}\" needs a \"rpi_${plugin}_prerun\" function." ; return 1 )
 }
 
 # load all plugins
@@ -188,14 +190,15 @@ function download_file() {
 
 # setup loopback device to mount image
 function loopback_setup() {
+    local image="$1"
     # argument valid?
-    [[ -f "$1" ]] || error "$1 not found"
+    [[ -f "${image}" ]] || error "${image} not found"
     # already attached?
     local device
-    device="$(sudo losetup -l | grep "$(basename "$1")" | cut -d " " -f1)"
+    device="$(sudo losetup -l | grep "$(basename "${image}")" | cut -d " " -f1)"
     if [[ -z "${device}" ]] ; then
         # attach image
-        device="$(sudo losetup --show --find --partscan "${1}")" || error losetup
+        device="$(sudo losetup --show --find --partscan "${image}")" || error losetup
     fi
     warn "using \"${device}\""
     echo "${device}"
@@ -203,7 +206,8 @@ function loopback_setup() {
 
 # tear down loopback device
 function loopback_cleanup() {
-    sudo losetup -d "$1" || warn "loopback cleanup failed"
+    local device="$1"
+    sudo losetup -d "${device}" || warn "loopback cleanup failed"
     sync || warn "sync"
 }
 
@@ -244,67 +248,80 @@ function umount_image() {
 # ---------------------------------------------------------------------
 # append file to file
 function append_file_to_file() {
-    if [[ -z "$1" ]] || [[ -z "$2" ]] ; then error "missing argument. append" ; fi
+    local appendix="$1"
+    local appendee="$2"
+    if [[ -z "${appendix}" ]] || [[ -z "${appendee}" ]] ; then error "missing argument. append" ; fi
     # already appended ?
-    [[ -f "$1" ]] && [[ -f "$2" ]] && grep --quiet --fixed-strings --file="$1" "$2" && return 0
+    [[ -f "${appendix}" ]] && [[ -f "${appendee}" ]] && grep --quiet --fixed-strings --file="${appendix}" "${appendee}" && return 0
     # append
-    sudo tee -a "$2" < "$1" >/dev/null || error "sudo_append $1 $2"
+    sudo tee -a "${appendee}" < "${appendix}" >/dev/null || error "sudo_append ${appendix} ${appendee}"
 }
 
 # append string to file
 function append_to_file() {
-    if [[ -z "$1" ]] || [[ -z "$2" ]] ; then error "missing argument. append" ; fi
+    local string="$1"
+    local file="$2"
+    if [[ -z "${string}" ]] || [[ -z "${file}" ]] ; then error "missing argument. append" ; fi
     # already appended ?
-    [[ -f "$2" ]] && sudo grep --fixed-strings --quiet "$1" "$2" && return 0
+    [[ -f "${file}" ]] && sudo grep --fixed-strings --quiet "${string}" "${file}" && return 0
     # append
-    sudo touch "$2"
-    printf "%s\n" "$1" | sudo tee -a "$2" >/dev/null || error "sudo_append $1 $2"
+    sudo touch "${file}"
+    printf "%s\n" "${string}" | sudo tee -a "${file}" >/dev/null || error "sudo_append ${string} ${file}"
 }
 
 # append input from stdin to file
 function append_stdin() {
-    [[ -n "$1" ]] || error "missing argument. append_stdin"
+    local file="$1"
+    [[ -n "${file}" ]] || error "missing argument. append_stdin"
     while read -r appendix ; do
-        append_to_file "${appendix}" "$1"
+        append_to_file "${appendix}" "${file}"
     done
 }
 
 # remove string from file (remove line where pattern matches)
 function remove_line_from_file() {
-    { [[ -n "$1" ]] && [[ -n "$2" ]]; } || error "missing arguments. remove line"
-    sudo sed "/$1/d" -i "$2" || error "remove_line $1 $2"
+    local pattern="$1"
+    local file="$2"
+    { [[ -n "${pattern}" ]] && [[ -n "${file}" ]]; } || error "missing arguments. remove line"
+    sudo sed "/${pattern}/d" -i "${file}" || error "remove_line ${pattern} ${file}"
 }
 
 # replace string in file (sed pattern)
 function replace_string_in_file() {
-    { [[ -n "$1" ]] && [[ -n "$2" ]]; } || error "missing arguments. replace line"
-    sudo sed -E "s/$1/g" -i "$2" || error "replace_string $1 $2"
+    local pattern="$1"
+    local file="$2"
+    { [[ -n "${pattern}" ]] && [[ -n "${file}" ]]; } || error "missing arguments. replace line"
+    sudo sed -E "s/${pattern}/g" -i "${file}" || error "replace_string ${pattern} ${file}"
 }
 
 # check if dist file exists
 function dist_exist() {
-    [[ -e "${RPI_DISTDIR}/$1" ]] || return 1
+    local file="$1"
+    [[ -e "${RPI_DISTDIR}/${file}" ]] || return 1
     return 0
 }
 
 # copy from dist directory to root directory
 function cp_from_dist() {
-    [[ -n "$1" ]] || error "missing parameter. cp_to_dist"
-    echo " copying $1 ..."
+    local path="$1"
+    local permissions="$2"
+    [[ -n "${path}" ]] || error "missing parameter. cp_to_dist"
+    echo " copying ${path} ..."
     # directory?
-    if [[ -d "$1" ]] ; then
-        sudo cp -r "${RPI_DISTDIR}/$1/"* "${RPI_ROOT}/$(dirname "$1")" || error "cp -r $1/* to ${RPI_ROOT}/$(dirname "$1")"
+    if [[ -d "${path}" ]] ; then
+        sudo cp -r "${RPI_DISTDIR}/${path}/"* "${RPI_ROOT}/$(dirname "${path}")" || error "cp -r ${path}/* to ${RPI_ROOT}/$(dirname "${path}")"
     else
-        sudo cp "${RPI_DISTDIR}/$1" "${RPI_ROOT}/$(dirname "$1")" || error "cp $1 to ${RPI_ROOT}/$(dirname "$1")"
+        sudo cp "${RPI_DISTDIR}/${path}" "${RPI_ROOT}/$(dirname "${path}")" || error "cp ${path} to ${RPI_ROOT}/$(dirname "${path}")"
     fi
     # chmod?
-    [[ -n "$2" ]] && chmod_pi "$2" "$1"
+    [[ -n "${permissions}" ]] && chmod_pi "${permissions}" "${path}"
 }
 
 # copy if srcfile exists
 function cp_from_dist_if_exist() {
-    if dist_exist "$1" ; then
-        cp_from_dist "$1"
+    local path="$1"
+    if dist_exist "${path}" ; then
+        cp_from_dist "${path}"
         return 0
     fi
     return 1
@@ -312,22 +329,27 @@ function cp_from_dist_if_exist() {
 
 # chown for pi user
 function chown_pi() {
-    [[ -n "$1" ]] || error "missing argument"
-    if [[ "$2" == "-R" ]] ; then
-        sudo chown -R 1000:1000 "${RPI_ROOT}/$1" || error "chown ${RPI_ROOT}/$1"
+    local path="$1"
+    local recursive="$2"
+    [[ -n "${path}" ]] || error "missing argument"
+    if [[ "${recusrive}" == "-R" ]] ; then
+        sudo chown -R 1000:1000 "${RPI_ROOT}/${path}" || error "chown ${RPI_ROOT}/${path}"
     else
-        sudo chown 1000:1000 "${RPI_ROOT}/$1" || error "chown ${RPI_ROOT}/$1"
+        sudo chown 1000:1000 "${RPI_ROOT}/${path}" || error "chown ${RPI_ROOT}/${path}"
     fi
 }
 
 # chmod wrapper
 function chmod_pi() {
-    if [[ -z "$1" ]] && [[ -z "$2" ]] ; then error "missing argument" ; fi
+    local permissions="$1"
+    local path="$2"
+    local recursive="$3"
+    if [[ -z "${permissions}" ]] && [[ -z "${path}" ]] ; then error "missing argument" ; fi
     # directory ?
-    if [[ "$3" == "-R" ]] ; then
-        sudo find "${RPI_ROOT}/$2" -type f -exec chmod "$1" {} \;
+    if [[ "${recursive}" == "-R" ]] ; then
+        sudo find "${RPI_ROOT}/${path}" -type f -exec chmod "${permissions}" {} \;
     else
-        sudo chmod "$1" "${RPI_ROOT}/$2"
+        sudo chmod "${permissions}" "${RPI_ROOT}/${path}"
     fi
 }
 
