@@ -333,7 +333,7 @@ function chown_pi() {
     local path="$1"
     local recursive="$2"
     [[ -n "${path}" ]] || error "missing argument"
-    if [[ "${recusrive}" == "-R" ]] ; then
+    if [[ "${recursive}" == "-R" ]] ; then
         sudo chown -R 1000:1000 "${RPI_ROOT}/${path}" || error "chown ${RPI_ROOT}/${path}"
     else
         sudo chown 1000:1000 "${RPI_ROOT}/${path}" || error "chown ${RPI_ROOT}/${path}"
