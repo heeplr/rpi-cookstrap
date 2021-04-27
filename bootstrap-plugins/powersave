@@ -39,6 +39,11 @@ function rpi_powersave_run() {
         "start_x=0"
     )
     rpi_config_run || error "config.txt modification"
+
+    # turn off HDMI
+    run_on_boot "# turn off HDMI\n/usr/bin/tvservice -o" || error "run_on_boot"
+    # turn on USB power saving
+    run_on_boot "# usb power saving\necho 'auto' > '/sys/bus/usb/devices/usb1/power/control'"
 }
 
 function rpi_powersave_description() {
