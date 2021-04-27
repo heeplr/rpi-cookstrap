@@ -24,10 +24,10 @@ function rpi_wifi_run() {
 ${country}
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
-network=\{
-\ \ \ \ ssid="${RPI_WIFI_SSID}"
-\ \ \ \ psk="${RPI_WIFI_PSK}"
-\}
+network={
+        ssid="${RPI_WIFI_SSID}"
+        psk="${RPI_WIFI_PSK}"
+}
 EOF
     fi
 
