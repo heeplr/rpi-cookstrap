@@ -5,7 +5,7 @@
 # default options
 RPI_SSH_KEY_TYPE="${RPI_SSH_KEY_TYPE:=ed25519}"
 RPI_SSH_KEY_ROUNDS="${RPI_SSH_KEY_ROUNDS:=100}"
-RPI_SSH_KEYGEN="${RPI_SSH_KEYGEN:=""}"
+RPI_SSH_KEYGEN="${RPI_SSH_KEYGEN:=false}"
 RPI_SSH_AUTHORIZE="${RPI_SSH_AUTHORIZE:=}"
 
 function rpi_ssh_prerun() {
@@ -30,7 +30,7 @@ function rpi_ssh_run() {
     cp_from_dist_if_exist /home/pi/.ssh/known_hosts 0600
 
     # generate ssh key?
-    if [[ -n "${RPI_SSH_KEYGEN}" ]] ; then
+    if [[ "${RPI_SSH_KEYGEN}" == "true" ]] ; then
         local keyname="${RPI_ROOT}/home/pi/.ssh/id_${RPI_SSH_KEY_TYPE}"
         if ! [[ -f "${keyname}" ]] ; then
             # create key
