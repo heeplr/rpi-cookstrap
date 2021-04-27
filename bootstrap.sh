@@ -273,6 +273,7 @@ function append_to_file() {
 function append_stdin() {
     local file="$1"
     [[ -n "${file}" ]] || error "missing argument. append_stdin"
+    IFS=''
     while read -r appendix ; do
         append_to_file "${appendix}" "${file}"
     done
