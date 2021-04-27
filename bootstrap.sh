@@ -361,7 +361,7 @@ function run_on_login() {
 
 # run command once upon first login
 function run_on_first_login() {
-    [[ -n "$1" ]] || error "missing argument"
+    [[ -n "$*" ]] || error "missing argument"
     local once_script="/home/pi/.bootstrap_run_on_first_login"
     # prepare script
     if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
@@ -389,7 +389,7 @@ function run_on_boot() {
 
 # run command once upon first boot
 function run_on_first_boot() {
-    [[ -n "$1" ]] || error "missing argument"
+    [[ -n "$*" ]] || error "missing argument"
     local once_script="/home/pi/.bootstrap_run_on_first_boot"
     # prepare script
     if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
