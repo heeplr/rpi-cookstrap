@@ -12,14 +12,16 @@ function rpi_dist_prerun() {
 
 function rpi_dist_run() {
     local f
-    for f in "${RPI_DIST_COPY[@]}" ; do
+    [[ -n "${RPI_DIST_COPY}" ]] && for f in "${RPI_DIST_COPY[@]}" ; do
         cp_from_dist_if_exist "${f}" || error "copy ${f}"
     done
 
-    for f in "${RPI_DIST_APPEND[@]}" ; do
+    [[ -n "${RPI_DIST_APPEND}" ]] && for f in "${RPI_DIST_APPEND[@]}" ; do
         echo " appending ${f} ..."
         append_file_to_file "${f}" "${RPI_ROOT}/${f}" || error "append ${f}"
     done
+
+    return 0
 }
 
 function rpi_dist_description() {
