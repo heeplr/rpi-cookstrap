@@ -1,4 +1,4 @@
-# RPi CookStrap - [![CI](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml/badge.svg)](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml)
+# RPi CookStrap - [![CI](https://github.com/heeplr/rpi-cookstrap/actions/workflows/main.yml/badge.svg)](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml)
 
 A lightweight raspberry pi bakery shell script framework to customize, bootstrap & provision OS disk images with ease.
 
