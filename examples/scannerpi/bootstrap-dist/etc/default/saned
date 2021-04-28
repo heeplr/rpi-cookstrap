@@ -1,5 +1,3 @@
-# Defaults for the saned initscript, from sane-utils                                                      [  +0,000149] sd 6:0:0:0: [sdb] No Caching mode page found
-                                                                                                          [  +0,000007] sd 6:0:0:0: [sdb] Assuming drive cache: write through
-# Set to the user saned should run as                                                                     [  +0,008020]  sdb: sdb1 sdb2
-RUN=yes                                                                                                   [  +0,003366] sd 6:0:0:0: [sdb] Attached SCSI removable disk
+# you probably don't need to change anything here
+RUN=yes
 RUN_AS_USER=saned
