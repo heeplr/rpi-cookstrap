@@ -12,7 +12,7 @@ the network.
   * add public key for ssh access (comment out to disable)
 
 * edit files in **bootstrap-dist/**
-  * etc/sane.d/saned.conf - add ip's of all client or netmask of allowed networks
+  * etc/sane.d/saned.conf - add ip's of all clients or netmask of allowed networks
   * etc/udev/rules.d/55-libsane.rules - change vendor id with vendor id of your scanner (find out with ```lsusb```). Copy/paste line when connecting multiple scanners.
 
 * create sdcard image (replace /dev/sdcard with your sdcard device):
