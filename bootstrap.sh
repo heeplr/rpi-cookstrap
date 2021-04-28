@@ -118,8 +118,8 @@ function parse_cmdline_args() {
 
 # check if plugin provides function
 function check_for_plugin_function() {
-    local plugin="$1"
-    type "${plugin}">/dev/null 2>&1
+    local funcname="$1"
+    type "${funcname}">/dev/null 2>&1
 }
 
 # load plugin and make sure it's not loaded twice
