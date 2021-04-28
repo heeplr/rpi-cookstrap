@@ -1,2 +1,3 @@
 # replace vendor id with the one of your scanner (get with lsusb)
-SUBSYSTEM=="usb", ATTRS{idVendor}=="04a9", MODE="0660", GROUP="scanner", ENV{libsane_matched}="yes"
+#                                   ↓↓↓↓
+SUBSYSTEM=="usb", ATTRS{idVendor}=="04c5", MODE="0660", GROUP="scanner", ENV{libsane_matched}="yes"
