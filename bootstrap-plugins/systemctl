@@ -3,7 +3,7 @@
 # run systemctl commands
 
 RPI_SYSTEMCTL_CMDS="${RPI_SYSTEMCTL_CMDS:=""}"
-RPI_SYSTEMCTL_RUN_ON_BOOT="${RPI_SYSTEMCTL_RUN_ON_BOOT:=false}"
+
 
 function rpi_systemctl_prerun() {
     [[ -n "${RPI_SYSTEMCTL_CMDS}" ]] || return 1
@@ -11,16 +11,8 @@ function rpi_systemctl_prerun() {
 }
 
 function rpi_systemctl_run() {
-    # choose runner
-    local runner
-    if [[ "${RPI_SYSTEMCTL_RUN_ON_BOOT}" == "true" ]] ; then
-        runner="run_on_first_boot"
-    else
-        runner="run_on_first_login"
-    fi
-
     for cmd in "${RPI_SYSTEMCTL_CMDS[@]}" ; do
-        "${runner}" "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
+        run_once "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
     done
 }
 
@@ -31,7 +23,6 @@ function rpi_systemctl_description() {
 function rpi_systemctl_help_vars() {
     local vars=(
         "RPI_SYSTEMCTL_CMDS|array of systemctl commands|${RPI_SYSTEMCTL_CMDS}"
-        "RPI_SYSTEMCTL_RUN_ON_BOOT|run on first boot instead first login|${RPI_SYSTEMCTL_RUN_ON_BOOT}"
     )
     help_for_vars "${vars[@]}"
 }

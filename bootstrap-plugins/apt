@@ -4,7 +4,6 @@
 
 RPI_APT_CMDS="${RPI_APT_CMDS:=""}"
 RPI_APT_INTERACTIVE="${RPI_APT_INTERACTIVE:=false}"
-RPI_APT_RUN_ON_BOOT="${RPI_APT_RUN_ON_BOOT:=false}"
 
 rpi_apt_prerun() {
     [[ -n "${RPI_APT_CMDS}" ]] || return 1
@@ -12,22 +11,14 @@ rpi_apt_prerun() {
 }
 
 rpi_apt_run() {
-    # choose runner
-    local runner
-    if [[ "${RPI_APT_RUN_ON_BOOT}" == "true" ]] ; then
-        runner="run_on_first_boot"
-    else
-        runner="run_on_first_login"
-    fi
-
     local cmd
     for cmd in "${RPI_APT_CMDS[@]}" ; do
         # run in interactive mode?
         if [[ "${RPI_APT_INTERACTIVE}" == "true" ]] ; then
-            "${runner}" "sudo apt ${cmd}" || error "apt"
+            run_once "sudo apt ${cmd}" || error "apt"
         # run in non-interactive mode
         else
-            "${runner}" "sudo DEBIAN_FRONTEND=noninteractive apt --yes --quiet ${cmd}" || error "install apt update"
+            run_once "sudo DEBIAN_FRONTEND=noninteractive apt --yes --quiet ${cmd}" || error "install apt update"
         fi
     done
 }
@@ -40,7 +31,6 @@ function rpi_apt_help_vars() {
     local vars=(
         "RPI_APT_CMDS|array of apt commands to execute|${RPI_APT_CMDS}"
         "RPI_APT_INTERACTIVE|run in interactive mode|${RPI_APT_INTERACTIVE}"
-        "RPI_APT_RUN_ON_BOOT|run on first boot instead first login|${RPI_APT_RUN_ON_BOOT}"
     )
     help_for_vars "${vars[@]}"
 }
