@@ -342,17 +342,24 @@ function cp_from_dist_after_boot() {
         chmod_pi 0770 "${distdir}" || error "chmod_pi"
         chown_pi "${distdir}" || error "chown_pi"
     }
+    # crate path
+    sudo mkdir -p "${distdir}/$(dirname "${path}")/"
     # copy directory?
     if [[ -d "${path}" ]] ; then
         # copy to image
         sudo cp -r "${RPI_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || error "cp"
         # register copy command
-        run_once "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}") || exit 1" || error "cp -r ${path}/* to /$(dirname "${path}")"
+        run_once "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}")" || error "run_once"
     # copy file?
     else
         sudo cp -r "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
-        run_once "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\" || exit 1" || error "cp ${path} to ${RPI_ROOT}/$(dirname "${path}")"
+        run_once "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\"" || error "run_once"
     fi
+    # chmod?
+    [[ -n "${permissions}" ]] && { run_once "sudo chmod -R \"${permissions}\" \"${path}\"" || error "chmod" ; }
+    # chown
+    run_once "sudo chown -R pi:pi \"${path}\"" || error "chown"
+
 }
 
 # chown for pi user
