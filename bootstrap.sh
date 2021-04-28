@@ -339,8 +339,8 @@ function cp_from_dist_after_boot() {
     # create directory?
     [[ -d "${distdir}" ]] || {
         sudo mkdir "${distdir}" || error "mkdir"
-        chmod_pi 0770 "${distdir}" || error "chmod_pi"
-        chown_pi "${distdir}" || error "chown_pi"
+        chmod_pi "0770" "/home/pi/bootstrap-dist" || error "chmod_pi"
+        chown_pi "/home/pi/bootstrap-dist" || error "chown_pi"
     }
     # crate path
     sudo mkdir -p "${distdir}/$(dirname "${path}")/"
