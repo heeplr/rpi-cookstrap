@@ -218,9 +218,7 @@ function mount_image() {
 
     echo "mounting image..."
     # already mounted?
-    if mount | grep --quiet "${device}"; then
-        return 0
-    fi
+    mount | grep --quiet "${device}" && return 0
     # wait for sync
     sync
     # mount
