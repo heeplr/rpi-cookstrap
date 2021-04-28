@@ -33,17 +33,14 @@ function rpi_download_raspbian_run() {
 
     # mount image
     echo "setting up loopback for ${dest}"
-    RPI_IMG_DEV="$(loopback_setup "${dest}")" || error "loopback setup"
-    mount_image "${RPI_IMG_DEV}" || error "image mount"
-
-    # set image filename globally
-    RPI_IMG_NAME="${dest}"
+    loopback_setup "${dest}" || error "loopback setup"
+    mount_image || error "image mount"
 }
 
 function rpi_download_raspbian_postrun() {
     echo "cleaning up..."
     umount_image
-    loopback_cleanup "${RPI_IMG_DEV}"
+    loopback_cleanup
 }
 
 function rpi_download_raspbian_description() {

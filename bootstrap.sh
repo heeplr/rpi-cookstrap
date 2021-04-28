@@ -202,28 +202,26 @@ function loopback_setup() {
         device="$(sudo losetup --show --find --partscan "${image}")" || error losetup
     fi
     warn "using \"${device}\""
-    echo "${device}"
+    # store device
+    RPI_IMG_DEV="${device}"
 }
 
 # tear down loopback device
 function loopback_cleanup() {
-    local device="$1"
-    sudo losetup -d "${device}" || warn "loopback cleanup failed"
+    sudo losetup -d "${RPI_IMG_DEV}" || warn "${RPI_IMG_DEV} cleanup failed"
     sync || warn "sync"
 }
 
 # mount raspberry image
 function mount_image() {
-    local device="$1"
-
     echo "mounting image..."
     # already mounted?
-    mount | grep --quiet "${device}" && return 0
+    mount | grep --quiet "${RPI_IMG_DEV}" && return 0
     # wait for sync
     sync
     # mount
-    sudo mount "${device}p1" "${RPI_BOOT}" || return 1
-    sudo mount "${device}p2" "${RPI_ROOT}" || return 1
+    sudo mount "${RPI_IMG_DEV}p1" "${RPI_BOOT}" || return 1
+    sudo mount "${RPI_IMG_DEV}p2" "${RPI_ROOT}" || return 1
     # read os-release
     . "${RPI_ROOT}/etc/os-release"
     return 0
