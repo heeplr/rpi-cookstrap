@@ -10,7 +10,7 @@ rpi_adduser_prerun() {
 }
 
 rpi_adduser_run() {
-    run_once "adduser pi ${RPI_ADDUSER_GROUP}" || error "add to group ${RPI_ADDUSER_GROUP}"
+    run_once "sudo adduser pi ${RPI_ADDUSER_GROUP}" || error "add to group ${RPI_ADDUSER_GROUP}"
 }
 
 rpi_adduser_description() {
