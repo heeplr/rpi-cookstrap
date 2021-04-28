@@ -13,6 +13,7 @@ RPI_ROOT="${RPI_ROOT:=.bootstrap-work/root}"
 RPI_BOOT="${RPI_BOOT:=.bootstrap-work/boot}"
 RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
 RPI_BOOTSTRAP_PLUGINS=()
+RPI_PROVISION_ON_BOOT="${RPI_PROVISION_ON_BOOT:=false}"
 
 # ---------------------------------------------------------------------
 # print banner
@@ -405,6 +406,16 @@ function run_on_first_boot() {
     append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
     echo " run (boot) cmd installed: \"$*\""
+}
+
+# run command once (either on first boot or on first login)
+function run_once() {
+    [[ -n "$*" ]] || error "missing argument"
+    if [[ "${RPI_PROVISION_ON_BOOT}" == "true" ]] ; then
+        run_on_first_boot "$*"
+    else
+        run_on_first_login "$*"
+    fi
 }
 
 # ---------------------------------------------------------------------
