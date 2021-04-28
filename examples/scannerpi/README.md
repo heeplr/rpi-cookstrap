@@ -5,9 +5,7 @@ Connect [sane](http://www.sane-project.org/) compatible scanner(s) to your raspb
 the network.
 
 
-### Documentation
-
-#### scannerpi setup
+### scannerpi setup
 * configure settings in **bootstrap.cfg** and **bootstrap-dist/** files.
 * create sdcard image (replace /dev/sdcard with your sdcard device):
 ```
@@ -22,8 +20,7 @@ eject /dev/sdcard
 * reboot the pi
 
 
-#### client setup
-
+### client setup
 * setup sane (if not installed already)
   * Debian/Ubuntu/Mint/...
     * ```apt install sane-utils```
