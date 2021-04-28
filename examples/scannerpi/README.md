@@ -10,7 +10,7 @@ the network.
 #### scannerpi setup
 * configure settings in **bootstrap.cfg** and **bootstrap-dist/** files.
 * create sdcard image (replace /dev/sdcard with your sdcard device):
-  * ```
+```
 ./bootstrap.sh
 dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard bs=32M status=progress
 eject /dev/sdcard
