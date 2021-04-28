@@ -129,7 +129,7 @@ configure wireless networking using the "wifi" plugin afterwards for example, yo
 would set: ```RPI_BOOTSTRAP_PLUGINS=( "raspbian_download" "wifi" )```
 
 Plugins reside in **RPI_PLUGINDIR**.
-They all provide a set of functions prefixed by rpi_ and their name (bold ones are non-optional):
+They all provide a set of functions prefixed by rpi_ and their name (bold ones are mandatory):
 
 * ***_prerun()** - runs before anything is done (before download etc.) Will halt execution when failing.
 * *_postrun() - runs after all plugins are done (cleaning up etc.)
