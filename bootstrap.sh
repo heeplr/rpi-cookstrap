@@ -307,7 +307,7 @@ function dist_exist() {
 function cp_from_dist() {
     local path="$1"
     local permissions="$2"
-    [[ -n "${path}" ]] || error "missing parameter. cp_to_dist"
+    [[ -n "${path}" ]] || error "missing parameter. cp_from_dist"
     echo " copying ${path} ..."
     # directory?
     if [[ -d "${path}" ]] ; then
@@ -327,6 +327,32 @@ function cp_from_dist_if_exist() {
         return 0
     fi
     return 1
+}
+
+# copy from dist directory after boot
+function cp_from_dist_after_boot() {
+    local path="$1"
+    local permissions="$2"
+    local distdir="${RPI_ROOT}/home/pi/bootstrap-dist"
+    [[ -n "${path}" ]] || error "missing parameter. cp_from_dist_after_boot"
+    echo " registering ${path} for copying after boot ..."
+    # create directory?
+    [[ -d "${distdir}" ]] || {
+        sudo mkdir "${distdir}" || error "mkdir"
+        chmod_pi 0770 "${distdir}" || error "chmod_pi"
+        chown_pi "${distdir}" || error "chown_pi"
+    }
+    # copy directory?
+    if [[ -d "${path}" ]] ; then
+        # copy to image
+        sudo cp -r "${RPI_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || error "cp"
+        # register copy command
+        run_once "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}") || exit 1" || error "cp -r ${path}/* to /$(dirname "${path}")"
+    # copy file?
+    else
+        sudo cp -r "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
+        run_once "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\" || exit 1" || error "cp ${path} to ${RPI_ROOT}/$(dirname "${path}")"
+    fi
 }
 
 # chown for pi user
