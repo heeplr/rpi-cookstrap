@@ -6,11 +6,11 @@ RPI_ADDUSER_GROUP=${RPI_ADDUSER_GROUP:=}
 
 
 rpi_adduser_prerun() {
-    [[ -n "${RPI_ADDUSER_GROUP}" ]] || exit "RPI_ADDUSER_GROUP not set. adduser"
+    [[ -n "${RPI_ADDUSER_GROUP}" ]] || error "RPI_ADDUSER_GROUP not set. adduser"
 }
 
 rpi_adduser_run() {
-    run_once "adduser pi ${RPI_ADDUSER_GROUP}" || exit "add to group ${RPI_ADDUSER_GROUP}"
+    run_once "adduser pi ${RPI_ADDUSER_GROUP}" || error "add to group ${RPI_ADDUSER_GROUP}"
 }
 
 rpi_adduser_description() {
