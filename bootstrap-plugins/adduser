@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# add pi user to group
+
+RPI_ADDUSER_GROUP=${RPI_ADDUSER_GROUP:=}
+
+
+rpi_adduser_prerun() {
+    [[ -n "${RPI_ADDUSER_GROUP}" ]] || exit "RPI_ADDUSER_GROUP not set. adduser"
+}
+
+rpi_adduser_run() {
+    run_once "adduser pi ${RPI_ADDUSER_GROUP}" || exit "add to group ${RPI_ADDUSER_GROUP}"
+}
+
+rpi_adduser_description() {
+    echo "add pi user to group"
+}
+
+rpi_adduser_help_vars() {
+    local vars=(
+        "RPI_ADDUSER_GROUP|group to add user to|${RPI_ADDUSER_GROUP}"
+    )
+    help_for_vars "${vars[@]}"
+}
