@@ -401,7 +401,7 @@ function run_on_first_login() {
     # prepare script
     if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
         # call script from .bashrc
-        run_on_login "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ;  time /bin/bash -c \"${once_script} && rm ${once_script}\" ; echo \"Done. Please reboot now.\" ; fi"
+        run_on_login "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ;  time /bin/bash -c \"${once_script} && rm ${once_script} && rm -rf /home/pi/bootstrap-dist\" ; echo \"Done. Please reboot now.\" ; fi"
         sudo touch "${RPI_ROOT}/${once_script}" || error "touch"
         sudo chmod +x "${RPI_ROOT}/${once_script}" || error "sudo chmod +x"
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
@@ -429,7 +429,7 @@ function run_on_first_boot() {
     # prepare script
     if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
         # call script from /etc/rc.local
-        run_on_boot "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ; time /bin/bash -c \"${once_script} && rm ${once_script}\" ; echo \"Done. Please reboot now.\" ; fi"
+        run_on_boot "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ; time /bin/bash -c \"${once_script} && rm ${once_script} && rm -rf /home/pi/bootstrap-dist\" ; echo \"Done. Please reboot now.\" ; fi"
         sudo touch "${RPI_ROOT}/${once_script}" || error "touch"
         sudo chmod +x "${RPI_ROOT}/${once_script}" || error "sudo chmod +x"
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
