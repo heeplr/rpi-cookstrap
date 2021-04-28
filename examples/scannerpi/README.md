@@ -39,7 +39,5 @@ eject /dev/sdcard
 
 * Append hostname/address of your scannerpi to **/etc/sane.d/net.conf**
 
-* use any sane compatible scanner application
+Done. You can now use any sane compatible scanner application.
 
-
-Done.
