@@ -113,7 +113,7 @@ Some standard variables are:
 * **RPI_BOOT** - mountpoint for boot partition (default: *./.bootstrap-work/boot*)
 * **RPI_HOSTNAME** - hostname (default: unnamed)
 * **RPI_BOOTSTRAP_PLUGINS** - array of plugin names to run in order (default: () )
-
+* **RPI_PROVISION_ON_BOOT** - run setup on first boot (true) otherwise on first login (default: false)
 
 <div style="font-size:larger;">&#160;</div>
 
