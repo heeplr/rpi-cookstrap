@@ -25,7 +25,7 @@ eject /dev/sdcard
 
 * boot sdcard image
 
-* login as pi user to trigger the first time setup
+* login as pi user to trigger setup
   (prepare coffee, this will take a few minutes)
 
 * reboot the pi
