@@ -55,7 +55,7 @@ function rpi_wifi_description() {
 }
 
 function rpi_wifi_help_vars() {
-    local vars=( \
+    local vars=(
         "RPI_WIFI_SSID|SSID of network|${RPI_WIFI_SSID}"
         "RPI_WIFI_PSK|network password|${RPI_WIFI_PSK}"
         "RPI_WIFI_COUNTRY|wifi country standard. optional.|${RPI_WIFI_COUNTRY}"
