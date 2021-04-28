@@ -2,10 +2,6 @@
 
 A lightweight raspberry pi bakery shell script framework to customize, bootstrap & provision OS disk images with ease.
 
-```
-!! A LOT of **sudo** is used. Use at your own risk and do provide fixes ;) !!
-```
-
 <div style="font-size:larger;">&#160;</div>
 
 
@@ -19,6 +15,12 @@ image for your project. When creating a new project, you now have
 building blocks to simply re-use your customization from the past.
 
 You can even create new [plugins](#plugins) for your complex tasks.
+
+```
+!! A LOT of **sudo** is used. Be aware that
+this can cause damage when handled improperly.
+Use at your own risk and do provide fixes ;) !!
+```
 
 
 <div style="font-size:larger;">&#160;</div>
