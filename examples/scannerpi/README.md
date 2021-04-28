@@ -12,8 +12,8 @@ the network.
   * add public key for ssh access (comment out to disable)
 
 * edit files in **bootstrap-dist/**
-  * etc/sane.d/saned.conf - add ip's of all clients or netmask of allowed networks
-  * etc/udev/rules.d/55-libsane.rules - replace vendor id with vendor id of your scanner (find out with ```lsusb```). Copy/paste line when connecting multiple scanners.
+  * *etc/sane.d/saned.conf* - add ip's of all clients or netmask of allowed networks
+  * *etc/udev/rules.d/55-libsane.rules* - replace vendor id with vendor id of your scanner (find out with ```lsusb```). Copy/paste line when connecting multiple scanners.
 
 * create sdcard image (replace /dev/sdcard with your sdcard device):
 ```
@@ -21,7 +21,7 @@ the network.
 dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard bs=32M status=progress
 eject /dev/sdcard
 ```
-* Connect USB-Scanners using an OTG-Adapter
+* connect USB scanners using an OTG adapter
 
 * boot sdcard image
 
