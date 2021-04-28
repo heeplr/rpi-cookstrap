@@ -46,7 +46,6 @@ function rpi_rsyslogd_run() {
     # configure remote logging
     append_stdin "${RPI_ROOT}/etc/rsyslog.d/remote_log.conf" << EOF
 module(load="imjournal")
-
 *.* action(type="${RPI_RSYSLOGD_TYPE}", target="${RPI_RSYSLOGD_TARGET}" port="${RPI_RSYSLOGD_PORT}" protocol="${RPI_RSYSLOGD_PROTOCOL}" action.resumeRetryCount="${RPI_RSYSLOGD_RESUME_RETRY_COUNT}" queue.type="${RPI_RSYSLOGD_QUEUE_TYPE}" queue.size="${RPI_RSYSLOGD_QUEUE_SIZE}")
 EOF
 
