@@ -148,7 +148,7 @@ So for example, a plugin named "foo" could define functions
 * rpi_foo_help_vars
 * rpi_foo_help_distfiles
 
-All plugins can read/write all variables and share one context.
+All plugins can read/write all variables and share one context. Thus plugins can use other plugins to maximize code reuse.
 
 
 ### plugin config variables
@@ -174,3 +174,10 @@ on the image.
 
 # Examples
 see [examples/](examples/) for further examples
+
+
+
+# Troubleshooting
+
+Everything should be straight forward & verbose. You can always ```rm -rf .bootstrap-work``` to clean up and start over.
+Feel free to file an [issue](https://github.com/heeplr/rpi-cookstrap/issues) or even submit a pull request.
