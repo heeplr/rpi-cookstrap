@@ -8,11 +8,14 @@
 RPI_WORKDIR="${RPI_WORKDIR:=.bootstrap-work}"
 RPI_PLUGINDIR="${RPI_PLUGINDIR:=bootstrap-plugins}"
 RPI_DISTDIR="${RPI_DISTDIR:=bootstrap-dist}"
+RPI_USER_PLUGINDIR="${RPI_USER_PLUGINDIR:=${HOME}/.bootstrap-plugins}"
+RPI_USER_DISTDIR="${RPI_USER_DISTDIR:=${HOME}/.bootstrap-dist}"
+RPI_USER_CONFIG="${RPI_USER_CONFIG:=${HOME}/.bootstrap.cfg}"
 RPI_TMPDIR="${RPI_TMPDIR:=/tmp}"
 RPI_ROOT="${RPI_ROOT:=.bootstrap-work/root}"
 RPI_BOOT="${RPI_BOOT:=.bootstrap-work/boot}"
 RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
-RPI_BOOTSTRAP_PLUGINS=()
+RPI_BOOTSTRAP_PLUGINS="${RPI_BOOTSTRAP_PLUGINS:=}"
 RPI_PROVISION_ON_BOOT="${RPI_PROVISION_ON_BOOT:=false}"
 
 # ---------------------------------------------------------------------
@@ -128,23 +131,28 @@ function load_plugin() {
     # already loaded?
     check_for_plugin_function "rpi_${plugin}_run" && return
     # load plugin
-    . "${RPI_PLUGINDIR}/$1"
+    if [[ -f "${RPI_PLUGINDIR}/${plugin}" ]] ; then
+        . "${RPI_PLUGINDIR}/${plugin}"
+    elif [[ -f "${RPI_USER_PLUGINDIR}/${plugin}" ]] ; then
+        . "${RPI_USER_PLUGINDIR}/${plugin}"
+    else
+        error "plugin ${plugin} load"
+    fi
     # check for mandatory functions
     check_for_plugin_function "rpi_${plugin}_run" || ( warn "plugin \"${plugin}\" needs a \"rpi_${plugin}_run\" function." ; return 1 )
-    # run prerun checks
     check_for_plugin_function "rpi_${plugin}_prerun" || ( warn "plugin \"${plugin}\" needs a \"rpi_${plugin}_prerun\" function." ; return 1 )
 }
 
 # load all plugins
 function load_all_plugins() {
     local p
+    # load project plugins
     for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
-        # file existing?
-        [[ -f "${RPI_PLUGINDIR}/${p}" ]] || error "plugin \"${RPI_PLUGINDIR}/${p}\" not found."
-        # load plugin
-        load_plugin "${p}" || error "plugin load ${p}"
-        # preflight check
-        "rpi_${p}_prerun" || error "preflight check for plugin \"${p}\""
+        # prefer user plugin
+        [[ -f "${RPI_USER_PLUGINDIR}/${p}" ]] && load_plugin "${p}" && { "rpi_${p}_prerun" || error "preflight check for plugin \"${p}\"" ; }
+        # load project plugin
+        load_plugin "${p}" && { "rpi_${p}_prerun" || error "preflight check for plugin \"${p}\"" ; } && continue
+        error "plugin load ${p}"
     done
 }
 
@@ -204,6 +212,8 @@ function loopback_setup() {
     warn "using \"${device}\""
     # store device
     RPI_IMG_DEV="${device}"
+    # store img name
+    RPI_IMG_NAME="${image}"
 }
 
 # tear down loopback device
@@ -295,21 +305,30 @@ function replace_string_in_file() {
 # check if dist file exists
 function dist_exist() {
     local file="$1"
-    [[ -e "${RPI_DISTDIR}/${file}" ]] || return 1
-    return 0
+    [[ -e "${RPI_DISTDIR}/${file}" ]] && return 0
+    [[ -e "${RPI_USER_DISTDIR}/${file}" ]] && return 0
+    return 1
 }
 
 # copy from dist directory to root directory
 function cp_from_dist() {
     local path="$1"
     local permissions="$2"
+    local dst
     [[ -n "${path}" ]] || error "missing parameter. cp_from_dist"
     echo " copying ${path} ..."
     # directory?
-    if [[ -d "${path}" ]] ; then
-        sudo cp -r "${RPI_DISTDIR}/${path}/"* "${RPI_ROOT}/$(dirname "${path}")" || error "cp -r ${path}/* to ${RPI_ROOT}/$(dirname "${path}")"
+    dst="${RPI_ROOT}/$(dirname "${path}")"
+    if [[ -d "${RPI_DISTDIR}/${path}" ]] ; then
+        sudo cp -r "${RPI_DISTDIR}/${path}/"* "${dst}" || error "cp -r ${path}/* to ${dst}"
+    elif [[ -d "${RPI_USER_DISTDIR}/${path}" ]] ; then
+        sudo cp -r "${RPI_USER_DISTDIR}/${path}/"* "${dst}" || error "cp -r ${path}/* to ${dst}"
+    elif [[ -f "${RPI_DISTDIR}/${path}" ]] ; then
+        sudo cp "${RPI_DISTDIR}/${path}" "${dst}" || error "cp ${path} to ${dst}"
+    elif [[ -f "${RPI_USER_DISTDIR}/${path}" ]] ; then
+        sudo cp "${RPI_USER_DISTDIR}/${path}" "${dst}" || error "cp ${path} to ${dst}"
     else
-        sudo cp "${RPI_DISTDIR}/${path}" "${RPI_ROOT}/$(dirname "${path}")" || error "cp ${path} to ${RPI_ROOT}/$(dirname "${path}")"
+        error "cp ${path} ${dst}"
     fi
     # chmod?
     [[ -n "${permissions}" ]] && chmod_pi "${permissions}" "${path}"
@@ -343,12 +362,12 @@ function cp_from_dist_after_boot() {
     # copy directory?
     if [[ -d "${path}" ]] ; then
         # copy to image
-        sudo cp -r "${RPI_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || error "cp"
+        sudo cp -r "${RPI_USER_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || sudo cp -r "${RPI_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || error "cp"
         # register copy command
         run_once "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}")" || error "run_once"
     # copy file?
     else
-        sudo cp -r "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
+        sudo cp -r "${RPI_USER_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || sudo cp -r "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
         run_once "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\"" || error "run_once"
     fi
     # chmod?
@@ -450,8 +469,11 @@ function run_once() {
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 
-# load config
-if [[ -e "$(dirname "$0")/bootstrap.cfg" ]] ; then . "$(dirname "$0")/bootstrap.cfg" ; fi
+# load project config
+[[ -f "$(dirname "$0")/bootstrap.cfg" ]] || error "loading bootstrap.cfg"
+. "$(dirname "$0")/bootstrap.cfg"
+# load user config (overrides project config)
+[[ -f "${RPI_USER_CONFIG}" ]] && . "${RPI_USER_CONFIG}" 2>/dev/null
 
 # parse cmdline options
 parse_cmdline_args "$@"

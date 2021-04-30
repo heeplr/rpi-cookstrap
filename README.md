@@ -111,6 +111,9 @@ Some standard variables are:
 * **RPI_DISTDIR** - s. [dist dir](#dist-dir) (default: ./bootstrap_dist)
 * **RPI_WORKDIR** - work dir. can be removed at any time to start from scratch (default: *./.bootstrap-work*)
 * **RPI_TMPDIR** - temporary dir (default: */tmp*)
+* **RPI_USER_PLUGINDIR** - user specific plugins. If plugin exists here, it will be prefered over one in RPI_PLUGINDIR (default: *~/.bootstrap-plugins*)
+* **RPI_USER_DISTDIR** - user specific distdir. If files exist here, they will be prefered over the ones in RPI_DISTDIR (default: *~/.bootstrap-dist*)
+* **RPI_USER_CONFIG** - user specific config. If existing, will override the project's *bootstrap.cfg* (default: *~/.bootstrap.cfg*)
 * **RPI_ROOT** - mountpoint for root partition (default: *./.bootstrap-work/root*)
 * **RPI_BOOT** - mountpoint for boot partition (default: *./.bootstrap-work/boot*)
 * **RPI_HOSTNAME** - hostname (default: unnamed)
@@ -170,6 +173,27 @@ on the image.
 
 
 <div style="font-size:larger;">&#160;</div>
+
+
+## Advanced usage
+
+If you build a lot of rpi-cookstrap projects, you don't want to apply
+your personal changes to every project. You can create a user specific
+config, that will be applied to all projects you bootstrap.
+E.g. the SSID and PSK of your wifi will rarely change, you can just
+create a *~/.bootstrap.cfg* containing
+```
+RPI_WIFI_SSID="yournetwork"
+RPI_WIFI_PSK="very-secret-password"
+```
+This will always override any other RPI_WIFI_SSID/PSK. For arrays, you
+can append values to not override the project settings. E.g.
+
+```
+RPI_APT_CMDS+=( "install screen" )
+```
+will run "apt install screen" whenever a project runs the apt plugin.
+
 
 
 # Examples
