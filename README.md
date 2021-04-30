@@ -39,8 +39,6 @@ Use at your own risk and do provide fixes ;) !!
 ## Getting started
 
 Try ```./bootstrap.sh -h``` for help.
-Your user must be part of the *"disk"* group to use losetup for mounting
-the disk image.
 
 
 ### bootstrapping an image
