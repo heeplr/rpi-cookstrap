@@ -2,6 +2,16 @@
 
 A lightweight raspberry pi bakery shell script framework to customize, bootstrap & provision OS disk images with ease.
 
+bootstrap.sh demo:
+
+[![asciicast](https://asciinema.org/a/ELWTfaMCbMnuIv87KPliFC3G3.svg)](https://asciinema.org/a/ELWTfaMCbMnuIv87KPliFC3G3)
+
+
+self-provisioning on raspberry pi demo:
+
+[![asciicast](https://asciinema.org/a/4bumTwt4d9WTY9MpJE7MNDsen.svg)](https://asciinema.org/a/4bumTwt4d9WTY9MpJE7MNDsen)
+
+
 <div style="font-size:larger;">&#160;</div>
 
 
