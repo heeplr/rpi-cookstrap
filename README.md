@@ -194,11 +194,21 @@ RPI_APT_CMDS+=( "install screen" )
 ```
 will run "apt install screen" whenever a project runs the apt plugin.
 
+To always run a plugin after all project's plugins are executed, do
+```
+RPI_BOOTSTRAP_PLUGINS+=( "wifi" )
+```
+(All plugins should behave nicely when run multiple times.)
+
+
+<div style="font-size:larger;">&#160;</div>
 
 
 # Examples
 see [examples/](examples/) for further examples
 
+
+<div style="font-size:larger;">&#160;</div>
 
 
 # Troubleshooting
