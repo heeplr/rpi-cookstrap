@@ -152,7 +152,7 @@ They all provide a set of functions prefixed by rpi_ and their name (bold ones a
 Plugins are run sequentially. Execution order matters, so download plugins
 always need to run first.
 If you want to run the "raspbian_download" plugin to download the image and
-the "wifi" plugin to configure wireless networking or example, you
+the "wifi" plugin to configure wireless networking for example, you
 would set: ```RPI_BOOTSTRAP_PLUGINS=( "raspbian_download" "wifi" )```
 
 All plugins can read/write all variables and share one context.
