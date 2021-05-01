@@ -485,18 +485,17 @@ parse_cmdline_args "$@"
 banner
 
 # check if there are plugins
-if [[ "${#RPI_BOOTSTRAP_PLUGINS[@]}" == "0" ]] ; then
-    error "no plugins configured. set RPI_BOOTSTRAP_PLUGINS"
-fi
+[[ -n "${RPI_BOOTSTRAP_PLUGINS}" ]] || error "no plugins configured. set RPI_BOOTSTRAP_PLUGINS"
+
 # load plugins
 load_all_plugins
 
 # create root mountpoint
-if ! [[ -d "${RPI_ROOT}" ]]  ; then mkdir -p "${RPI_ROOT}" ; fi
+[[ -d "${RPI_ROOT}" ]] || mkdir -p "${RPI_ROOT}"
 # create boot mountpoint
-if ! [[ -d "${RPI_BOOT}" ]]  ; then mkdir -p "${RPI_BOOT}" ; fi
+[[ -d "${RPI_BOOT}" ]] || mkdir -p "${RPI_BOOT}"
 # create workdir
-if ! [[ -d "${RPI_WORKDIR}" ]]  ; then mkdir -p "${RPI_WORKDIR}" ; fi
+[[ -d "${RPI_WORKDIR}" ]] || mkdir -p "${RPI_WORKDIR}"
 
 # run plugins
 run_all_plugins
