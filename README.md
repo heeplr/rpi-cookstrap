@@ -16,7 +16,7 @@ self-provisioning on raspberry pi demo:
 
 
 ## Why?
-If you work a lot with raspberry pi's, you find yourself repeatedly 
+If you work a lot with raspberry pi's, you find yourself repeatedly
 downloading OS images, copy them to the sdcard, customizing settings
 like wpa_supplicant.conf or enable ssh.
 You then have to boot the image and configure everything (installing
@@ -149,7 +149,7 @@ They all provide a set of functions prefixed by rpi_ and their name (bold ones a
 |*_help_vars()*      | will call "help_for_vars" function passing an array of "name|helptext|default_value" strings to describe each variable specific to this plugin.
 |*_help_distfiles()* | call "help_for_distfiles" passing an array of "name|helptext" strings to describe each file used by this plugin.
 
-Plugins are run sequentially. Execution order matters, so download plugins 
+Plugins are run sequentially. Execution order matters, so download plugins
 always need to run first.
 If you want to run the "raspbian_download" plugin to download the image and
 the "wifi" plugin to configure wireless networking or example, you
@@ -161,7 +161,7 @@ Thus plugins can use other plugins to maximize code reuse.
 
 ### plugin config variables
 All plugins should read/write variables starting with RPI_ followed by the
-capitalized plugin name. So a plugin named "foo" would use RPI_FOO_* and 
+capitalized plugin name. So a plugin named "foo" would use RPI_FOO_* and
 thus could use a variable like "RPI_FOO_SOME_VAR=123".
 
 
@@ -230,3 +230,11 @@ see [examples/](examples/) for further examples
 
 Everything should be straight forward & verbose. You can always ```rm -rf .bootstrap-work``` to clean up and start over.
 Feel free to file an [issue](https://github.com/heeplr/rpi-cookstrap/issues) or even submit a pull request.
+
+
+<div style="font-size:larger;">&#160;</div>
+
+
+# ToDo
+* detailed plugin documentation (wiki)
+* dry-run mode (output all actions without performing them)
