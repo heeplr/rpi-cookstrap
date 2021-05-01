@@ -116,7 +116,7 @@ function parse_cmdline_args() {
                 ;;
 
             *)
-                echo "Usage: $0 [-h] [-l]"
+                usage
                 exit 1
                 ;;
         esac
