@@ -16,15 +16,17 @@ self-provisioning on raspberry pi demo:
 
 
 ## Why?
-Ever been annoyed of customizing your fresh raspberry setup although
-you've done the same repetitive tasks already on your past projects?
-Not anymore!
+If you work a lot with raspberry pi's, you find yourself repeatedly 
+downloading OS images, copy them to the sdcard, customizing settings
+like wpa_supplicant.conf or enable ssh.
+You then have to boot the image and configure everything (installing
+packages, edit config files, etc.)
 
-Just run *bootstrap.sh* inside your project directory to build a fresh
-image for your project. When creating a new project, you now have
-building blocks to simply re-use your customization from the past.
+With rpi-cookstrap you can set up everything beforehand and build the
+image by just running *bootstrap.sh*. When booting that image, it will
+setup itself attended or unattended.
 
-You can even create new [plugins](#plugins) for your complex tasks.
+You can also create new [plugins](#plugins) for complex tasks.
 
 ```
 !! A LOT of **sudo** is used. Be aware that
@@ -43,7 +45,7 @@ Try ```./bootstrap.sh -h``` for help.
 
 ### bootstrapping an image
 
-bootstrap.sh will download the latest OS release, mount it via loopback and modifies it. It will change/copy files and add commands to run upon first boot or first login of the pi user (default). The one-time script will delete itself after successful execution leaving you with a clean, pre-configured image.
+*examples/wifi+ssh/bootstrap.sh* will download the latest OS release and mount it via loopback. It will change/copy files and add commands to run upon first boot or first login of the pi user. The one-time script will delete itself after successful execution leaving you with a clean, pre-configured image like if you did it manually.
 
 ```
 $ cd examples/wifi+ssh
@@ -80,16 +82,15 @@ $ eject /dev/sdcard
 ```
 with /dev/sdcard being your sdcard, (e.g. /dev/sda)
 
-Then boot that image in your raspberrypi.
-Trigger one-time self-setup by logging in locally or remotely:
+Boot that image in your raspberrypi and trigger self-setup by logging in locally or remotely:
 ```
-ssh pi@host
+ssh pi@example
 ```
-you can replace "host" by an IP address or by a valid domain.
+(replace "example" by the IP address or the FQDN of your pi).
 
 
 
-### customizing your own image
+### creating your own project
 
 * copy *"bootstrap.sh"* to your project directory
 * create a *["bootstrap-dist"](#dist-dir)* directory with
@@ -104,7 +105,8 @@ all the files you want to copy unchanged to your raspi.
 
 ## Config
 Configuration (i.e. the "receipe" to cook the image) is done by defining
-bash key/value pairs in *"bootstrap.cfg"* (must be in same directory as the *"bootstrap.sh"* script)
+bash key/value pairs in *"bootstrap.cfg"* (must be in same directory as the
+*"bootstrap.sh"* script)
 
 a minimal working example *"bootstrap.cfg"* file would look like this:
 ```
@@ -113,59 +115,54 @@ RPI_PLUGINS=("download_raspbian")
 It would just download the default latest raspbian-lite and extract the image.
 
 
-### built in config variables
-Some standard variables are:
-* **RPI_PLUGINDIR** - where plugins are located (default: *./bootstrap-plugins*)
-* **RPI_DISTDIR** - s. [dist dir](#dist-dir) (default: ./bootstrap_dist)
-* **RPI_WORKDIR** - work dir. can be removed at any time to start from scratch (default: *./.bootstrap-work*)
-* **RPI_TMPDIR** - temporary dir (default: */tmp*)
-* **RPI_USER_PLUGINDIR** - user specific plugins. If plugin exists here, it will be prefered over one in RPI_PLUGINDIR (default: *~/.bootstrap-plugins*)
-* **RPI_USER_DISTDIR** - user specific distdir. If files exist here, they will be prefered over the ones in RPI_DISTDIR (default: *~/.bootstrap-dist*)
-* **RPI_USER_CONFIG** - user specific config. If existing, will override the project's *bootstrap.cfg* (default: *~/.bootstrap.cfg*)
-* **RPI_ROOT** - mountpoint for root partition (default: *./.bootstrap-work/root*)
-* **RPI_BOOT** - mountpoint for boot partition (default: *./.bootstrap-work/boot*)
-* **RPI_HOSTNAME** - hostname (default: unnamed)
-* **RPI_BOOTSTRAP_PLUGINS** - array of plugin names to run in order (default: () )
-* **RPI_PROVISION_ON_BOOT** - run setup on first boot (true) otherwise on first login (default: false)
+### builtin config variables
+
+| name                     | description                                                        | default value |
+|--------------------------|--------------------------------------------------------------------|---------------|
+|**RPI_PLUGINDIR**         | path to plugins                                                    | *./bootstrap-plugins*|
+|**RPI_DISTDIR**           | s. [dist dir](#dist-dir)                                           | *./bootstrap_dist*|
+|**RPI_WORKDIR**           | work dir. can be removed at any time to start from scratch         | *./.bootstrap-work*|
+|**RPI_TMPDIR**            | temporary dir                                                      | */tmp*|
+|**RPI_USER_PLUGINDIR**    | user specific plugins. If a plugin exists here, it will be prefered over the one in RPI_PLUGINDIR | *~/.bootstrap-plugins*|
+|**RPI_USER_DISTDIR**      | user specific distdir. If files exist here, they will be prefered over the ones in RPI_DISTDIR | *~/.bootstrap-dist*|
+|**RPI_USER_CONFIG**       | user specific config. Additional to the project's *bootstrap.cfg*  | *~/.bootstrap.cfg*|
+|**RPI_ROOT**              | mountpoint for root partition                                      | *./.bootstrap-work/root*
+|**RPI_BOOT**              | mountpoint for boot partition                                      | *./.bootstrap-work/boot*
+|**RPI_HOSTNAME**          | hostname                                                           | unnamed
+|**RPI_BOOTSTRAP_PLUGINS** | array of plugin names to run in order                              | () |
+|**RPI_PROVISION_ON_BOOT** | run setup on first boot (true) otherwise on first login            | false
 
 <div style="font-size:larger;">&#160;</div>
 
 
 ## Plugins
 
-Plugins are run sequentially. Execution order matters, so e.g.
-download plugins always need to run first. They are defined by
-the **RPI_BOOTSTRAP_PLUGINS** config variable in bootstrap.cfg
-
-If you want to run the "raspbian_download" plugin to download the image and
-configure wireless networking using the "wifi" plugin afterwards for example, you
-would set: ```RPI_BOOTSTRAP_PLUGINS=( "raspbian_download" "wifi" )```
-
-Plugins reside in **RPI_PLUGINDIR**.
+Plugins reside in **RPI_PLUGINDIR** (and optionally in **RPI_USER_PLUGINDIR**).
 They all provide a set of functions prefixed by rpi_ and their name (bold ones are mandatory):
 
-* ***_prerun()** - runs before anything is done (before download etc.) Will halt execution when failing.
-* *_postrun() - runs after all plugins are done (cleaning up etc.)
-* ***_run()** - execute main plugin task. Will also halt execution when failing.
-* *_description() - print a general short description of the plugin
-* *_help_vars() - call "help_for_vars" function passing an array of "name|helptext|default_value" strings.
-* *_help_distfiles() - call "help_for_distfiles" passing an array of "name|helptext" strings
+| function           | description |
+|--------------------|-------------------------------------------------------------------------------------------|
+|**_prerun()**       | runs before anything is done (before download etc.) Will halt execution when failing.
+|**_run()**          | execute main plugin task. Will also halt execution when failing.
+|*_postrun()*        | runs after all plugins are done (cleaning up etc.)
+|*_description()*    | print a general short description of the plugin
+|*_help_vars()*      | will call "help_for_vars" function passing an array of "name|helptext|default_value" strings to describe each variable specific to this plugin.
+|*_help_distfiles()* | call "help_for_distfiles" passing an array of "name|helptext" strings to describe each file used by this plugin.
 
-So for example, a plugin named "foo" could define functions
-* **rpi_foo_prerun**
-* rpi_foo_postrun
-* **rpi_foo_run**
-* rpi_foo_description
-* rpi_foo_help_vars
-* rpi_foo_help_distfiles
+Plugins are run sequentially. Execution order matters, so download plugins 
+always need to run first.
+If you want to run the "raspbian_download" plugin to download the image and
+the "wifi" plugin to configure wireless networking or example, you
+would set: ```RPI_BOOTSTRAP_PLUGINS=( "raspbian_download" "wifi" )```
 
-All plugins can read/write all variables and share one context. Thus plugins can use other plugins to maximize code reuse.
+All plugins can read/write all variables and share one context.
+Thus plugins can use other plugins to maximize code reuse.
 
 
 ### plugin config variables
-All plugins should read variables starting with RPI_ followed by the capitalized plugin name.
-So a plugin named "foo" would use RPI_FOO_* and thus could have something like
-"RPI_FOO_SOME_VAR=123" in [bootstrap.cfg](#config)
+All plugins should read/write variables starting with RPI_ followed by the
+capitalized plugin name. So a plugin named "foo" would use RPI_FOO_* and 
+thus could use a variable like "RPI_FOO_SOME_VAR=123".
 
 
 <div style="font-size:larger;">&#160;</div>
@@ -185,17 +182,27 @@ on the image.
 
 ## Advanced usage
 
-If you build a lot of rpi-cookstrap projects, you don't want to apply
-your personal changes to every project. You can create a user specific
+If you build a lot of different rpi-cookstrap projects, you can create a user specific
 config, that will be applied to all projects you bootstrap.
-E.g. the SSID and PSK of your wifi will rarely change, you can just
-create a *~/.bootstrap.cfg* containing
+
+### A simple example
+
+Say you want to use the [wifi+upgrade](/examples/wifi+upgrade) example but add your own WIFI
+credentials and authorize two of your public keys. Then just create a *~/.bootstrap.cfg* containing:
 ```
+# wifi credentials
 RPI_WIFI_SSID="yournetwork"
 RPI_WIFI_PSK="very-secret-password"
+# ssh pubkey
+RPI_SSH_AUTHORIZE=( "ssh-ed25519 AAAA... user1@host" "ssh-ed25519 AAAA... user2@host" )
+# run ssh plugin in addition to the plugins from the wifi+upgrade example
+RPI_BOOTSTRAP_PLUGINS+=( "ssh" )
 ```
-This will always override any other RPI_WIFI_SSID/PSK. For arrays, you
-can append values to not override the project settings. E.g.
+
+That's it.
+
+These settings will always override any other RPI_WIFI_SSID/PSK in a project's config.
+For arrays, you can append values to not override the project settings. E.g.
 
 ```
 RPI_APT_CMDS+=( "install screen" )
@@ -206,7 +213,7 @@ To always run a plugin after all project's plugins are executed, do
 ```
 RPI_BOOTSTRAP_PLUGINS+=( "wifi" )
 ```
-(All plugins should behave nicely when run multiple times.)
+(All plugins *should* behave nicely when run multiple times.)
 
 
 <div style="font-size:larger;">&#160;</div>
