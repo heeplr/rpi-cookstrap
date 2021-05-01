@@ -79,7 +79,9 @@ function parse_cmdline_args() {
                 # print plugin help
                 printf "Plugins:\n\n"
                 local f
-                for f in "${RPI_PLUGINDIR}"/* ; do
+                # enable nullglob to not expand * if there are no files
+                shopt -s nullglob
+                for f in "${RPI_PLUGINDIR}"/* "${RPI_USER_PLUGINDIR}"/* ; do
                     # plugin name from path
                     local p
                     p="$(basename "${f}")"
@@ -104,6 +106,8 @@ function parse_cmdline_args() {
                         echo
                     fi
                 done
+                # disable nullglob
+                shopt -u nullglob
                 exit 1
                 ;;
 
