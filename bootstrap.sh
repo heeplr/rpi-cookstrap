@@ -470,7 +470,7 @@ function run_once() {
 # ---------------------------------------------------------------------
 
 # load project config
-[[ -f "$(dirname "$0")/bootstrap.cfg" ]] && . "$(dirname "$0")/bootstrap.cfg" || warn "loading bootstrap.cfg failed"
+{ [[ -f "$(dirname "$0")/bootstrap.cfg" ]] && . "$(dirname "$0")/bootstrap.cfg" ; } || warn "loading bootstrap.cfg failed"
 # load user config (overrides project config)
 [[ -f "${RPI_USER_CONFIG}" ]] && . "${RPI_USER_CONFIG}" 2>/dev/null
 
