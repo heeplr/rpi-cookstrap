@@ -146,8 +146,8 @@ They all provide a set of functions prefixed by rpi_ and their name (bold ones a
 |**_run()**          | execute main plugin task. Will also halt execution when failing.
 |*_postrun()*        | runs after all plugins are done (cleaning up etc.)
 |*_description()*    | print a general short description of the plugin
-|*_help_vars()*      | will call "help_for_vars" function passing an array of "name|helptext|default_value" strings to describe each variable specific to this plugin.
-|*_help_distfiles()* | call "help_for_distfiles" passing an array of "name|helptext" strings to describe each file used by this plugin.
+|*_help_vars()*      | will call "help_for_vars" function passing an array of "name\|helptext\|default_value" strings to describe each variable specific to this plugin.
+|*_help_distfiles()* | call "help_for_distfiles" passing an array of "name\|helptext" strings to describe each file used by this plugin.
 
 Plugins are run sequentially. Execution order matters, so download plugins
 always need to run first.
