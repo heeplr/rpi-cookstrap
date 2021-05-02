@@ -12,6 +12,7 @@ function rpi_powersave_prerun() {
 function rpi_powersave_run() {
     local disable_services=(
         "avahi-daemon"
+        "avahi-daemon.socket"
         "triggerhappy"
         "bluetooth"
         "hciuart"
@@ -23,6 +24,7 @@ function rpi_powersave_run() {
         "apt-daily-upgrade.timer"
         "apt-daily.timer"
         "man-db.timer"
+        "wpa_supplicant"
     )
     # prefix disable_services with "disable "
     RPI_SYSTEMCTL_CMDS="disable ${disable_services[*]}"
