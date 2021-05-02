@@ -28,14 +28,19 @@ function banner() {
 EOF
 }
 
+# print log msg
+function log() {
+    echo "$*" 2>&2
+}
+
 # print warning
 function warn() {
-    echo "$*" >&2
+    echo "WARNING: $*" >&2
 }
 
 # print error msg
 function error() {
-    echo "error: $* failed." >&2
+    echo "ERROR: $* failed." >&2
     exit 1
 }
 

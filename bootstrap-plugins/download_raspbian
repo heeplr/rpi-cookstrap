@@ -15,7 +15,7 @@ function rpi_download_raspbian_run() {
     local name="raspbian-${RPI_DOWNLOAD_RASPBIAN_FLAVOR}.img"
     local dest="${RPI_WORKDIR}/${name}"
 
-    warn "downloading ${RPI_DOWNLOAD_RASPBIAN_URL} ..."
+    log "downloading ${RPI_DOWNLOAD_RASPBIAN_URL} ..."
 
     # already downloaded?
     if ! [[ -f "${dest}" ]] ; then
@@ -24,7 +24,7 @@ function rpi_download_raspbian_run() {
       # download
       download_file "${RPI_DOWNLOAD_RASPBIAN_URL}" "${tmpfile}"
       # unzip
-      warn "unzipping \"${tmpfile}\""
+      log "unzipping \"${tmpfile}\""
       unzip "${tmpfile}" || error unzip
       sync
       rm "${tmpfile}" || error rm
