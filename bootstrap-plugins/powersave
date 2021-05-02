@@ -27,6 +27,7 @@ function rpi_powersave_run() {
         "wpa_supplicant"
     )
     # prefix disable_services with "disable "
+    IFS=" "
     RPI_SYSTEMCTL_CMDS="disable ${disable_services[*]}"
     rpi_systemctl_run || error "systemctl disable"
 
