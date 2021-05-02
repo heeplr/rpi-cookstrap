@@ -20,10 +20,11 @@ RPI_PROVISION_ON_BOOT="${RPI_PROVISION_ON_BOOT:=false}"
 
 # ---------------------------------------------------------------------
 # print banner
-bold=$(tput bold)
-invert=$(tput smso)
-normal=$(tput sgr0)
-
+bold="$(tput bold)"
+invert="$(tput smso)"
+normal="$(tput sgr0)"
+red="$(tput setaf 1)"
+green="$(tput setaf 2)"
 
 function banner() {
     cat << EOF
@@ -35,17 +36,17 @@ EOF
 
 # print log msg
 function log() {
-    echo "$*" 2>&2
+    echo "[INFO]: $*" 2>&2
 }
 
 # print warning
 function warn() {
-    echo "${bold}WARNING: $*${normal}" >&2
+    echo "[${bold}WARNING${normal}]: ${bold}$*${normal}" >&2
 }
 
 # print error msg
 function error() {
-    echo "${invert}ERROR: $* failed.${normal}" >&2
+    echo "[${red}ERROR${normal}]: ${bold}$* failed.${normal}" >&2
     exit 1
 }
 
@@ -174,7 +175,7 @@ function load_all_plugins() {
 function run_all_plugins() {
     local p
     for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
-        echo "running plugin: ${p}"
+        log "running plugin: ${p}"
         "rpi_${p}_run" || error "plugin \"${p}\""
     done
 }
@@ -238,7 +239,7 @@ function loopback_cleanup() {
 
 # mount raspberry image
 function mount_image() {
-    echo "mounting image..."
+    log "mounting image..."
     # already mounted?
     mount | grep --quiet "${RPI_IMG_DEV}" && return 0
     # wait for sync
@@ -330,7 +331,7 @@ function cp_from_dist() {
     local permissions="$2"
     local dst
     [[ -n "${path}" ]] || error "missing parameter. cp_from_dist"
-    echo " copying ${path} ..."
+    log " copying ${path} ..."
     # directory?
     dst="${RPI_ROOT}/$(dirname "${path}")"
     if [[ -d "${RPI_DISTDIR}/${path}" ]] ; then
@@ -364,7 +365,7 @@ function cp_from_dist_after_boot() {
     local permissions="$2"
     local distdir="${RPI_ROOT}/home/pi/bootstrap-dist"
     [[ -n "${path}" ]] || error "missing parameter. cp_from_dist_after_boot"
-    echo " registering ${path} for copying after boot ..."
+    log " registering ${path} for copying after boot ..."
     # create directory?
     [[ -d "${distdir}" ]] || {
         sudo mkdir "${distdir}" || error "mkdir"
@@ -439,7 +440,7 @@ function run_on_first_login() {
     append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
     append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
-    echo " run (login) cmd installed: \"$*\""
+    log " run (login) cmd installed: \"$*\""
 }
 
 # run on every boot
@@ -467,7 +468,7 @@ function run_on_first_boot() {
     append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
     append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
-    echo " run (boot) cmd installed: \"$*\""
+    log " run (boot) cmd installed: \"$*\""
 }
 
 # run command once (either on first boot or on first login)
@@ -515,7 +516,7 @@ if [[ "${RPI_DONT_CLEANUP}" != "true" ]] ; then
     # run postrun
     postrun_all_plugins
 else
-    printf "\nNOT CLEANING UP! Don't forget to umount & losetup -d"
+    warn "NOT CLEANING UP! Don't forget to umount & losetup -d"
 fi
 
 printf "\n\n"
