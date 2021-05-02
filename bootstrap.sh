@@ -20,6 +20,11 @@ RPI_PROVISION_ON_BOOT="${RPI_PROVISION_ON_BOOT:=false}"
 
 # ---------------------------------------------------------------------
 # print banner
+bold=$(tput bold)
+invert=$(tput smso)
+normal=$(tput sgr0)
+
+
 function banner() {
     cat << EOF
  ----------------------------------------
@@ -35,12 +40,12 @@ function log() {
 
 # print warning
 function warn() {
-    echo "WARNING: $*" >&2
+    echo "${bold}WARNING: $*${normal}" >&2
 }
 
 # print error msg
 function error() {
-    echo "ERROR: $* failed." >&2
+    echo "${invert}ERROR: $* failed.${normal}" >&2
     exit 1
 }
 
@@ -218,7 +223,7 @@ function loopback_setup() {
         # attach image
         device="$(sudo losetup --show --find --partscan "${image}")" || error losetup
     fi
-    warn "using \"${device}\""
+    log "using \"${device}\""
     # store device
     RPI_IMG_DEV="${device}"
     # store img name
