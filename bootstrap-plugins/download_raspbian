@@ -15,7 +15,7 @@ function rpi_download_raspbian_run() {
     local name="raspbian-${RPI_DOWNLOAD_RASPBIAN_FLAVOR}.img"
     local dest="${RPI_WORKDIR}/${name}"
 
-    log "downloading ${RPI_DOWNLOAD_RASPBIAN_URL} ..."
+    echo " downloading ${RPI_DOWNLOAD_RASPBIAN_URL} ..."
 
     # already downloaded?
     if ! [[ -f "${dest}" ]] ; then
@@ -24,7 +24,7 @@ function rpi_download_raspbian_run() {
       # download
       download_file "${RPI_DOWNLOAD_RASPBIAN_URL}" "${tmpfile}"
       # unzip
-      log "unzipping \"${tmpfile}\""
+      echo " unzipping \"${tmpfile}\""
       unzip "${tmpfile}" || error unzip
       sync
       rm "${tmpfile}" || error rm
@@ -32,13 +32,13 @@ function rpi_download_raspbian_run() {
     fi
 
     # mount image
-    echo "setting up loopback for ${dest}"
+    echo " setting up loopback for ${dest}"
     loopback_setup "${dest}" || error "loopback setup"
     mount_image || error "image mount"
 }
 
 function rpi_download_raspbian_postrun() {
-    echo "cleaning up..."
+    echo " cleaning up..."
     umount_image
     loopback_cleanup
 }
