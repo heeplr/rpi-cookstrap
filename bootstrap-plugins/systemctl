@@ -6,7 +6,7 @@ RPI_SYSTEMCTL_CMDS="${RPI_SYSTEMCTL_CMDS:=""}"
 
 
 function rpi_systemctl_prerun() {
-    [[ -n "${RPI_SYSTEMCTL_CMDS}" ]] || { warn "RPI_SYSTEMCTL_CMDS must be set" ; return 1 }
+    [[ -n "${RPI_SYSTEMCTL_CMDS}" ]] || { warn "RPI_SYSTEMCTL_CMDS must be set" ; return 1 ; }
     return 0
 }
 
