@@ -97,21 +97,21 @@ function parse_cmdline_args() {
                     local p
                     p="$(basename "${f}")"
                     # load this plugin
-                    load_plugin "${p}"
+                    plugin_load "${p}"
                     # general description
-                    if check_for_plugin_function "rpi_${p}_description" ; then
+                    if plugin_check_for_func "rpi_${p}_description" ; then
                         echo -n "\"${p}\" - "
                         "rpi_${p}_description"
                     else
                         echo "\"${p}\""
                     fi
                     # config var description
-                    if check_for_plugin_function "rpi_${p}_help_vars" ; then
+                    if plugin_check_for_func "rpi_${p}_help_vars" ; then
                         "rpi_${p}_help_vars"
                         echo
                     fi
                     # distfile description
-                    if check_for_plugin_function "rpi_${p}_help_distfiles" ; then
+                    if plugin_check_for_func "rpi_${p}_help_distfiles" ; then
                         echo " distfiles:"
                         "rpi_${p}_help_distfiles"
                         echo
@@ -135,58 +135,77 @@ function parse_cmdline_args() {
 }
 
 # check if plugin provides function
-function check_for_plugin_function() {
+function plugin_check_for_func() {
     local funcname="$1"
     type "${funcname}">/dev/null 2>&1
 }
 
+# preflight check for plugin
+function plugin_prerun() {
+    local plugin="$1"
+    plugin_check_for_func "rpi_${p}_prerun" || plugin_load "${plugin}"
+    "rpi_${p}_prerun" || error "preflight check for plugin \"${p}\""
+    return 0
+}
+
 # load plugin and make sure it's not loaded twice
-function load_plugin() {
+function plugin_load() {
     local plugin="$1"
     # already loaded?
-    check_for_plugin_function "rpi_${plugin}_run" && return
+    plugin_check_for_func "rpi_${plugin}_run" && return
     # load plugin
-    if [[ -f "${RPI_PLUGINDIR}/${plugin}" ]] ; then
-        . "${RPI_PLUGINDIR}/${plugin}"
-    elif [[ -f "${RPI_USER_PLUGINDIR}/${plugin}" ]] ; then
+    if [[ -f "${RPI_USER_PLUGINDIR}/${plugin}" ]] ; then
         . "${RPI_USER_PLUGINDIR}/${plugin}"
+    elif [[ -f "${RPI_PLUGINDIR}/${plugin}" ]] ; then
+        . "${RPI_PLUGINDIR}/${plugin}"
     else
         error "plugin ${plugin} load"
     fi
     # check for mandatory functions
-    check_for_plugin_function "rpi_${plugin}_run" || ( warn "plugin \"${plugin}\" needs a \"rpi_${plugin}_run\" function." ; return 1 )
-    check_for_plugin_function "rpi_${plugin}_prerun" || ( warn "plugin \"${plugin}\" needs a \"rpi_${plugin}_prerun\" function." ; return 1 )
+    plugin_check_for_func "rpi_${plugin}_run" || ( warn "plugin \"${plugin}\" needs a \"rpi_${plugin}_run\" function." ; return 1 )
+    plugin_check_for_func "rpi_${plugin}_prerun" || ( warn "plugin \"${plugin}\" needs a \"rpi_${plugin}_prerun\" function." ; return 1 )
 }
 
 # load all plugins
-function load_all_plugins() {
+function plugin_load_all() {
     local p
     # load project plugins
     for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
-        # prefer user plugin
-        [[ -f "${RPI_USER_PLUGINDIR}/${p}" ]] && load_plugin "${p}" && { "rpi_${p}_prerun" || error "preflight check for plugin \"${p}\"" ; }
         # load project plugin
-        load_plugin "${p}" && { "rpi_${p}_prerun" || error "preflight check for plugin \"${p}\"" ; } && continue
-        error "plugin load ${p}"
+        plugin_prerun "${p}" || error "load ${p}"
     done
 }
 
+# run plugin
+function plugin_run() {
+    local plugin="$1"
+    plugin_check_for_func "rpi_${p}_run" || plugin_load "${plugin}"
+    "rpi_${p}_run" || error "plugin \"${p}\" run"
+    return 0
+}
+
 # run all plugins
-function run_all_plugins() {
+function plugin_run_all() {
     local p
     for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
         log "running plugin: ${p}"
-        "rpi_${p}_run" || error "plugin \"${p}\""
+        plugin_run "${p}" || error "run ${p}"
     done
 }
 
 # run rpi_*_postrun() if existing
-function postrun_all_plugins() {
+function plugin_postrun() {
+    local plugin="$1"
+    plugin_check_for_func "rpi_${p}_postrun" || return 0
+    "rpi_${p}_postrun" || error "postrun \"${p}\""
+}
+
+# run rpi_*_postrun() of all plugins
+function plugin_postrun_all() {
     local p
     for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
-        if check_for_plugin_function "rpi_${p}_postrun" ; then
-            "rpi_${p}_postrun" || error "postrun \"${p}\""
-        fi
+        log "postrun: ${p}"
+        plugin_postrun "${p}" || error "postrun ${p}"
     done
 }
 
@@ -499,7 +518,7 @@ banner
 [[ -n "${RPI_BOOTSTRAP_PLUGINS}" ]] || error "no plugins configured. set RPI_BOOTSTRAP_PLUGINS"
 
 # load plugins
-load_all_plugins
+plugin_load_all
 
 # create root mountpoint
 [[ -d "${RPI_ROOT}" ]] || mkdir -p "${RPI_ROOT}"
@@ -509,12 +528,12 @@ load_all_plugins
 [[ -d "${RPI_WORKDIR}" ]] || mkdir -p "${RPI_WORKDIR}"
 
 # run plugins
-run_all_plugins
+plugin_run_all
 
 # cleanup
 if [[ "${RPI_DONT_CLEANUP}" != "true" ]] ; then
     # run postrun
-    postrun_all_plugins
+    plugin_postrun_all
 else
     warn "NOT CLEANING UP! Don't forget to umount & losetup -d"
 fi

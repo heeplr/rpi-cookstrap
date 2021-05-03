@@ -5,8 +5,8 @@
 
 # ---------------------------------------------------------------------
 function rpi_powersave_prerun() {
-    load_plugin "systemctl"
-    load_plugin "config"
+    plugin_load "systemctl"
+    plugin_load "config"
 }
 
 function rpi_powersave_run() {
