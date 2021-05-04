@@ -150,8 +150,8 @@ function plugin_check_for_func() {
 # preflight check for plugin
 function plugin_prerun() {
     local plugin="$1"
-    plugin_check_for_func "rpi_${p}_prerun" || plugin_load "${plugin}"
-    "rpi_${p}_prerun" || error "preflight check for plugin \"${p}\""
+    plugin_check_for_func "rpi_${plugin}_prerun" || plugin_load "${plugin}"
+    "rpi_${plugin}_prerun" || error "preflight check for plugin \"${plugin}\""
     return 0
 }
 
@@ -202,72 +202,17 @@ function plugin_run_all() {
 # run rpi_*_postrun() if existing
 function plugin_postrun() {
     local plugin="$1"
-    plugin_check_for_func "rpi_${p}_postrun" || return 0
-    "rpi_${p}_postrun" || error "postrun \"${p}\""
+    # only postrun for plugins that are loaded & provide a postrun()
+    plugin_check_for_func "rpi_${plugin}_postrun" || return 0
+    "rpi_${plugin}_postrun" || error "postrun \"${plugin}\""
 }
 
 # run rpi_*_postrun() of all plugins
 function plugin_postrun_all() {
     local p
     for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
-        log "postrun: ${p}"
         plugin_postrun "${p}" || error "postrun ${p}"
     done
-}
-
-# setup loopback device to mount image
-function loopback_setup() {
-    local image="$1"
-    # argument valid?
-    [[ -f "${image}" ]] || error "${image} not found"
-    # already attached?
-    local device
-    device="$(sudo losetup -l | grep "$(basename "${image}")" | cut -d " " -f1)"
-    if [[ -z "${device}" ]] ; then
-        # attach image
-        device="$(sudo losetup --show --find --partscan "${image}")" || error losetup
-    fi
-    log "using \"${device}\""
-    # store device
-    RPI_IMG_DEV="${device}"
-    # store img name
-    RPI_IMG_NAME="${image}"
-}
-
-# tear down loopback device
-function loopback_cleanup() {
-    sudo losetup -d "${RPI_IMG_DEV}" || warn "${RPI_IMG_DEV} cleanup failed"
-    sync || warn "sync"
-}
-
-# mount raspberry image
-function mount_image() {
-    log "mounting image..."
-    # already mounted?
-    mount | grep --quiet "${RPI_IMG_DEV}" && return 0
-    # wait for sync
-    sync
-    # mount
-    sudo mount "${RPI_IMG_DEV}p1" "${RPI_BOOT}" || return 1
-    sudo mount "${RPI_IMG_DEV}p2" "${RPI_ROOT}" || return 1
-    # read os-release
-    . "${RPI_ROOT}/etc/os-release"
-    return 0
-}
-
-# unmount raspberry image
-function umount_image() {
-    sudo "umount" "${RPI_BOOT}" || warn "${RPI_BOOT} not mounted"
-    sudo "umount" "${RPI_ROOT}" || warn "${RPI_ROOT} not mounted"
-    unset PRETTY_NAME
-    unset NAME
-    unset VERSION_ID
-    unset VERSION
-    unset ID
-    unset ID_LIKE
-    unset HOME_URL
-    unset SUPPORT_URL
-    unset BUG_REPORT_URL
 }
 
 # ---------------------------------------------------------------------
@@ -524,5 +469,5 @@ fi
 
 printf "\n\n"
 printf "%s\n" \
-    "Image creation successful. Copy \"${RPI_IMG_NAME}\" to an SD card." \
-    "(e.g. dd if=${RPI_IMG_NAME} of=/dev/sdcard bs=4M conv=fsync status=progress )"
+    "Image creation successful. Copy \"${RPI_LOOPBACK_IMAGE}\" to an SD card." \
+    "(e.g. dd if=${RPI_LOOPBACK_IMAGE} of=/dev/sdcard bs=4M conv=fsync status=progress )"
