@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# remove string from file (remove line where pattern matches)
+
+RPI_REMOVE_FILE="${RPI_REMOVE_FILE:=}"
+RPI_REMOVE_PATTERN="{RPI_REMOVE_PATTERN:=}"
+
+
+function rpi_remove_prerun() {
+    [[ -n "${RPI_REMOVE_PATTERN}" ]] || error "RPI_REMOVE_PATTERN"
+    [[ -n "${RPI_REMOVE_FILE}" ]] || error "RPI_REMOVE_FILE is not set."
+    [[ -f "${RPI_REMOVE_FILE}" ]] || error "opening ${RPI_REMOVE_FILE}"
+}
+
+function rpi_remove_run() {
+    rpi_remove_pattern_from_file "${RPI_REMOVE_PATTERN}" "${RPI_REMOVE_FILE}"
+}
+
+function rpi_remove_description() {
+    echo "remove sed pattern from file where it matches"
+}
+
+function rpi_remove_help_vars() {
+    local vars=(
+        "RPI_REMOVE_FILE|file to remove pattern from|${RPI_REMOVE_FILE}"
+        "RPI_REMOVE_PATTERN|sed pattern to match (and remove)|${RPI_REMOVE_PATTERN}"
+    )
+    help_for_vars "${vars[@]}"
+}
+
+# ---------------------------------------------------------------------
+function rpi_remove_pattern_from_file() {
+    local pattern="$1"
+    local file="$2"
+    { [[ -n "${pattern}" ]] && [[ -n "${file}" ]]; } || error "missing arguments. remove line"
+    sudo sed "/${pattern}/d" -i "${file}" || error "remove_line ${pattern} ${file}"
+}

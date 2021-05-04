@@ -216,15 +216,6 @@ function plugin_postrun_all() {
 }
 
 # ---------------------------------------------------------------------
-# append file to file
-
-# remove string from file (remove line where pattern matches)
-function remove_line_from_file() {
-    local pattern="$1"
-    local file="$2"
-    { [[ -n "${pattern}" ]] && [[ -n "${file}" ]]; } || error "missing arguments. remove line"
-    sudo sed "/${pattern}/d" -i "${file}" || error "remove_line ${pattern} ${file}"
-}
 
 # replace string in file (sed pattern)
 function replace_string_in_file() {
@@ -365,7 +356,7 @@ function run_on_boot() {
     local cmd="$1"
     # remove "exit 0" at the end if it's there, so we
     # can simply append commands
-    remove_line_from_file "exit 0" "${RPI_ROOT}/etc/rc.local" || error "remove exit from rc.local"
+    rpi_remove_line_from_file "exit 0" "${RPI_ROOT}/etc/rc.local" || error "remove exit from rc.local"
     rpi_append_to_file "${cmd}" "${RPI_ROOT}/etc/rc.local" || error "append ${cmd} to rc.local"
 }
 

@@ -6,6 +6,7 @@
 function rpi_config_prerun() {
     # load dependencies
     plugin_load append || return 1
+    plugin_load remove || return 1
 }
 
 function rpi_config_run() {
@@ -17,7 +18,7 @@ function rpi_config_run() {
 
     for c in "${RPI_CONFIG_REMOVE[@]}" ; do
         echo " removing ${c} ..."
-        remove_line_from_file "${c}" "${RPI_BOOT}/config.txt" || error "removing ${c}"
+        rpi_remove_line_from_file "${c}" "${RPI_BOOT}/config.txt" || error "removing ${c}"
     done
 
     cp_from_dist_if_exist "/boot/config.txt"
