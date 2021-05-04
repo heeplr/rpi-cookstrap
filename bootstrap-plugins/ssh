@@ -11,6 +11,9 @@ RPI_SSH_AUTHORIZE="${RPI_SSH_AUTHORIZE:=}"
 # load dependencies
 plugin_load append || return 1
 plugin_load dist || return 1
+plugin_load chmod || return 1
+plugin_load chown || return 1
+
 
 function rpi_ssh_prerun() {
     true
@@ -34,9 +37,9 @@ function rpi_ssh_run() {
     fi
 
     # permissions
-    chmod_pi 0700 "/home/pi/.ssh" || error "chmod"
-    chmod_pi 0600 "/home/pi/.ssh" -R || error "chmod"
-    chown_pi "/home/pi/.ssh" -R || error "chown"
+    rpi_chmod_pi 0700 "/home/pi/.ssh" || error "chmod"
+    rpi_chmod_pi 0600 "/home/pi/.ssh" "true" || error "chmod"
+    rpi_chown_pi "/home/pi/.ssh" "true" || error "chown"
 
     # copy dist files
     rpi_dist_cp_if_exist /etc/ssh/sshd_config 0600

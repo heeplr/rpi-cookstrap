@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# chmod a file on the image
+
+RPI_CHMOD_PERM="${RPI_CHMOD_PERM:=}"
+RPI_CHMOD_PATH="${RPI_CHMOD_PATH:=}"
+RPI_CHMOD_RECURSIVE="${RPI_CHMOD_RECURSIVE:=false}"
+
+
+function rpi_chmod_prerun() {
+    [[ -n "${RPI_CHMOD_PERM}" ]] || error "RPI_CHMOD_PERM check"
+    [[ -e "${RPI_CHMOD_PATH}" ]] || error "RPI_CHMOD_PATH check"
+}
+
+function rpi_chmod_run() {
+    rpi_chmod_pi "${RPI_CHMOD_PERM}" "${RPI_CHMOD_PATH}" "${RPI_CHMOD_RECURSIVE}" || error "rpi_chmod_pi"
+}
+
+function rpi_chmod_description() {
+    echo "chmod a file on the image"
+}
+
+function rpi_chmod_help_vars() {
+    local vars=(
+        "RPI_CHMOD_PERM|permissions|${RPI_CHMOD_PERM}"
+        "RPI_CHMOD_PATH|path to chmod target|${RPI_CHMOD_PATH}"
+        "RPI_CHMOD_RECURSIVE|chmod (only files) recursively if true|${RPI_CHMOD_RECURSIVE}"
+    )
+    help_for_vars "${vars[@]}"
+}
+
+# ---------------------------------------------------------------------
+# chmod wrapper
+function rpi_chmod_pi() {
+    local permissions="$1"
+    local path="$2"
+    local recursive="$3"
+    if [[ -z "${permissions}" ]] && [[ -z "${path}" ]] ; then error "missing argument" ; fi
+    # directory ?
+    if [[ "${recursive}" == "true" ]] ; then
+        sudo find "${RPI_ROOT}/${path}" -type f -exec chmod "${permissions}" {} \;
+    else
+        sudo chmod "${permissions}" "${RPI_ROOT}/${path}"
+    fi
+}
+

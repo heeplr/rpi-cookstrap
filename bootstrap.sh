@@ -215,35 +215,6 @@ function plugin_postrun_all() {
     done
 }
 
-# ---------------------------------------------------------------------
-
-# chown for pi user
-function chown_pi() {
-    local path="$1"
-    local recursive="$2"
-    [[ -n "${path}" ]] || error "missing argument"
-    if [[ "${recursive}" == "-R" ]] ; then
-        sudo chown -R 1000:1000 "${RPI_ROOT}/${path}" || error "chown ${RPI_ROOT}/${path}"
-    else
-        sudo chown 1000:1000 "${RPI_ROOT}/${path}" || error "chown ${RPI_ROOT}/${path}"
-    fi
-}
-
-# chmod wrapper
-function chmod_pi() {
-    local permissions="$1"
-    local path="$2"
-    local recursive="$3"
-    if [[ -z "${permissions}" ]] && [[ -z "${path}" ]] ; then error "missing argument" ; fi
-    # directory ?
-    if [[ "${recursive}" == "-R" ]] ; then
-        sudo find "${RPI_ROOT}/${path}" -type f -exec chmod "${permissions}" {} \;
-    else
-        sudo chmod "${permissions}" "${RPI_ROOT}/${path}"
-    fi
-}
-
-
 
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------

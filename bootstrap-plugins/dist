@@ -8,6 +8,9 @@ RPI_DIST_APPEND="${RPI_DIST_APPEND:=}"
 # load dependencies
 plugin_load append || return 1
 plugin_load run || return 1
+plugin_load chmod || return 1
+plugin_load chown || return 1
+
 
 function rpi_dist_prerun() {
     true
@@ -73,7 +76,7 @@ function rpi_dist_cp() {
         error "cp ${path} ${dst}"
     fi
     # chmod?
-    [[ -n "${permissions}" ]] && chmod_pi "${permissions}" "${path}"
+    [[ -n "${permissions}" ]] && rpi_chmod_pi "${permissions}" "${path}"
 }
 
 # copy if srcfile exists
@@ -96,8 +99,8 @@ function rpi_dist_cp_after_boot() {
     # create directory?
     [[ -d "${distdir}" ]] || {
         sudo mkdir "${distdir}" || error "mkdir"
-        chmod_pi "0770" "/home/pi/bootstrap-dist" || error "chmod_pi"
-        chown_pi "/home/pi/bootstrap-dist" || error "chown_pi"
+        rpi_chmod_pi "0770" "/home/pi/bootstrap-dist" || error "rpi_chmod_pi"
+        rpi_chown_pi "/home/pi/bootstrap-dist" || error "rpi_chown_pi"
     }
     # crate path
     sudo mkdir -p "${distdir}/$(dirname "${path}")/"

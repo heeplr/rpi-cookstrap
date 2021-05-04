@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# chown for pi user
+
+RPI_CHOWN_USER="${RPI_CHOWN_USER:"1000:1000"}"
+RPI_CHOWN_PATH="${RPI_CHOWN_PATH:=}"
+RPI_CHOWN_RECURSIVE="${RPI_CHOWN_RECURSIVE:=false}"
+
+
+function rpi_chown_prerun() {
+    [[ -n "${RPI_CHOWN_USER}" ]] || error "RPI_CHOWN_USER check"
+    [[ -e "${RPI_CHOWN_PATH}" ]] || error "RPI_CHOWN_PATH check"
+}
+
+function rpi_chown_run() {
+    rpi_chown_pi "${RPI_CHOWN_PATH}" "${RPI_CHOWN_RECURSIVE}"
+}
+
+# ---------------------------------------------------------------------
+
+function rpi_chown_pi() {
+    local path="$1"
+    local recursive="$2"
+    [[ -n "${path}" ]] || error "missing argument"
+    if [[ "${recursive}" == "true" ]] ; then
+        sudo chown -R "${RPI_CHOWN_USER}" "${RPI_ROOT}/${path}" || error "chown ${RPI_ROOT}/${path}"
+    else
+        sudo chown "${RPI_CHOWN_USER}" "${RPI_ROOT}/${path}" || error "chown ${RPI_ROOT}/${path}"
+    fi
+}
