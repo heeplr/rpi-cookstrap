@@ -38,8 +38,8 @@ function rpi_raspbian_run() {
 
     # mount image
     echo " setting up loopback for ${dest}"
-    RPI_LOOPBACK_IMAGE="${dest}"
-    plugin_run loopback || return 1
+    rpi_loopback_setup "${dest}" || return 1
+    rpi_loopback_mount || return 1
     # read os-release
     . "${RPI_ROOT}/etc/os-release"
 
@@ -59,7 +59,8 @@ function rpi_raspbian_postrun() {
     unset SUPPORT_URL
     unset BUG_REPORT_URL
     # tear down loopback device & unmount partitions
-    plugin_postrun loopback
+    rpi_loopback_umount
+    rpi_loopback_cleanup
 }
 
 function rpi_raspbian_description() {
