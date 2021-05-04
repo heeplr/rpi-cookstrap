@@ -27,9 +27,7 @@ function rpi_raspbian_run() {
       local tmpfile
       tmpfile="$(TMPDIR=${RPI_TMPDIR} mktemp || error mktemp)"
       # download
-      RPI_DOWNLOAD_FILE="${tmpfile}"
-      RPI_DOWNLOAD_URL="${RPI_DOWNLOAD_RASPBIAN_URL}"
-      plugin_run "download" || error "download $_"
+      rpi_download_file "${RPI_DOWNLOAD_RASPBIAN_URL}" "${tmpfile}" || error "download $_"
       # unzip
       echo " unzipping \"${tmpfile}\""
       unzip "${tmpfile}" || error unzip

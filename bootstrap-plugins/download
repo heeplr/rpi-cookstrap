@@ -16,22 +16,7 @@ rpi_download_prerun() {
 }
 
 rpi_download_run() {
-    # got URL or path?
-    if echo "${RPI_DOWNLOAD_URL}" | grep --quiet -E '^(https|http|ftp):/.+$'; then
-        # download image
-        if command -v wget >/dev/null 2>&1 ; then
-            wget --show-progress --quiet --output-document "${RPI_DOWNLOAD_FILE}" "${RPI_DOWNLOAD_URL}" || error "wget"
-        elif command -v curl >/dev/null 2>&1 ; then
-            curl --output "${RPI_DOWNLOAD_FILE}" "${RPI_DOWNLOAD_URL}" || error "curl"
-        else
-            error "no wget or curl found. ${RPI_DOWNLOAD_URL} fetch"
-        fi
-    # treat url as path
-    else
-        cp "${RPI_DOWNLOAD_URL}" "${RPI_DOWNLOAD_FILE}" || error "cp"
-    fi
-
-    return 0
+    rpi_download_file "${RPI_DOWNLOAD_URL}" "${RPI_DOWNLOAD_FILE}"
 }
 
 rpi_download_description() {
@@ -44,4 +29,28 @@ rpi_download_help_vars() {
         "RPI_DOWNLOAD_FILE|path to destination file|${RPI_DOWNLOAD_FILE}"
     )
     help_for_vars "${vars[@]}"
+}
+
+# ---------------------------------------------------------------------
+
+# download a file from the internet
+function rpi_download_file() {
+    local url="$1"
+    local dstfile="$2"
+    if [[ -z "${url}" ]] || [[ -z "${dstfile}" ]] ; then error "missing parameters. download_file" ; fi
+
+    # got URL?
+    if echo "${url}" | grep --quiet -E '^(https|http|ftp):/.+$'; then
+        # download image
+        if command -v wget >/dev/null 2>&1 ; then
+            wget --show-progress --quiet --output-document "${dstfile}" "${url}" || error "wget"
+        elif command -v curl >/dev/null 2>&1 ; then
+            curl --output "${dstfile}" "${url}" || error "curl"
+        else
+            error "no wget or curl found. ${url} fetch"
+        fi
+    # treat url as path
+    else
+        cp "${url}" "${dstfile}" || error "cp"
+    fi
 }
