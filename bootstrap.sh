@@ -21,6 +21,7 @@ RPI_PROVISION_ON_BOOT="${RPI_PROVISION_ON_BOOT:=false}"
 # ---------------------------------------------------------------------
 # print banner
 bold="$(tput bold)"
+underline="$(tput smul)"
 invert="$(tput smso)"
 normal="$(tput sgr0)"
 red="$(tput setaf 1)"
@@ -29,7 +30,7 @@ green="$(tput setaf 2)"
 function banner() {
     cat << EOF
  ----------------------------------------
-  ${RPI_HOSTNAME} bootstrap script
+  ${bold}${RPI_HOSTNAME} bootstrap script${normal}
  ----------------------------------------
 EOF
 }
@@ -61,16 +62,52 @@ EOF
 }
 
 # print help msg
+function help() {
+    # print plugin help
+    printf "${bold}Plugins:${normal}\n\n"
+    local f
+    # enable nullglob to not expand * if there are no files
+    shopt -s nullglob
+    for f in "${RPI_PLUGINDIR}"/* "${RPI_USER_PLUGINDIR}"/* ; do
+        # plugin name from path
+        local p
+        p="$(basename "${f}")"
+        # load this plugin
+        plugin_load "${p}"
+        # general description
+        if plugin_check_for_func "rpi_${p}_description" ; then
+            printf "${invert}%s${normal} - ${underline}%s${normal}\n\n" "${p}" "$("rpi_${p}_description")"
+        else
+            echo "${invert}${p}${normal}"
+        fi
+        # config var description
+        if plugin_check_for_func "rpi_${p}_help_vars" ; then
+            echo " variables:"
+            "rpi_${p}_help_vars"
+            echo
+        fi
+        # distfile description
+        if plugin_check_for_func "rpi_${p}_help_distfiles" ; then
+            echo " distfiles:"
+            "rpi_${p}_help_distfiles"
+            echo
+        fi
+    done
+    # disable nullglob
+    shopt -u nullglob
+}
+
+# print help for plugin specific variables
 function help_for_vars() {
     local vars=("$@")
     local v
     for v in "${vars[@]}" ; do
         IFS="|" read -r name description default <<< "${v}"
-        printf "%30s - %s (default: \"%s\")\n" "${name}" "${description}" "${default}"
+        printf "${bold}%40s${normal} - %s (default: \"%s\")\n" "${name}" "${description}" "${default}"
     done
 }
 
-# print help msg
+# print help for plugin specific distfiles
 function help_for_distfiles() {
     local files=("$@")
     local f
@@ -87,38 +124,7 @@ function parse_cmdline_args() {
             "h")
                 # print main help
                 usage
-                # print plugin help
-                printf "Plugins:\n\n"
-                local f
-                # enable nullglob to not expand * if there are no files
-                shopt -s nullglob
-                for f in "${RPI_PLUGINDIR}"/* "${RPI_USER_PLUGINDIR}"/* ; do
-                    # plugin name from path
-                    local p
-                    p="$(basename "${f}")"
-                    # load this plugin
-                    plugin_load "${p}"
-                    # general description
-                    if plugin_check_for_func "rpi_${p}_description" ; then
-                        echo -n "\"${p}\" - "
-                        "rpi_${p}_description"
-                    else
-                        echo "\"${p}\""
-                    fi
-                    # config var description
-                    if plugin_check_for_func "rpi_${p}_help_vars" ; then
-                        "rpi_${p}_help_vars"
-                        echo
-                    fi
-                    # distfile description
-                    if plugin_check_for_func "rpi_${p}_help_distfiles" ; then
-                        echo " distfiles:"
-                        "rpi_${p}_help_distfiles"
-                        echo
-                    fi
-                done
-                # disable nullglob
-                shopt -u nullglob
+                help
                 exit 1
                 ;;
 

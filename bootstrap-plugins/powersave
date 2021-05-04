@@ -5,31 +5,26 @@
 
 # ---------------------------------------------------------------------
 function rpi_powersave_prerun() {
+    # load dependencies
     plugin_load "systemctl"
     plugin_load "config"
 }
 
 function rpi_powersave_run() {
     local disable_services=(
-        "avahi-daemon"
-        "avahi-daemon.socket"
+        "avahi-daemon" "avahi-daemon.socket"
         "triggerhappy"
-        "bluetooth"
-        "hciuart"
-        "bluetooth.target"
+        "bluetooth" "hciuart" "bluetooth.target"
         "dbus"
         "keyboard-setup"
         "cryptsetup.target"
         "nfs-client.target"
-        "apt-daily-upgrade.timer"
-        "apt-daily.timer"
-        "man-db.timer"
+        "apt-daily-upgrade.timer" "apt-daily.timer" "man-db.timer"
         "wpa_supplicant"
     )
     # prefix disable_services with "disable "
     IFS=" "
-    RPI_SYSTEMCTL_CMDS="disable ${disable_services[*]}"
-    rpi_systemctl_run || error "systemctl disable"
+    RPI_SYSTEMCTL_CMDS="disable ${disable_services[*]}" plugin_run systemctl || error "disable $_"
 
     # turn off unneeded things
     RPI_CONFIG_ADD=(
