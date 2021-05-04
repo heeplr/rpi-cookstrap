@@ -128,9 +128,8 @@ It would just download the default latest raspbian-lite and extract the image.
 |**RPI_USER_CONFIG**       | user specific config. Additional to the project's *bootstrap.cfg*  | *~/.bootstrap.cfg*|
 |**RPI_ROOT**              | mountpoint for root partition                                      | *./.bootstrap-work/root*
 |**RPI_BOOT**              | mountpoint for boot partition                                      | *./.bootstrap-work/boot*
+|**RPI_BOOTSTRAP_PLUGINS** | array of plugins to run in this order                              | () |
 |**RPI_HOSTNAME**          | hostname                                                           | unnamed
-|**RPI_BOOTSTRAP_PLUGINS** | array of plugin names to run in order                              | () |
-|**RPI_RUN_ON_BOOT**       | run setup on first boot (true) otherwise on first login            | false
 
 <div style="font-size:larger;">&#160;</div>
 
