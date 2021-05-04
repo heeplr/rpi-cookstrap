@@ -74,6 +74,6 @@ function rpi_append_stdin() {
     [[ -n "${file}" ]] || error "missing argument. append_stdin"
     IFS=''
     while read -r appendix ; do
-        append_to_file "${appendix}" "${file}"
+        rpi_append_to_file "${appendix}" "${file}"
     done
 }
