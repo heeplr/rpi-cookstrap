@@ -186,16 +186,15 @@ function plugin_load_all() {
 # run plugin
 function plugin_run() {
     local plugin="$1"
-    plugin_check_for_func "rpi_${p}_run" || plugin_load "${plugin}"
-    "rpi_${p}_run" || error "plugin \"${p}\" run"
-    return 0
+    plugin_check_for_func "rpi_${plugin}_run" || error "${plugin} not loaded"
+    log "running plugin: ${plugin}"
+    "rpi_${plugin}_run" || error "plugin \"${plugin}\" run"
 }
 
 # run all plugins
 function plugin_run_all() {
     local p
     for p in "${RPI_BOOTSTRAP_PLUGINS[@]}" ; do
-        log "running plugin: ${p}"
         plugin_run "${p}" || error "run ${p}"
     done
 }
@@ -214,28 +213,6 @@ function plugin_postrun_all() {
         log "postrun: ${p}"
         plugin_postrun "${p}" || error "postrun ${p}"
     done
-}
-
-# download a file from the internet
-function download_file() {
-    local url="$1"
-    local dstfile="$2"
-    if [[ -z "${url}" ]] || [[ -z "${dstfile}" ]] ; then error "missing parameters. download_file" ; fi
-
-    # got URL?
-    if echo "${url}" | grep --quiet -E '^(https|http|ftp):/.+$'; then
-        # download image
-        if command -v wget >/dev/null 2>&1 ; then
-            wget --show-progress --quiet --output-document "${dstfile}" "${url}" || error "wget"
-        elif command -v curl >/dev/null 2>&1 ; then
-            curl --output "${dstfile}" "${url}" || error "curl"
-        else
-            error "no wget or curl found. ${url} fetch"
-        fi
-    # treat url as path
-    else
-        cp "${url}" "${dstfile}" || error "cp"
-    fi
 }
 
 # setup loopback device to mount image

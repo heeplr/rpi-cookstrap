@@ -7,7 +7,11 @@ RPI_DOWNLOAD_RASPBIAN_URL="${RPI_DOWNLOAD_RASPBIAN_URL:=https://downloads.raspbe
 
 
 function rpi_download_raspbian_prerun() {
-    true
+    # check arguments
+    [[ -n "${RPI_DOWNLOAD_RASPBIAN_FLAVOR}" ]] || error "RPI_DOWNLOAD_RASPBIAN_FLAVOR check"
+    [[ -n "${RPI_DOWNLOAD_RASPBIAN_URL:=}" ]] || error "RPI_DOWNLOAD_RASPBIAN_URL check"
+    # load dependencies
+    plugin_load "download" || return 1
 }
 
 function rpi_download_raspbian_run() {
@@ -22,7 +26,9 @@ function rpi_download_raspbian_run() {
       local tmpfile
       tmpfile="$(TMPDIR=${RPI_TMPDIR} mktemp || error mktemp)"
       # download
-      download_file "${RPI_DOWNLOAD_RASPBIAN_URL}" "${tmpfile}"
+      RPI_DOWNLOAD_FILE="${tmpfile}"
+      RPI_DOWNLOAD_URL="${RPI_DOWNLOAD_RASPBIAN_URL}"
+      plugin_run "download" || error "download $_"
       # unzip
       echo " unzipping \"${tmpfile}\""
       unzip "${tmpfile}" || error unzip
