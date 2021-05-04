@@ -6,7 +6,7 @@ RPI_DOWNLOAD_RASPBIAN_FLAVOR="${RPI_DOWNLOAD_RASPBIAN_FLAVOR:=lite}"
 RPI_DOWNLOAD_RASPBIAN_URL="${RPI_DOWNLOAD_RASPBIAN_URL:=https://downloads.raspberrypi.org/raspbian_${RPI_DOWNLOAD_RASPBIAN_FLAVOR}_latest}"
 
 
-function rpi_download_raspbian_prerun() {
+function rpi_raspbian_prerun() {
     # check arguments
     [[ -n "${RPI_DOWNLOAD_RASPBIAN_FLAVOR}" ]] || error "RPI_DOWNLOAD_RASPBIAN_FLAVOR check"
     [[ -n "${RPI_DOWNLOAD_RASPBIAN_URL:=}" ]] || error "RPI_DOWNLOAD_RASPBIAN_URL check"
@@ -14,7 +14,7 @@ function rpi_download_raspbian_prerun() {
     plugin_load "download" || return 1
 }
 
-function rpi_download_raspbian_run() {
+function rpi_raspbian_run() {
 
     local name="raspbian-${RPI_DOWNLOAD_RASPBIAN_FLAVOR}.img"
     local dest="${RPI_WORKDIR}/${name}"
@@ -43,17 +43,17 @@ function rpi_download_raspbian_run() {
     mount_image || error "image mount"
 }
 
-function rpi_download_raspbian_postrun() {
+function rpi_raspbian_postrun() {
     echo " cleaning up..."
     umount_image
     loopback_cleanup
 }
 
-function rpi_download_raspbian_description() {
+function rpi_raspbian_description() {
     echo "download raspbian image"
 }
 
-function rpi_download_raspbian_help_vars() {
+function rpi_raspbian_help_vars() {
     local vars=(
         "RPI_DOWNLOAD_RASPBIAN_FLAVOR|flavor of raspbian to use: lite or full|${RPI_DOWNLOAD_RASPBIAN_FLAVOR}"
         "RPI_DOWNLOAD_RASPBIAN_URL|alternative download URL or local path to downloaded zip|${RPI_DOWNLOAD_RASPBIAN_URL}"

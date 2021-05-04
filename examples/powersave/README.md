@@ -2,7 +2,7 @@
 Example to use rpi-cookstrap to bootstrap an image with reduced
 ressource usage:
 
-* the "download_raspbian" plugin downloads and decompresses the
+* the "raspbian" plugin downloads and decompresses the
   latest raspbian lite image
 * the "hostname" plugin sets the hostname to **RPI_HOSTNAME** configured
   in *bootstrap.cfg*

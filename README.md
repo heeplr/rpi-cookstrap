@@ -53,7 +53,7 @@ $ ./bootstrap.sh
  ----------------------------------------
   example bootstrap script
  ----------------------------------------
-running plugin: download_raspbian
+running plugin: raspbian
 downloading https://downloads.raspberrypi.org/raspbian_lite_latest ...
 /tmp/tmp.nyYe5qv7xp                                  100%[=====================================================================================================================>] 433,01M  10,7MB/s    in 44s
 unzipping "/tmp/tmp.nyYe5qv7xp"
@@ -110,7 +110,7 @@ bash key/value pairs in *"bootstrap.cfg"* (must be in same directory as the
 
 a minimal working example *"bootstrap.cfg"* file would look like this:
 ```
-RPI_PLUGINS=("download_raspbian")
+RPI_PLUGINS=("raspbian")
 ```
 It would just download the default latest raspbian-lite and extract the image.
 
