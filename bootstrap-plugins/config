@@ -2,12 +2,14 @@
 
 # customize config.txt
 
+# load dependencies
+plugin_load append || return 1
+plugin_load remove || return 1
+plugin_load dist || return 1
+
 
 function rpi_config_prerun() {
-    # load dependencies
-    plugin_load append || return 1
-    plugin_load remove || return 1
-    plugin_load dist || return 1
+    true
 }
 
 function rpi_config_run() {

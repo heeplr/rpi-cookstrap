@@ -8,10 +8,12 @@ RPI_SSH_KEY_ROUNDS="${RPI_SSH_KEY_ROUNDS:=100}"
 RPI_SSH_KEYGEN="${RPI_SSH_KEYGEN:=false}"
 RPI_SSH_AUTHORIZE="${RPI_SSH_AUTHORIZE:=}"
 
+# load dependencies
+plugin_load append || return 1
+plugin_load dist || return 1
+
 function rpi_ssh_prerun() {
-    # load dependencies
-    plugin_load append || return 1
-    plugin_load dist || return 1
+    true
 }
 
 function rpi_ssh_run() {

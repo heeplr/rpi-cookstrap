@@ -5,12 +5,15 @@
 RPI_ADDUSER_GROUP=${RPI_ADDUSER_GROUP:=}
 
 
+# load dependencies
+plugin_load run || return 1
+
 rpi_adduser_prerun() {
     [[ -n "${RPI_ADDUSER_GROUP}" ]] || error "RPI_ADDUSER_GROUP not set. adduser"
 }
 
 rpi_adduser_run() {
-    run_once "sudo adduser pi ${RPI_ADDUSER_GROUP}" || error "add to group ${RPI_ADDUSER_GROUP}"
+    rpi_run_once "sudo adduser pi ${RPI_ADDUSER_GROUP}" || error "add to group ${RPI_ADDUSER_GROUP}"
 }
 
 rpi_adduser_description() {

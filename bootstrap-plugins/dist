@@ -5,10 +5,12 @@
 RPI_DIST_COPY="${RPI_DIST_COPY:=}"
 RPI_DIST_APPEND="${RPI_DIST_APPEND:=}"
 
+# load dependencies
+plugin_load append || return 1
+plugin_load run || return 1
 
 function rpi_dist_prerun() {
-    # load dependencies
-    plugin_load append || return 1
+    true
 }
 
 function rpi_dist_run() {
@@ -77,7 +79,7 @@ function rpi_dist_cp() {
 # copy if srcfile exists
 function rpi_dist_cp_if_exist() {
     local path="$1"
-    if dist_exist "${path}" ; then
+    if rpi_dist_exist "${path}" ; then
         rpi_dist_cp "${path}"
         return 0
     fi
@@ -104,15 +106,15 @@ function rpi_dist_cp_after_boot() {
         # copy to image
         sudo cp -r "${RPI_USER_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || sudo cp -r "${RPI_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || error "cp"
         # register copy command
-        run_once "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}")" || error "run_once"
+        rpi_run_once "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}")" || error "rpi_run_once"
     # copy file?
     else
         sudo cp -r "${RPI_USER_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || sudo cp -r "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
-        run_once "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\"" || error "run_once"
+        rpi_run_once "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\"" || error "rpi_run_once"
     fi
     # chmod?
-    [[ -n "${permissions}" ]] && { run_once "sudo chmod -R \"${permissions}\" \"${path}\"" || error "chmod" ; }
+    [[ -n "${permissions}" ]] && { rpi_run_once "sudo chmod -R \"${permissions}\" \"${path}\"" || error "chmod" ; }
     # chown
-    run_once "sudo chown -R pi:pi \"${path}\"" || error "chown"
+    rpi_run_once "sudo chown -R pi:pi \"${path}\"" || error "chown"
 
 }

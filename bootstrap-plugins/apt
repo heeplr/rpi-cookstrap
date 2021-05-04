@@ -5,6 +5,9 @@
 RPI_APT_CMDS="${RPI_APT_CMDS:=""}"
 RPI_APT_INTERACTIVE="${RPI_APT_INTERACTIVE:=false}"
 
+# load dependencies
+plugin_load run || return 1
+
 rpi_apt_prerun() {
     [[ -n "${RPI_APT_CMDS}" ]] || return 1
     return 0
@@ -15,10 +18,10 @@ rpi_apt_run() {
     for cmd in "${RPI_APT_CMDS[@]}" ; do
         # run in interactive mode?
         if [[ "${RPI_APT_INTERACTIVE}" == "true" ]] ; then
-            run_once "sudo apt ${cmd}" || error "apt"
+            rpi_run_once "sudo apt ${cmd}" || error "apt"
         # run in non-interactive mode
         else
-            run_once "sudo DEBIAN_FRONTEND=noninteractive apt --yes --quiet ${cmd}" || error "install apt update"
+            rpi_run_once "sudo DEBIAN_FRONTEND=noninteractive apt --yes --quiet ${cmd}" || error "install apt update"
         fi
     done
 }

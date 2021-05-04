@@ -11,11 +11,13 @@ RPI_RSYSLOGD_RESUME_RETRY_COUNT="${RPI_RSYSLOGD_RESUME_RETRY_COUNT:=100}"
 RPI_RSYSLOGD_QUEUE_TYPE="${RPI_RSYSLOGD_QUEUE_TYPE:=linkedList}"
 RPI_RSYSLOGD_QUEUE_SIZE="${RPI_RSYSLOGD_QUEUE_SIZE:=10000}"
 
+# load dependencies
+plugin_load append || return 1
+plugin_load replace || return 1
+plugin_load dist || return 1
+
 function rpi_rsyslogd_prerun() {
-    # load dependencies
-    plugin_load append || return 1
-    plugin_load replace || return 1
-    plugin_load dist || return 1
+    true
 }
 
 function rpi_rsyslogd_run() {

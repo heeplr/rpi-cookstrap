@@ -5,6 +5,9 @@
 RPI_SYSTEMCTL_CMDS="${RPI_SYSTEMCTL_CMDS:=""}"
 
 
+# load dependencies
+plugin_load run || return 1
+
 function rpi_systemctl_prerun() {
     [[ -n "${RPI_SYSTEMCTL_CMDS}" ]] || { warn "RPI_SYSTEMCTL_CMDS must be set" ; return 1 ; }
     return 0
@@ -12,7 +15,7 @@ function rpi_systemctl_prerun() {
 
 function rpi_systemctl_run() {
     for cmd in "${RPI_SYSTEMCTL_CMDS[@]}" ; do
-        run_once "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
+        rpi_run_once "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
     done
 }
 

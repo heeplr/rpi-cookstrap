@@ -130,7 +130,7 @@ It would just download the default latest raspbian-lite and extract the image.
 |**RPI_BOOT**              | mountpoint for boot partition                                      | *./.bootstrap-work/boot*
 |**RPI_HOSTNAME**          | hostname                                                           | unnamed
 |**RPI_BOOTSTRAP_PLUGINS** | array of plugin names to run in order                              | () |
-|**RPI_PROVISION_ON_BOOT** | run setup on first boot (true) otherwise on first login            | false
+|**RPI_RUN_ON_BOOT**       | run setup on first boot (true) otherwise on first login            | false
 
 <div style="font-size:larger;">&#160;</div>
 

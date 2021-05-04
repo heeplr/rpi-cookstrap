@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# load dependencies
+plugin_load append || return 1
+plugin_load remove || return 1
+
+function rpi_run_prerun() {
+    [[ -n "${RPI_RUN_ONCE}" ]] || error "RPI_RUN_ONCE unset."
+}
+
+function rpi_run_run() {
+    if [[ -n "${RPI_RUN_ONCE}" ]] ; then
+        rpi_run_once "${RPI_RUN_ONCE[@]}"
+    fi
+}
+
+function rpi_run_description() {
+    echo "run commands on the raspberry"
+}
+
+function rpi_run_help_vars() {
+    local vars=(
+        "RPI_RUN_ONCE|command to run once (on setup)|${RPI_RUN_ONCE}"
+        "RPI_RUN_ON_BOOT|run command on boot (true) otherwise on login |${RPI_RUN_ON_BOOT}"
+    )
+    help_for_vars "${vars[@]}"
+}
+
+# ---------------------------------------------------------------------
+# run command on login
+function rpi_run_on_login() {
+    local cmd="$1"
+    rpi_append_to_file "${cmd}" "${RPI_ROOT}/home/pi/.bashrc" || error "rpi_append_to_file"
+}
+
+# run command once upon first login
+function rpi_run_on_first_login() {
+    [[ -n "$*" ]] || error "missing argument"
+    local once_script="/home/pi/.bootstrap_run_on_first_login"
+    # prepare script
+    if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
+        # call script from .bashrc
+        rpi_run_on_login "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ;  time /bin/bash -c \"${once_script} && rm ${once_script} && rm -rf /home/pi/bootstrap-dist\" ; echo \"Done. Please reboot now.\" ; fi"
+        sudo touch "${RPI_ROOT}/${once_script}" || error "touch"
+        sudo chmod +x "${RPI_ROOT}/${once_script}" || error "sudo chmod +x"
+        sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
+    fi
+    # append to script
+    rpi_append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
+    rpi_append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
+    chown_pi "${once_script}" || error "chown"
+    log " run (login) cmd installed: \"$*\""
+}
+
+# run on every boot
+function rpi_run_on_boot() {
+    local cmd="$1"
+    # remove "exit 0" at the end if it's there, so we
+    # can simply append commands
+    rpi_remove_pattern_from_file "exit 0" "${RPI_ROOT}/etc/rc.local" || error "remove exit from rc.local"
+    rpi_append_to_file "${cmd}" "${RPI_ROOT}/etc/rc.local" || error "append ${cmd} to rc.local"
+}
+
+# run command once upon first boot
+function rpi_run_on_first_boot() {
+    [[ -n "$*" ]] || error "missing argument"
+    local once_script="/home/pi/.bootstrap_run_on_first_boot"
+    # prepare script
+    if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
+        # call script from /etc/rc.local
+        rpi_run_on_boot "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ; time /bin/bash -c \"${once_script} && rm ${once_script} && rm -rf /home/pi/bootstrap-dist\" ; echo \"Done. Please reboot now.\" ; fi"
+        sudo touch "${RPI_ROOT}/${once_script}" || error "touch"
+        sudo chmod +x "${RPI_ROOT}/${once_script}" || error "sudo chmod +x"
+        sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
+    fi
+    # append to script
+    rpi_append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
+    rpi_append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
+    chown_pi "${once_script}" || error "chown"
+    log " run (boot) cmd installed: \"$*\""
+}
+
+# run command once (either on first boot or on first login)
+function rpi_run_once() {
+    [[ -n "$*" ]] || error "missing argument"
+    if [[ "${RPI_RUN_ON_BOOT}" == "true" ]] ; then
+        rpi_run_on_first_boot "$*"
+    else
+        rpi_run_on_first_login "$*"
+    fi
+}
