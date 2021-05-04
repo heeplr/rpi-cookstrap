@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# setup loopback device & mount image
+
+RPI_LOOPBACK_IMAGE="${RPI_LOOPBACK_IMAGE:=}"
+
+
+rpi_loopback_prerun() {
+    # check arguments
+    [[ -n "${RPI_LOOPBACK_IMAGE}" ]] || error "RPI_LOOPBACK_IMAGE check"
+}
+
+rpi_loopback_run() {
+    # argument valid?
+    [[ -f "${RPI_LOOPBACK_IMAGE}" ]] || error "${RPI_LOOPBACK_IMAGE} not found"
+    # already attached?
+    RPI_LOOPBACK_DEVICE="$(sudo losetup -l | grep "$(basename "${RPI_LOOPBACK_IMAGE}")" | cut -d " " -f1)"
+    if [[ -z "${RPI_LOOPBACK_DEVICE}" ]] ; then
+        # attach image
+        RPI_LOOPBACK_DEVICE="$(sudo losetup --show --find --partscan "${RPI_LOOPBACK_IMAGE}")" || error losetup
+    fi
+    log "using \"${RPI_LOOPBACK_DEVICE}\""
+
+    # already mounted?
+    mount | grep --quiet "${RPI_LOOPBACK_DEVICE}" && return 0
+    # wait for sync
+    sync
+    # mount
+    sudo mount "${RPI_LOOPBACK_DEVICE}p1" "${RPI_BOOT}" || return 1
+    sudo mount "${RPI_LOOPBACK_DEVICE}p2" "${RPI_ROOT}" || return 1
+
+    return 0
+}
+
+rpi_loopback_postrun() {
+    # unmount partitions
+    sudo "umount" "${RPI_BOOT}" || warn "${RPI_BOOT} not mounted"
+    sudo "umount" "${RPI_ROOT}" || warn "${RPI_ROOT} not mounted"
+
+    # tear down loopback device
+    sudo losetup -d "${RPI_LOOPBACK_DEVICE}" || warn "$_ cleanup failed"
+    sync || warn "sync"
+}
+
+rpi_loopback_description() {
+    echo "setup loopback device & mount image"
+}
+
+rpi_loopback_help_vars() {
+    local vars=(
+        "RPI_BOOT|mountpoint for BOOT partition|${RPI_BOOT}"
+        "RPI_ROOT|mountpoint for root partition|${RPI_ROOT}"
+        "RPI_LOOPBACK_IMAGE|image filename|${RPI_LOOPBACK_IMAGE}"
+        "RPI_LOOPBACK_DEVICE|will be set to used /dev/loopX device|n/a"
+    )
+    help_for_vars "${vars[@]}"
+}
