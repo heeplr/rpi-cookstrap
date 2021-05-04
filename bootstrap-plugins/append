@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# append string, file, stdin to file & avoid doubles
+
+RPI_APPEND_FILE="${RPI_APPEND_FILE:=}"
+RPI_APPEND_STRING="${RPI_APPEND_STRING:=}"
+RPI_APPEND_APPENDIX="${RPI_APPEND_APPENDIX:=}"
+RPI_APPEND_STDIN="${RPI_APPEND_STDIN:=false}"
+
+function rpi_append_prerun() {
+    # check arguments
+    [[ -n "${RPI_APPEND_FILE}" ]] || error "RPI_APPEND_FILE unset. appending to unknown file"
+    [[ -f "${RPI_APPEND_FILE}" ]] || error "${RPI_APPEND_FILE} no file"
+    { [[ -n "${RPI_APPEND_STRING}" ]] || [[ -n "${RPI_APPEND_APPENDIX}" ]] || [[ "${RPI_APPEND_STDIN}" == "true" ]] ; } || error "either need RPI_APPEND_STRING or RPI_APPEND_APPENDIX"
+    { [[ -n "${RPI_APPEND_APPENDIX}" ]] && [[ -f "${RPI_APPEND_APPENDIX}" ]] ; } || error "${RPI_APPEND_APPENDIX} no file"
+}
+
+function rpi_append_run() {
+    # append file to file ?
+    if [[ -n "${RPI_APPEND_APPENDIX}" ]] ; then
+        rpi_append_file_to_file "${RPI_APPEND_APPENDIX}" "${RPI_APPEND_FILE}" || error "rpi_append_file_to_file"
+    fi
+    # append string to file ?
+    if [[ -n "${RPI_APPEND_STRING}" ]] ; then
+        rpi_append_to_file "${RPI_APPEND_STRING}" "${RPI_APPEND_FILE}" || error "append_to_file"
+    fi
+    # append from stdin to file?
+    if [[ "${RPI_APPEND_STDIN}" == "true" ]] ; then
+        rpi_append_stdin "${RPI_APPEND_FILE}"
+    fi
+}
+
+function rpi_append_description() {
+    echo "append string, file, stdin to file & avoid doubles"
+}
+
+function rpi_append_help_vars() {
+    local vars=(
+        "RPI_APPEND_FILE|the file to append to|${RPI_APPEND_FILE}"
+        "RPI_APPEND_STRING|string to append|${RPI_APPEND_STRING}"
+        "RPI_APPEND_APPENDIX|file which contents should be appended|${RPI_APPEND_APPENDIX}"
+        "RPI_APPEND_STDIN|append from stdin if true|${RPI_APPEND_STDIN}"
+    )
+    help_for_vars "${vars[@]}"
+}
+
+# ---------------------------------------------------------------------
+# append file to file
+function rpi_append_file_to_file() {
+    local appendix="$1"
+    local appendee="$2"
+    if [[ -z "${appendix}" ]] || [[ -z "${appendee}" ]] ; then error "missing argument. append" ; fi
+    # already appended ?
+    [[ -f "${appendix}" ]] && [[ -f "${appendee}" ]] && grep --quiet --fixed-strings --file="${appendix}" "${appendee}" && return 0
+    # append
+    sudo tee -a "${appendee}" < "${appendix}" >/dev/null || error "sudo_append ${appendix} ${appendee}"
+}
+
+# append string to file
+function rpi_append_to_file() {
+    local string="$1"
+    local file="$2"
+    if [[ -z "${string}" ]] || [[ -z "${file}" ]] ; then error "missing argument. append" ; fi
+    # already appended ?
+    [[ -f "${file}" ]] && sudo grep --fixed-strings --quiet "${string}" "${file}" && return 0
+    # append
+    sudo touch "${file}"
+    printf "%s\n" "${string}" | sudo tee -a "${file}" >/dev/null || error "sudo_append ${string} ${file}"
+}
+
+# append input from stdin to file
+function rpi_append_stdin() {
+    local file="$1"
+    [[ -n "${file}" ]] || error "missing argument. append_stdin"
+    IFS=''
+    while read -r appendix ; do
+        append_to_file "${appendix}" "${file}"
+    done
+}

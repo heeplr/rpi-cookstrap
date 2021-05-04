@@ -6,10 +6,10 @@ RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
 
 
 function rpi_hostname_prerun() {
-    if [[ -z "${RPI_HOSTNAME}" ]] ; then
-        error "RPI_HOSTNAME not set."
-        return 1
-    fi
+    # check arguments
+    [[ -n "${RPI_HOSTNAME}" ]] || error "RPI_HOSTNAME not set."
+    # load dependencies
+    plugin_load append || return 1
 
     return 0
 }
@@ -21,7 +21,7 @@ function rpi_hostname_run() {
         # /etc/hostname
         echo " setting /etc/hostname"
         sudo rm -f "${RPI_ROOT}/etc/hostname"
-        append_to_file "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hostname"
+        rpi_append_to_file "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hostname"
     fi
     # copy distfile
     cp_from_dist_if_exist /etc/hostname

@@ -4,14 +4,15 @@
 
 
 function rpi_config_prerun() {
-    true
+    # load dependencies
+    plugin_load append || return 1
 }
 
 function rpi_config_run() {
     local c
     for c in "${RPI_CONFIG_ADD[@]}" ; do
         echo " setting ${c} ..."
-        append_to_file "${c}" "${RPI_BOOT}/config.txt" || error "adding ${c}"
+        rpi_append_to_file "${c}" "${RPI_BOOT}/config.txt" || error "adding ${c}"
     done
 
     for c in "${RPI_CONFIG_REMOVE[@]}" ; do

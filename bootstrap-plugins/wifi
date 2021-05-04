@@ -9,7 +9,8 @@ RPI_WIFI_POWERSAVE="${RPI_WIFI_POWERSAVE:=false}"
 
 
 function rpi_wifi_prerun() {
-    true
+    # load dependencies
+    plugin_load append || return 1
 }
 
 function rpi_wifi_run() {
@@ -20,7 +21,7 @@ function rpi_wifi_run() {
         # optionally set country
         local country="#country=\"${RPI_WIFI_COUNTRY}\""
         [[ -n "${RPI_WIFI_COUNTRY}" ]] && country="country=\"${RPI_WIFI_COUNTRY}\""
-        append_stdin "${RPI_ROOT}/etc/wpa_supplicant/wpa_supplicant.conf" << EOF
+        rpi_append_stdin "${RPI_ROOT}/etc/wpa_supplicant/wpa_supplicant.conf" << EOF
 ${country}
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1

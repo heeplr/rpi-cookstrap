@@ -9,7 +9,8 @@ RPI_SSH_KEYGEN="${RPI_SSH_KEYGEN:=false}"
 RPI_SSH_AUTHORIZE="${RPI_SSH_AUTHORIZE:=}"
 
 function rpi_ssh_prerun() {
-    true
+    # load dependencies
+    plugin_load append || return 1
 }
 
 function rpi_ssh_run() {
@@ -25,7 +26,7 @@ function rpi_ssh_run() {
         local key
         sudo touch "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "touch"
         for key in "${RPI_SSH_AUTHORIZE[@]}" ; do
-            append_to_file "${key}" "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "append"
+            rpi_append_to_file "${key}" "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "append"
         done
     fi
 

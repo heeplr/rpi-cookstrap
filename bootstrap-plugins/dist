@@ -7,7 +7,8 @@ RPI_DIST_APPEND="${RPI_DIST_APPEND:=}"
 
 
 function rpi_dist_prerun() {
-    true
+    # load dependencies
+    plugin_load append || return 1
 }
 
 function rpi_dist_run() {
@@ -21,7 +22,7 @@ function rpi_dist_run() {
     done
 
     [[ -n "${RPI_DIST_APPEND}" ]] && for f in "${RPI_DIST_APPEND[@]}" ; do
-        append_file_to_file "${f}" "${RPI_ROOT}/${f}" || error "append ${f}"
+        rpi_append_file_to_file "${f}" "${RPI_ROOT}/${f}" || error "append ${f}"
     done
 
     return 0

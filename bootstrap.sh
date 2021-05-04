@@ -217,37 +217,6 @@ function plugin_postrun_all() {
 
 # ---------------------------------------------------------------------
 # append file to file
-function append_file_to_file() {
-    local appendix="$1"
-    local appendee="$2"
-    if [[ -z "${appendix}" ]] || [[ -z "${appendee}" ]] ; then error "missing argument. append" ; fi
-    # already appended ?
-    [[ -f "${appendix}" ]] && [[ -f "${appendee}" ]] && grep --quiet --fixed-strings --file="${appendix}" "${appendee}" && return 0
-    # append
-    sudo tee -a "${appendee}" < "${appendix}" >/dev/null || error "sudo_append ${appendix} ${appendee}"
-}
-
-# append string to file
-function append_to_file() {
-    local string="$1"
-    local file="$2"
-    if [[ -z "${string}" ]] || [[ -z "${file}" ]] ; then error "missing argument. append" ; fi
-    # already appended ?
-    [[ -f "${file}" ]] && sudo grep --fixed-strings --quiet "${string}" "${file}" && return 0
-    # append
-    sudo touch "${file}"
-    printf "%s\n" "${string}" | sudo tee -a "${file}" >/dev/null || error "sudo_append ${string} ${file}"
-}
-
-# append input from stdin to file
-function append_stdin() {
-    local file="$1"
-    [[ -n "${file}" ]] || error "missing argument. append_stdin"
-    IFS=''
-    while read -r appendix ; do
-        append_to_file "${appendix}" "${file}"
-    done
-}
 
 # remove string from file (remove line where pattern matches)
 function remove_line_from_file() {
@@ -369,7 +338,7 @@ function chmod_pi() {
 # run command on login
 function run_on_login() {
     local cmd="$1"
-    append_to_file "${cmd}" "${RPI_ROOT}/home/pi/.bashrc" || error "append_to_file"
+    rpi_append_to_file "${cmd}" "${RPI_ROOT}/home/pi/.bashrc" || error "rpi_append_to_file"
 }
 
 # run command once upon first login
@@ -385,8 +354,8 @@ function run_on_first_login() {
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
     fi
     # append to script
-    append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
-    append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
+    rpi_append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
+    rpi_append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
     log " run (login) cmd installed: \"$*\""
 }
@@ -397,7 +366,7 @@ function run_on_boot() {
     # remove "exit 0" at the end if it's there, so we
     # can simply append commands
     remove_line_from_file "exit 0" "${RPI_ROOT}/etc/rc.local" || error "remove exit from rc.local"
-    append_to_file "${cmd}" "${RPI_ROOT}/etc/rc.local" || error "append ${cmd} to rc.local"
+    rpi_append_to_file "${cmd}" "${RPI_ROOT}/etc/rc.local" || error "append ${cmd} to rc.local"
 }
 
 # run command once upon first boot
@@ -413,8 +382,8 @@ function run_on_first_boot() {
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
     fi
     # append to script
-    append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
-    append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
+    rpi_append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
+    rpi_append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
     chown_pi "${once_script}" || error "chown"
     log " run (boot) cmd installed: \"$*\""
 }
