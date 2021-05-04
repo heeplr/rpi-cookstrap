@@ -7,6 +7,7 @@ function rpi_config_prerun() {
     # load dependencies
     plugin_load append || return 1
     plugin_load remove || return 1
+    plugin_load dist || return 1
 }
 
 function rpi_config_run() {
@@ -21,7 +22,7 @@ function rpi_config_run() {
         rpi_remove_pattern_from_file "${c}" "${RPI_BOOT}/config.txt" || error "removing ${c}"
     done
 
-    cp_from_dist_if_exist "/boot/config.txt"
+    rpi_dist_cp_if_exist "/boot/config.txt"
 
     return 0
 }

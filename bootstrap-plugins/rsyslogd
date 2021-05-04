@@ -15,6 +15,7 @@ function rpi_rsyslogd_prerun() {
     # load dependencies
     plugin_load append || return 1
     plugin_load replace || return 1
+    plugin_load dist || return 1
 }
 
 function rpi_rsyslogd_run() {
@@ -52,8 +53,8 @@ module(load="imjournal")
 EOF
 
     # copy distfiles
-    cp_from_dist_if_exist "/etc/rsyslog.conf"
-    cp_from_dist_if_exist "/etc/rsyslog.d"
+    rpi_dist_cp_if_exist "/etc/rsyslog.conf"
+    rpi_dist_cp_if_exist "/etc/rsyslog.d"
 
     return 0
 }

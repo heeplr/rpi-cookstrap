@@ -11,6 +11,7 @@ RPI_SSH_AUTHORIZE="${RPI_SSH_AUTHORIZE:=}"
 function rpi_ssh_prerun() {
     # load dependencies
     plugin_load append || return 1
+    plugin_load dist || return 1
 }
 
 function rpi_ssh_run() {
@@ -36,10 +37,10 @@ function rpi_ssh_run() {
     chown_pi "/home/pi/.ssh" -R || error "chown"
 
     # copy dist files
-    cp_from_dist_if_exist /etc/ssh/sshd_config 0600
-    cp_from_dist_if_exist /home/pi/.ssh/authorized_keys 0600
-    cp_from_dist_if_exist /home/pi/.ssh/config 0600
-    cp_from_dist_if_exist /home/pi/.ssh/known_hosts 0600
+    rpi_dist_cp_if_exist /etc/ssh/sshd_config 0600
+    rpi_dist_cp_if_exist /home/pi/.ssh/authorized_keys 0600
+    rpi_dist_cp_if_exist /home/pi/.ssh/config 0600
+    rpi_dist_cp_if_exist /home/pi/.ssh/known_hosts 0600
 
     # generate ssh key?
     if [[ "${RPI_SSH_KEYGEN}" == "true" ]] ; then

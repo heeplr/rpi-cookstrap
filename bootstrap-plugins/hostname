@@ -10,6 +10,7 @@ function rpi_hostname_prerun() {
     [[ -n "${RPI_HOSTNAME}" ]] || error "RPI_HOSTNAME not set."
     # load dependencies
     plugin_load append || return 1
+    plugin_load dist || return 1
 
     return 0
 }
@@ -24,8 +25,8 @@ function rpi_hostname_run() {
         rpi_append_to_file "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hostname"
     fi
     # copy distfile
-    cp_from_dist_if_exist /etc/hostname
-    cp_from_dist_if_exist /etc/hosts
+    rpi_dist_cp_if_exist /etc/hostname
+    rpi_dist_cp_if_exist /etc/hosts
 
     # /etc/hosts
     RPI_HOSTNAME="$(cat "${RPI_ROOT}/etc/hostname")"

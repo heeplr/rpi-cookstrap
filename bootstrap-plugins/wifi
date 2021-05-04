@@ -11,6 +11,7 @@ RPI_WIFI_POWERSAVE="${RPI_WIFI_POWERSAVE:=false}"
 function rpi_wifi_prerun() {
     # load dependencies
     plugin_load append || return 1
+    plugin_load dist || return 1
 }
 
 function rpi_wifi_run() {
@@ -43,7 +44,7 @@ EOF
     run_on_boot "iw dev wlan0 set power_save ${powersave}" || error "run_on_boot"
 
     # copy from distfiles
-    cp_from_dist_if_exist "/etc/wpa_supplicant/wpa_supplicant.conf"
+    rpi_dist_cp_if_exist "/etc/wpa_supplicant/wpa_supplicant.conf"
 
     # copy to boot
     sudo cp "${RPI_ROOT}/etc/wpa_supplicant/wpa_supplicant.conf" "${RPI_BOOT}/"

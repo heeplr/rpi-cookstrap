@@ -14,11 +14,11 @@ function rpi_dist_prerun() {
 function rpi_dist_run() {
     local f
     [[ -n "${RPI_DIST_COPY}" ]] && for f in "${RPI_DIST_COPY[@]}" ; do
-        cp_from_dist_if_exist "${f}" || error "copy ${f}"
+        rpi_dist_cp_if_exist "${f}" || error "copy ${f}"
     done
 
     [[ -n "${RPI_DIST_COPY_BOOT}" ]] && for f in "${RPI_DIST_COPY_BOOT[@]}" ; do
-        cp_from_dist_after_boot "${f}" || error "copy after boot ${f}"
+        rpi_dist_cp_after_boot "${f}" || error "copy after boot ${f}"
     done
 
     [[ -n "${RPI_DIST_APPEND}" ]] && for f in "${RPI_DIST_APPEND[@]}" ; do
@@ -39,4 +39,80 @@ function rpi_dist_help_vars() {
         "RPI_DIST_APPEND|array of files to append to files on disk image|${RPI_DIST_APPEND}"
     )
     help_for_vars "${vars[@]}"
+}
+
+# ---------------------------------------------------------------------
+# check if dist file exists
+function rpi_dist_exist() {
+    local file="$1"
+    [[ -e "${RPI_DISTDIR}/${file}" ]] && return 0
+    [[ -e "${RPI_USER_DISTDIR}/${file}" ]] && return 0
+    return 1
+}
+
+# copy from dist directory to root directory
+function rpi_dist_cp() {
+    local path="$1"
+    local permissions="$2"
+    local dst
+    [[ -n "${path}" ]] || error "missing parameter. rpi_dist_cp"
+    log " copying ${path} ..."
+    # directory?
+    dst="${RPI_ROOT}/$(dirname "${path}")"
+    if [[ -d "${RPI_DISTDIR}/${path}" ]] ; then
+        sudo cp -r "${RPI_DISTDIR}/${path}/"* "${dst}" || error "cp -r ${path}/* to ${dst}"
+    elif [[ -d "${RPI_USER_DISTDIR}/${path}" ]] ; then
+        sudo cp -r "${RPI_USER_DISTDIR}/${path}/"* "${dst}" || error "cp -r ${path}/* to ${dst}"
+    elif [[ -f "${RPI_DISTDIR}/${path}" ]] ; then
+        sudo cp "${RPI_DISTDIR}/${path}" "${dst}" || error "cp ${path} to ${dst}"
+    elif [[ -f "${RPI_USER_DISTDIR}/${path}" ]] ; then
+        sudo cp "${RPI_USER_DISTDIR}/${path}" "${dst}" || error "cp ${path} to ${dst}"
+    else
+        error "cp ${path} ${dst}"
+    fi
+    # chmod?
+    [[ -n "${permissions}" ]] && chmod_pi "${permissions}" "${path}"
+}
+
+# copy if srcfile exists
+function rpi_dist_cp_if_exist() {
+    local path="$1"
+    if dist_exist "${path}" ; then
+        rpi_dist_cp "${path}"
+        return 0
+    fi
+    return 1
+}
+
+# copy from dist directory after boot
+function rpi_dist_cp_after_boot() {
+    local path="$1"
+    local permissions="$2"
+    local distdir="${RPI_ROOT}/home/pi/bootstrap-dist"
+    [[ -n "${path}" ]] || error "missing parameter. rpi_dist_cp_after_boot"
+    log " registering ${path} for copying after boot ..."
+    # create directory?
+    [[ -d "${distdir}" ]] || {
+        sudo mkdir "${distdir}" || error "mkdir"
+        chmod_pi "0770" "/home/pi/bootstrap-dist" || error "chmod_pi"
+        chown_pi "/home/pi/bootstrap-dist" || error "chown_pi"
+    }
+    # crate path
+    sudo mkdir -p "${distdir}/$(dirname "${path}")/"
+    # copy directory?
+    if [[ -d "${path}" ]] ; then
+        # copy to image
+        sudo cp -r "${RPI_USER_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || sudo cp -r "${RPI_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || error "cp"
+        # register copy command
+        run_once "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}")" || error "run_once"
+    # copy file?
+    else
+        sudo cp -r "${RPI_USER_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || sudo cp -r "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
+        run_once "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\"" || error "run_once"
+    fi
+    # chmod?
+    [[ -n "${permissions}" ]] && { run_once "sudo chmod -R \"${permissions}\" \"${path}\"" || error "chmod" ; }
+    # chown
+    run_once "sudo chown -R pi:pi \"${path}\"" || error "chown"
+
 }
