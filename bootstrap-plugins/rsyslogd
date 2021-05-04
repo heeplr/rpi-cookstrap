@@ -14,6 +14,7 @@ RPI_RSYSLOGD_QUEUE_SIZE="${RPI_RSYSLOGD_QUEUE_SIZE:=10000}"
 function rpi_rsyslogd_prerun() {
     # load dependencies
     plugin_load append || return 1
+    plugin_load replace || return 1
 }
 
 function rpi_rsyslogd_run() {
@@ -40,7 +41,7 @@ function rpi_rsyslogd_run() {
         )
         local pattern
         for pattern in "${patterns[@]}" ; do
-            replace_string_in_file "${pattern}" "${RPI_ROOT}/etc/rsyslog.conf"
+            rpi_replace_string_in_file "${pattern}" "${RPI_ROOT}/etc/rsyslog.conf"
         done
     fi
 

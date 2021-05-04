@@ -217,14 +217,6 @@ function plugin_postrun_all() {
 
 # ---------------------------------------------------------------------
 
-# replace string in file (sed pattern)
-function replace_string_in_file() {
-    local pattern="$1"
-    local file="$2"
-    { [[ -n "${pattern}" ]] && [[ -n "${file}" ]]; } || error "missing arguments. replace line"
-    sudo sed -E "s/${pattern}/g" -i "${file}" || error "replace_string ${pattern} ${file}"
-}
-
 # check if dist file exists
 function dist_exist() {
     local file="$1"
@@ -356,7 +348,7 @@ function run_on_boot() {
     local cmd="$1"
     # remove "exit 0" at the end if it's there, so we
     # can simply append commands
-    rpi_remove_line_from_file "exit 0" "${RPI_ROOT}/etc/rc.local" || error "remove exit from rc.local"
+    rpi_remove_pattern_from_file "exit 0" "${RPI_ROOT}/etc/rc.local" || error "remove exit from rc.local"
     rpi_append_to_file "${cmd}" "${RPI_ROOT}/etc/rc.local" || error "append ${cmd} to rc.local"
 }
 

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# replace string in file (sed pattern)
+
+RPI_REPLACE_FILE="${RPI_REPLACE_FILE:=}"
+RPI_REPLACE_PATTERN="{RPI_REPLACE_PATTERN:=}"
+
+
+function rpi_replace_prerun() {
+    [[ -n "${RPI_REPLACE_PATTERN}" ]] || error "RPI_REPLACE_PATTERN"
+    [[ -n "${RPI_REPLACE_FILE}" ]] || error "RPI_REPLACE_FILE is not set."
+    [[ -f "${RPI_REPLACE_FILE}" ]] || error "opening ${RPI_REPLACE_FILE}"
+}
+
+function rpi_replace_run() {
+    rpi_replace_string_in_file "${RPI_REPLACE_PATTERN}" "${RPI_REPLACE_FILE}"
+}
+
+function rpi_replace_description() {
+    echo "replace string in file (sed pattern)"
+}
+
+function rpi_replace_help_vars() {
+    local vars=(
+        "RPI_REPLACE_FILE|file to search & replace pattern in|${RPI_REPLACE_FILE}"
+        "RPI_REPLACE_PATTERN|sed pattern to match (and replace)|${RPI_REPLACE_PATTERN}"
+    )
+    help_for_vars "${vars[@]}"
+}
+
+# ---------------------------------------------------------------------
+function rpi_replace_string_in_file() {
+    local pattern="$1"
+    local file="$2"
+    { [[ -n "${pattern}" ]] && [[ -n "${file}" ]]; } || error "missing arguments. replace line"
+    sudo sed -E "s/${pattern}/g" -i "${file}" || error "replace_string ${pattern} ${file}"
+}

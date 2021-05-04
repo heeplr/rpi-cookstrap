@@ -18,7 +18,7 @@ function rpi_config_run() {
 
     for c in "${RPI_CONFIG_REMOVE[@]}" ; do
         echo " removing ${c} ..."
-        rpi_remove_line_from_file "${c}" "${RPI_BOOT}/config.txt" || error "removing ${c}"
+        rpi_remove_pattern_from_file "${c}" "${RPI_BOOT}/config.txt" || error "removing ${c}"
     done
 
     cp_from_dist_if_exist "/boot/config.txt"
