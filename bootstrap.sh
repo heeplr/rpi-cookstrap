@@ -76,9 +76,9 @@ function help() {
         plugin_load "${p}"
         # general description
         if plugin_check_for_func "rpi_${p}_description" ; then
-            printf "${invert}%s${normal} - ${underline}%s${normal}\n\n" "${p}" "$("rpi_${p}_description")"
+            printf "${invert}%-15s${normal} - ${underline}%s${normal}\n\n" "${p}" "$("rpi_${p}_description")"
         else
-            echo "${invert}${p}${normal}"
+            printf "${invert}%-15s${normal}\n\n" "${p}"
         fi
         # config var description
         if plugin_check_for_func "rpi_${p}_help_vars" ; then
@@ -92,6 +92,7 @@ function help() {
             "rpi_${p}_help_distfiles"
             echo
         fi
+        echo
     done
     # disable nullglob
     shopt -u nullglob
