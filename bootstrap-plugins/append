@@ -22,7 +22,7 @@ function rpi_append_run() {
     fi
     # append string to file ?
     if [[ -n "${RPI_APPEND_STRING}" ]] ; then
-        rpi_append_to_file "${RPI_APPEND_STRING}" "${RPI_APPEND_FILE}" || error "append_to_file"
+        rpi_append_to_file "${RPI_APPEND_STRING}" "${RPI_APPEND_FILE}" || error "rpi_append_to_file"
     fi
     # append from stdin to file?
     if [[ "${RPI_APPEND_STDIN}" == "true" ]] ; then
