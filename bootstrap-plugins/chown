@@ -16,6 +16,19 @@ function rpi_chown_run() {
     rpi_chown_pi "${RPI_CHOWN_PATH}" "${RPI_CHOWN_RECURSIVE}"
 }
 
+function rpi_chown_description() {
+    echo "chown for pi user"
+}
+
+function rpi_chown_help_vars() {
+    local vars=(
+        "RPI_CHOWN_USER|user (if not pi)|${RPI_CHOWN_USER}"
+        "RPI_CHOWN_PATH|path to chown target|${RPI_CHOWN_PATH}"
+        "RPI_CHOWN_RECURSIVE|chown recursively if true|${RPI_CHOWN_RECURSIVE}"
+    )
+    help_for_vars "${vars[@]}"
+}
+
 # ---------------------------------------------------------------------
 
 function rpi_chown_pi() {
