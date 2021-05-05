@@ -21,7 +21,7 @@ function rpi_remove_description() {
 }
 
 function rpi_remove_help_vars() {
-    help_va "RPI_REMOVE_FILE" "file to remove pattern from"
+    help_var "RPI_REMOVE_FILE" "file to remove pattern from"
     help_var "RPI_REMOVE_PATTERN" "sed pattern to match (and remove)"
 }
 
