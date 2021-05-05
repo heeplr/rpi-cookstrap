@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# run raspi-config
+
+RPI_RASPICONFIG_NONINT="${RPI_RASPICONFIG_NONINT:=}"
+
+# load dependencies
+plugin_load run || return 1
+
+
+rpi_raspiconfig_prerun() {
+    [[ -n "${RPI_RASPICONFIG_NONINT}" ]] || error "RPI_RASPICONFIG_NONINT check"
+}
+
+rpi_raspiconfig_run() {
+    local cmd
+    for cmd in "${RPI_RASPICONFIG_NONINT[@]}" ; do
+        rpi_run_once "sudo raspi-config nonint ${cmd}" || error "install systemctl ${cmd}"
+    done
+}
+
+rpi_raspiconfig_description() {
+    echo "run raspi-config noninteractively"
+}
+
+rpi_raspiconfig_help_vars() {
+    help_var "RPI_RASPICONFIG_NONINT" "list of /usr/bin/raspi-config functions + parameters to run"
+}
