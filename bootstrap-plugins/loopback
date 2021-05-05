@@ -55,7 +55,7 @@ function rpi_loopback_setup() {
     # store device
     RPI_LOOPBACK_DEVICE="${device}"
     # store img name
-    RPI_LOOPBACK_NAME="${image}"
+    RPI_LOOPBACK_IMAGE="${image}"
 }
 
 # tear down loopback device
