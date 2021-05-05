@@ -40,7 +40,7 @@ Use at your own risk and do provide fixes ;) !!
 
 ## Getting started
 
-Try ```./bootstrap.sh -h``` for help.
+Try ```./bootstrap.sh -h``` to list commandline arguments.
 
 
 ### bootstrapping an image
@@ -137,23 +137,25 @@ It would just download the default latest raspbian-lite and extract the image.
 
 ## Plugins
 
+Try ```./bootstrap.sh -p``` for a list of plugins.
+
 Plugins reside in **RPI_PLUGINDIR** (and optionally in **RPI_USER_PLUGINDIR**).
 They all provide a set of functions prefixed by rpi_ and their name (bold ones are mandatory):
 
 | function           | description |
 |--------------------|-------------------------------------------------------------------------------------------|
-|**_prerun()**       | runs before anything is done (before download etc.) Will halt execution when failing.
-|**_run()**          | execute main plugin task. Will also halt execution when failing.
-|*_postrun()*        | runs after all plugins are done (cleaning up etc.)
-|*_description()*    | print a general short description of the plugin
-|*_help_vars()*      | will call "help_for_vars" function passing an array of "name\|helptext\|default_value" strings to describe each variable specific to this plugin.
-|*_help_distfiles()* | call "help_for_distfiles" passing an array of "name\|helptext" strings to describe each file used by this plugin.
+|**rpi_*_prerun()**       | runs before anything is done (before download etc.) Will halt execution when failing.
+|**rpi_*_run()**          | execute main plugin task. Will also halt execution when failing.
+|*rpi_*_postrun()*        | runs after all plugins are done (cleaning up etc.)
+|*rpi_*_description()*    | print a general short description of the plugin
+|*rpi_*_help_vars()*      | will call "help_for_vars" function passing an array of "name\|helptext\|default_value" strings to describe each variable specific to this plugin.
+|*rpi_*_help_distfiles()* | call "help_for_distfiles" passing an array of "name\|helptext" strings to describe each file used by this plugin.
 
-Plugins are run sequentially. Execution order matters, so download plugins
-always need to run first.
-If you want to run the "raspbian_download" plugin to download the image and
+Plugins are run sequentially. Execution order matters, so plugins that provide
+a disk image always need to run first.
+If you want to run the "raspbian" plugin to download the image and
 the "wifi" plugin to configure wireless networking for example, you
-would set: ```RPI_BOOTSTRAP_PLUGINS=( "raspbian_download" "wifi" )```
+would set: ```RPI_BOOTSTRAP_PLUGINS=( "raspbian" "wifi" )```
 
 All plugins can read/write all variables and share one context.
 Thus plugins can use other plugins to maximize code reuse.
@@ -163,6 +165,11 @@ Thus plugins can use other plugins to maximize code reuse.
 All plugins should read/write variables starting with RPI_ followed by the
 capitalized plugin name. So a plugin named "foo" would use RPI_FOO_* and
 thus could use a variable like "RPI_FOO_SOME_VAR=123".
+
+
+### plugin dist files
+A plugin can access files in the [dist dir](#dist-dir). Possible
+candidates are listed using the ```-p``` argument.
 
 
 <div style="font-size:larger;">&#160;</div>
