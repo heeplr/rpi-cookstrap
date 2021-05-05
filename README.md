@@ -238,3 +238,5 @@ Feel free to file an [issue](https://github.com/heeplr/rpi-cookstrap/issues) or 
 # ToDo
 * detailed plugin documentation (wiki)
 * dry-run mode (output all actions without performing them)
+* [tests](https://github.com/sstephenson/bats)
+
