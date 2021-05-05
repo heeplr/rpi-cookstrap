@@ -100,13 +100,11 @@ function help() {
 }
 
 # print help for plugin specific variables
-function help_for_vars() {
-    local vars=("$@")
-    local v
-    for v in "${vars[@]}" ; do
-        IFS="|" read -r name description default <<< "${v}"
-        printf "${bold}%40s${normal} - %s (default: \"%s\")\n" "${name}" "${description}" "${default}"
-    done
+function help_var() {
+    local name="$1"
+    local description="$2"
+    local default="${!name}"
+    printf "${bold}%40s${normal} - %s (default: \"%s\")\n" "${name}" "${description}" "${default}"
 }
 
 # print help for plugin specific distfiles

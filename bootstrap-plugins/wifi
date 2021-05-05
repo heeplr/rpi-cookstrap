@@ -59,13 +59,10 @@ function rpi_wifi_description() {
 }
 
 function rpi_wifi_help_vars() {
-    local vars=(
-        "RPI_WIFI_SSID|SSID of network|${RPI_WIFI_SSID}"
-        "RPI_WIFI_PSK|network password|${RPI_WIFI_PSK}"
-        "RPI_WIFI_COUNTRY|wifi country standard. optional.|${RPI_WIFI_COUNTRY}"
-        "RPI_WIFI_POWERSAVE|turn wifi powersave on/off on boot|${RPI_WIFI_POWERSAVE}"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_WIFI_SSID" "SSID of network"
+    help_var "RPI_WIFI_PSK" "network password"
+    help_var "RPI_WIFI_COUNTRY" "wifi country standard. optional."
+    help_var "RPI_WIFI_POWERSAVE" "turn wifi powersave on/off on boot"
 }
 
 function rpi_wifi_help_distfiles() {

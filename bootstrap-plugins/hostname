@@ -44,10 +44,7 @@ function rpi_hostname_description() {
 }
 
 function rpi_hostname_help_vars() {
-    local vars=(
-        "RPI_HOSTNAME|hostname to set|${RPI_HOSTNAME}"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_HOSTNAME" "hostname to set"
 }
 
 function rpi_hostname_help_distfiles() {

@@ -21,8 +21,5 @@ rpi_adduser_description() {
 }
 
 rpi_adduser_help_vars() {
-    local vars=(
-        "RPI_ADDUSER_GROUP|group to add user to|${RPI_ADDUSER_GROUP}"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_ADDUSER_GROUP" "group to add user to"
 }

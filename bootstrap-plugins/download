@@ -24,11 +24,8 @@ rpi_download_description() {
 }
 
 rpi_download_help_vars() {
-    local vars=(
-        "RPI_DOWNLOAD_URL|url or path to file|${RPI_DOWNLOAD_URL}"
-        "RPI_DOWNLOAD_FILE|path to destination file|${RPI_DOWNLOAD_FILE}"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_DOWNLOAD_URL" "url or path to file"
+    help_var "RPI_DOWNLOAD_FILE" "path to destination file"
 }
 
 # ---------------------------------------------------------------------

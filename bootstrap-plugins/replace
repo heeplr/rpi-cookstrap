@@ -21,11 +21,8 @@ function rpi_replace_description() {
 }
 
 function rpi_replace_help_vars() {
-    local vars=(
-        "RPI_REPLACE_FILE|file to search & replace pattern in|${RPI_REPLACE_FILE}"
-        "RPI_REPLACE_PATTERN|sed pattern to match (and replace)|${RPI_REPLACE_PATTERN}"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_REPLACE_FILE" "file to search & replace pattern in"
+    help_var "RPI_REPLACE_PATTERN" "sed pattern to match (and replace)"
 }
 
 # ---------------------------------------------------------------------

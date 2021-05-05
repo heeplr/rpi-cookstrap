@@ -24,8 +24,5 @@ function rpi_systemctl_description() {
 }
 
 function rpi_systemctl_help_vars() {
-    local vars=(
-        "RPI_SYSTEMCTL_CMDS|array of systemctl commands|${RPI_SYSTEMCTL_CMDS}"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_SYSTEMCTL_CMDS" "array of systemctl commands"
 }

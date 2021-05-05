@@ -31,10 +31,7 @@ function rpi_apt_description() {
 }
 
 function rpi_apt_help_vars() {
-    local vars=(
-        "RPI_APT_CMDS|array of apt commands to execute|${RPI_APT_CMDS}"
-        "RPI_APT_INTERACTIVE|run in interactive mode|${RPI_APT_INTERACTIVE}"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_APT_CMDS" "array of apt commands to execute"
+    help_var "RPI_APT_INTERACTIVE" "run in interactive mode"
 }
 

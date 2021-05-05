@@ -66,16 +66,13 @@ function rpi_rsyslogd_description() {
 }
 
 function rpi_rsyslogd_help_vars() {
-    local vars=(
-        "RPI_RSYSLOGD_TARGET|target syslog server|${RPI_RSYSLOGD_TARGET}"
-        "RPI_RSYSLOGD_PORT|target port|${RPI_RSYSLOGD_PORT}"
-        "RPI_RSYSLOGD_LOCAL|enable/disable local logfiles|${RPI_RSYSLOGD_LOCAL}"
-        "RPI_RSYSLOGD_PROTOCOL|network protocol|${RPI_RSYSLOGD_PROTOCOL}"
-        "RPI_RSYSLOGD_RESUME_RETRY_COUNT|amount of resume retries|${RPI_RSYSLOGD_RESUME_RETRY_COUNT}"
-        "RPI_RSYSLOGD_QUEUE_TYPE|message queue type|${RPI_RSYSLOGD_QUEUE_TYPE}"
-        "RPI_RSYSLOGD_QUEUE_SIZE|message queue size|${RPI_RSYSLOGD_QUEUE_SIZE}"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_RSYSLOGD_TARGET" "target syslog server"
+    help_var "RPI_RSYSLOGD_PORT" "target port"
+    help_var "RPI_RSYSLOGD_LOCAL" "enable/disable local logfiles"
+    help_var "RPI_RSYSLOGD_PROTOCOL" "network protocol"
+    help_var "RPI_RSYSLOGD_RESUME_RETRY_COUNT" "amount of resume retries"
+    help_var "RPI_RSYSLOGD_QUEUE_TYPE" "message queue type"
+    help_var "RPI_RSYSLOGD_QUEUE_SIZE" "message queue size"
 }
 
 function rpi_rsyslogd_help_distfiles() {

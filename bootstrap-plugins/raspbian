@@ -68,10 +68,7 @@ function rpi_raspbian_description() {
 }
 
 function rpi_raspbian_help_vars() {
-    local vars=(
-        "RPI_DOWNLOAD_RASPBIAN_FLAVOR|flavor of raspbian to use: lite or full|${RPI_DOWNLOAD_RASPBIAN_FLAVOR}"
-        "RPI_DOWNLOAD_RASPBIAN_URL|alternative download URL or local path to downloaded zip|${RPI_DOWNLOAD_RASPBIAN_URL}"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_DOWNLOAD_RASPBIAN_FLAVOR" "flavor of raspbian to use: lite or full"
+    help_var "RPI_DOWNLOAD_RASPBIAN_URL" "alternative download URL or local path to downloaded zip"
 }
 

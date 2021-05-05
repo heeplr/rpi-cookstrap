@@ -38,9 +38,6 @@ function rpi_sshfs_description() {
 }
 
 function rpi_sshfs_help_vars() {
-    local vars=(
-        "RPI_SSHFS_URL|sftp url|${RPI_SSHFS_URL}"
-        "RPI_SSHFS_MOUNTPOINT|directory to mount fs|${RPI_SSHFS_MOUNTPOINT}"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_SSHFS_URL" "sftp url"
+    help_var "RPI_SSHFS_MOUNTPOINT" "directory to mount fs"
 }

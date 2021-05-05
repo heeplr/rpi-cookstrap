@@ -21,12 +21,9 @@ function rpi_chmod_description() {
 }
 
 function rpi_chmod_help_vars() {
-    local vars=(
-        "RPI_CHMOD_PERM|permissions|${RPI_CHMOD_PERM}"
-        "RPI_CHMOD_PATH|path to chmod target|${RPI_CHMOD_PATH}"
-        "RPI_CHMOD_RECURSIVE|chmod (only files) recursively if true|${RPI_CHMOD_RECURSIVE}"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_CHMOD_PERM" "permissions"
+    help_var "RPI_CHMOD_PATH" "path to chmod target"
+    help_var "RPI_CHMOD_RECURSIVE" "chmod (only files) recursively if true"
 }
 
 # ---------------------------------------------------------------------

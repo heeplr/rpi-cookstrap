@@ -28,13 +28,10 @@ rpi_loopback_description() {
 }
 
 rpi_loopback_help_vars() {
-    local vars=(
-        "RPI_BOOT|mountpoint for BOOT partition|${RPI_BOOT}"
-        "RPI_ROOT|mountpoint for root partition|${RPI_ROOT}"
-        "RPI_LOOPBACK_IMAGE|image filename|${RPI_LOOPBACK_IMAGE}"
-        "RPI_LOOPBACK_DEVICE|will be set to used /dev/loopX device|n/a"
-    )
-    help_for_vars "${vars[@]}"
+    help_var "RPI_BOOT" "mountpoint for BOOT partition"
+    help_var "RPI_ROOT" "mountpoint for root partition"
+    help_var "RPI_LOOPBACK_IMAGE" "image filename"
+    help_var "RPI_LOOPBACK_DEVICE" "will be set to used /dev/loopX device"
 }
 
 # ---------------------------------------------------------------------
