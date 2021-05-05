@@ -119,6 +119,8 @@ It would just download the default latest raspbian-lite and extract the image.
 
 | name                     | description                                                        | default value |
 |--------------------------|--------------------------------------------------------------------|---------------|
+|**RPI_BOOTSTRAP_PLUGINS** | run those plugins in this order                                    | () |
+|**RPI_HOSTNAME**          | hostname the image will use                                        | unnamed
 |**RPI_PLUGINDIR**         | path to plugins                                                    | *./bootstrap-plugins*|
 |**RPI_DISTDIR**           | s. [dist dir](#dist-dir)                                           | *./bootstrap_dist*|
 |**RPI_WORKDIR**           | work dir. can be removed at any time to start from scratch         | *./.bootstrap-work*|
@@ -128,8 +130,7 @@ It would just download the default latest raspbian-lite and extract the image.
 |**RPI_USER_CONFIG**       | user specific config. Additional to the project's *bootstrap.cfg*  | *~/.bootstrap.cfg*|
 |**RPI_ROOT**              | mountpoint for root partition                                      | *./.bootstrap-work/root*
 |**RPI_BOOT**              | mountpoint for boot partition                                      | *./.bootstrap-work/boot*
-|**RPI_BOOTSTRAP_PLUGINS** | array of plugins to run in this order                              | () |
-|**RPI_HOSTNAME**          | hostname                                                           | unnamed
+
 
 <div style="font-size:larger;">&#160;</div>
 
