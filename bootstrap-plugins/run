@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# run command after image boot/login
+
+
 # load dependencies
 plugin_load append || return 1
 plugin_load remove || return 1
@@ -16,7 +19,7 @@ function rpi_run_run() {
 }
 
 function rpi_run_description() {
-    echo "run commands on the raspberry"
+    echo "run commands on image after boot/login"
 }
 
 function rpi_run_help_vars() {
