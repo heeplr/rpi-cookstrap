@@ -19,7 +19,7 @@ RPI_BOOTSTRAP_PLUGINS="${RPI_BOOTSTRAP_PLUGINS:=}"
 RPI_RUN_ON_BOOT="${RPI_RUN_ON_BOOT:=false}"
 
 # ---------------------------------------------------------------------
-# print banner
+# font effects
 bold="$(tput bold)"
 underline="$(tput smul)"
 invert="$(tput smso)"
@@ -27,6 +27,7 @@ normal="$(tput sgr0)"
 red="$(tput setaf 1)"
 green="$(tput setaf 2)"
 
+# print banner
 function banner() {
     cat << EOF
  ----------------------------------------
