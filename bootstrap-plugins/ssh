@@ -25,6 +25,7 @@ function rpi_ssh_run() {
 
     # create ~/.ssh dir
     [[ -d "${RPI_ROOT}/home/pi/.ssh" ]] || sudo mkdir -p "${RPI_ROOT}/home/pi/.ssh" || error "mkdir"
+    rpi_chmod_pi 0700 "/home/pi/.ssh" || error "chmod"
 
     # authorize configured keys?
     if [[ -n "${RPI_SSH_AUTHORIZE}" ]] ; then
@@ -34,12 +35,9 @@ function rpi_ssh_run() {
         for key in "${RPI_SSH_AUTHORIZE[@]}" ; do
             rpi_append_to_file "${key}" "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "append"
         done
+        rpi_chmod_pi 0600 "/home/pi/.ssh/authorized_keys" "true" || error "chmod"
+        rpi_chown_pi "/home/pi/.ssh/authorized_keys" "true" || error "chown"
     fi
-
-    # permissions
-    rpi_chmod_pi 0700 "/home/pi/.ssh" || error "chmod"
-    rpi_chmod_pi 0600 "/home/pi/.ssh" "true" || error "chmod"
-    rpi_chown_pi "/home/pi/.ssh" "true" || error "chown"
 
     # copy dist files
     rpi_dist_cp_if_exist /etc/ssh/sshd_config 0600
@@ -50,8 +48,9 @@ function rpi_ssh_run() {
     # generate ssh key?
     if [[ "${RPI_SSH_KEYGEN}" == "true" ]] ; then
         echo " generating ${RPI_SSH_KEY_TYPE} key..."
-        local keyname="${RPI_ROOT}/home/pi/.ssh/id_${RPI_SSH_KEY_TYPE}"
-        if ! [[ -f "${keyname}" ]] ; then
+        local keyname
+        keyname="${RPI_ROOT}/home/pi/.ssh/id_${RPI_SSH_KEY_TYPE}"
+        if ! sudo test -f "${keyname}" ; then
             # create key
             sudo ssh-keygen \
                 -t "${RPI_SSH_KEY_TYPE}" \
@@ -60,6 +59,8 @@ function rpi_ssh_run() {
                 -f "${keyname}" || error "ssh-keygen"
             # replace hostname
             sudo sed "s|$(hostname)|${RPI_HOSTNAME}|g" -i "${keyname}.pub" || "sed"
+            # set owner
+            rpi_chown_pi "/home/pi/.ssh" "true" || error "chown"
         fi
     fi
 }
