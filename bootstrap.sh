@@ -36,6 +36,11 @@ function banner() {
 EOF
 }
 
+# print msg in verbose mode
+function verbose() {
+    [[ "${V}" ]] && echo "[VERBOSE]: $*" 2>&2
+}
+
 # print log msg
 function log() {
     echo "[INFO]: $*" 2>&2
@@ -55,9 +60,11 @@ function error() {
 # print usage info
 function usage() {
     cat << EOF
-Usage: $0 [-h] [-l]
+
+Usage: $0 [-h] [-l] [-v]
  -h    print help text
  -l    leave loopback mounted, don't clean up
+ -v    verbose mode
 
 EOF
 }
@@ -116,7 +123,7 @@ function help_distfile() {
 # parse commandline arguments
 function parse_cmdline_args() {
     local arg
-    while getopts "hl" arg ; do
+    while getopts "hlv" arg ; do
         case "${arg}" in
             "h")
                 # print main help
@@ -127,6 +134,10 @@ function parse_cmdline_args() {
 
             "l")
                 RPI_DONT_CLEANUP="true"
+                ;;
+
+            "v")
+                V="1"
                 ;;
 
             ?|*)
@@ -147,6 +158,7 @@ function plugin_check_for_func() {
 function plugin_prerun() {
     local plugin="$1"
     plugin_check_for_func "rpi_${plugin}_prerun" || plugin_load "${plugin}"
+    verbose "${plugin} prerun"
     "rpi_${plugin}_prerun" || error "preflight check for plugin \"${plugin}\""
     return 0
 }
@@ -158,8 +170,10 @@ function plugin_load() {
     plugin_check_for_func "rpi_${plugin}_run" && return
     # load plugin
     if [[ -f "${RPI_USER_PLUGINDIR}/${plugin}" ]] ; then
+        verbose "loading ${RPI_USER_PLUGINDIR}/${plugin}"
         . "${RPI_USER_PLUGINDIR}/${plugin}"
     elif [[ -f "${RPI_PLUGINDIR}/${plugin}" ]] ; then
+        verbose "loading ${RPI_PLUGINDIR}/${plugin}"
         . "${RPI_PLUGINDIR}/${plugin}"
     else
         error "plugin ${plugin} load"
@@ -200,6 +214,7 @@ function plugin_postrun() {
     local plugin="$1"
     # only postrun for plugins that are loaded & provide a postrun()
     plugin_check_for_func "rpi_${plugin}_postrun" || return 0
+    verbose "${plugin} postrun"
     "rpi_${plugin}_postrun" || error "postrun \"${plugin}\""
 }
 
@@ -211,6 +226,10 @@ function plugin_postrun_all() {
     done
 }
 
+# return a all RPI_* variables
+function allvars() {
+    { set -o posix ; set ; } | grep "RPI_"
+}
 
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
@@ -221,7 +240,7 @@ function plugin_postrun_all() {
 [[ -f "${RPI_USER_CONFIG}" ]] && . "${RPI_USER_CONFIG}" 2>/dev/null
 
 # parse cmdline options
-parse_cmdline_args "$*"
+parse_cmdline_args "$@"
 
 # say hello
 banner
@@ -231,6 +250,10 @@ banner
 
 # load plugins
 plugin_load_all
+
+# print list of variables
+verbose "$(allvars)"
+
 
 # create root mountpoint
 [[ -d "${RPI_ROOT}" ]] || mkdir -p "${RPI_ROOT}"
