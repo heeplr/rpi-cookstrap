@@ -131,10 +131,10 @@ function parse_cmdline_args() {
                 ;;
 
             "l")
-                RPI_DONT_CLEANUP=true
+                RPI_DONT_CLEANUP="true"
                 ;;
 
-            *)
+            ?|*)
                 usage
                 exit 1
                 ;;
@@ -226,7 +226,7 @@ function plugin_postrun_all() {
 [[ -f "${RPI_USER_CONFIG}" ]] && . "${RPI_USER_CONFIG}" 2>/dev/null
 
 # parse cmdline options
-parse_cmdline_args "$@"
+parse_cmdline_args "$*"
 
 # say hello
 banner
@@ -255,7 +255,6 @@ else
     warn "NOT CLEANING UP! Don't forget to umount & losetup -d"
 fi
 
-printf "\n\n"
-printf "%s\n" \
+printf "\n\n%s\n" \
     "Image creation successful. Copy \"${RPI_LOOPBACK_IMAGE}\" to an SD card." \
     "(e.g. dd if=${RPI_LOOPBACK_IMAGE} of=/dev/sdcard bs=4M conv=fsync status=progress )"
