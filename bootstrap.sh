@@ -38,7 +38,7 @@ EOF
 
 # print msg in verbose mode
 function verbose() {
-    [[ "${V}" ]] && echo "[VERBOSE]: $*" 2>&2
+    [[ -n "${V}" ]] && echo "[VERBOSE]: $*" 2>&2
 }
 
 # print log msg
