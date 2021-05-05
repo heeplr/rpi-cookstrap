@@ -58,21 +58,22 @@ function error() {
 }
 
 # print usage info
-function usage() {
+function help_usage() {
     cat << EOF
 
 Usage: $0 [-h] [-l] [-v]
  -h    print help text
+ -p    plugin help
  -l    leave loopback mounted, don't clean up
  -v    verbose mode
 
 EOF
 }
 
-# print help msg
-function help() {
+# print plugin help msgs
+function help_plugins() {
     # print plugin help
-    printf "%sPlugins:%s\n\n" "${bold}" "${normal}"
+    printf "%s plugins:%s\n\n" "${bold}$0" "${normal}"
     local f
     # enable nullglob to not expand * if there are no files
     shopt -s nullglob
@@ -123,12 +124,11 @@ function help_distfile() {
 # parse commandline arguments
 function parse_cmdline_args() {
     local arg
-    while getopts "hlv" arg ; do
+    while getopts "hlpv" arg ; do
         case "${arg}" in
             "h")
                 # print main help
-                usage
-                help
+                help_usage
                 exit 1
                 ;;
 
@@ -136,12 +136,18 @@ function parse_cmdline_args() {
                 RPI_DONT_CLEANUP="true"
                 ;;
 
+            "p")
+                # print plugin help
+                help_plugins
+                exit 1
+                ;;
+
             "v")
                 V="1"
                 ;;
 
             ?|*)
-                usage
+                help_usage
                 exit 1
                 ;;
         esac
