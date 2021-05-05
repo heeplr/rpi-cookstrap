@@ -64,7 +64,7 @@ EOF
 # print help msg
 function help() {
     # print plugin help
-    printf "${bold}Plugins:${normal}\n\n"
+    printf "%sPlugins:%s\n\n" "${bold}" "${normal}"
     local f
     # enable nullglob to not expand * if there are no files
     shopt -s nullglob
@@ -76,9 +76,9 @@ function help() {
         plugin_load "${p}"
         # general description
         if plugin_check_for_func "rpi_${p}_description" ; then
-            printf "${invert}%-15s${normal} - ${underline}%s${normal}\n\n" "${p}" "$("rpi_${p}_description")"
+            printf "%-20s - %s\n\n" "${invert}${p}${normal}" "${underline}$("rpi_${p}_description")${normal}"
         else
-            printf "${invert}%-15s${normal}\n\n" "${p}"
+            printf "%-20s\n\n" "${invert}${p}${normal}"
         fi
         # config var description
         if plugin_check_for_func "rpi_${p}_help_vars" ; then
