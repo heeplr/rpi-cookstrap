@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# setup sshfs
+
+RPI_SSHFS_URL="${RPI_SSHFS_URL:=}"
+RPI_SSHFS_MOUNTPOINT="${RPI_SSHFS_MOUNTPOINT:=/mnt/net}"
+
+# load dependencies
+plugin_load apt || return 1
+
+function rpi_sshfs_prerun() {
+    # check arguments
+    [[ -n "${RPI_SSHFS_URL}" ]] || error "RPI_SSHFS_URL must be set"
+    return 0
+}
+
+function rpi_sshfs_run() {
+    # install sshfs package
+    RPI_APT_CMDS="install sshfs" plugin_run apt
+    # edit fstab
+    rpi_append_to_file "${RPI_SSHFS_URL}   ${RPI_SSHFS_MOUNTPOINT}    fuse.sshfs   user,noauto,defaults,uid=1000,gid=1000,_netdev,reconnect,compression" "${RPI_ROOT}/etc/fstab"
+    # create mountpoint
+    sudo mkdir -p "${RPI_ROOT}/${RPI_SSHFS_MOUNTPOINT}"
+    # print pubkey
+    if compgen -G "${RPI_ROOT}/home/pi/.ssh/*.pub" >/dev/null ; then
+        local pubkey
+        pubkey=("${RPI_ROOT}/home/pi/.ssh/"*.pub)
+        printf " authorize this pubkey for sshfs: %s\n" "$(< "${pubkey[@]}")"
+    else
+        warn "no pubkey found. Maybe needs RPI_SSH_KEYGEN=true ?"
+    fi
+    printf " mountpoint: %s\n" "${RPI_SSHFS_MOUNTPOINT}"
+    printf " make sure \"%s\" exists and is accessible\n" "${RPI_SSHFS_URL}"
+}
+
+function rpi_sshfs_description() {
+    echo "mount local filesystem on raspberry pi via ssh + fuse"
+}
+
+function rpi_sshfs_help_vars() {
+    true
+}
