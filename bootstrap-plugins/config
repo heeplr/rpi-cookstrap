@@ -40,6 +40,5 @@ function rpi_config_help_vars() {
 }
 
 function rpi_config_help_distfiles() {
-    distfiles=( "/boot/config.txt" )
-    help_for_distfiles "${distfiles[@]}"
+    help_distfile "/boot/config.txt"
 }

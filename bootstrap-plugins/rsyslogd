@@ -76,9 +76,6 @@ function rpi_rsyslogd_help_vars() {
 }
 
 function rpi_rsyslogd_help_distfiles() {
-    local distfiles=(
-        "/etc/rsyslog.conf"
-        "/etc/rsyslog.d/*"
-    )
-    help_for_distfiles "${distfiles[@]}"
+    help_distfile "/etc/rsyslog.conf"
+    help_distfile "/etc/rsyslog.d/*"
 }

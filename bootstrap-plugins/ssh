@@ -77,11 +77,9 @@ function rpi_ssh_help_vars() {
 }
 
 function rpi_ssh_help_distfiles() {
-    local distfiles=(
-        "/etc/ssh/sshd_config"
-        "/home/pi/.ssh/authorized_keys"
-        "/home/pi/.ssh/config"
-        "/home/pi/.ssh/known_hosts"
-    )
-    help_for_distfiles "${distfiles[@]}"
+    help_distfile "/etc/ssh/sshd_config"
+    help_distfile "/home/pi/.ssh/authorized_keys"
+    help_distfile "/home/pi/.ssh/config"
+    help_distfile "/home/pi/.ssh/known_hosts"
+
 }

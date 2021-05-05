@@ -108,12 +108,9 @@ function help_var() {
 }
 
 # print help for plugin specific distfiles
-function help_for_distfiles() {
-    local files=("$@")
-    local f
-    for f in "${files[@]}" ; do
-        printf "%40s\n" "${f}"
-    done
+function help_distfile() {
+    local file="$1"
+    printf "%40s\n" "${file}"
 }
 
 # parse commandline arguments

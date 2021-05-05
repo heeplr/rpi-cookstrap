@@ -66,5 +66,5 @@ function rpi_wifi_help_vars() {
 }
 
 function rpi_wifi_help_distfiles() {
-    help_for_distfiles "/etc/wpa_supplicant/wpa_supplicant.conf"
+    help_distfile "/etc/wpa_supplicant/wpa_supplicant.conf"
 }

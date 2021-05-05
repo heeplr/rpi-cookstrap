@@ -48,9 +48,6 @@ function rpi_hostname_help_vars() {
 }
 
 function rpi_hostname_help_distfiles() {
-    local distfiles=(
-        "/etc/hostname"
-        "/etc/hosts"
-    )
-    help_for_distfiles "${distfiles[@]}"
+    help_distfile "/etc/hostname"
+    help_distfile "/etc/hosts"
 }
