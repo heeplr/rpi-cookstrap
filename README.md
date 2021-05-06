@@ -17,14 +17,13 @@ self-provisioning on raspberry pi demo:
 
 ## Why?
 If you work a lot with raspberry pi's, you find yourself repeatedly
-downloading OS images, copy them to the sdcard, customizing settings
-like wpa_supplicant.conf or enable ssh.
-You then have to boot the image and configure everything (installing
-packages, edit config files, etc.)
+downloading OS images, customize settings like changing config.txt,
+set the password, install packages etc.
 
 With rpi-cookstrap you can set up everything beforehand and build the
-image by just running *bootstrap.sh*. When booting that image, it will
-setup itself attended or unattended.
+final image by just running *bootstrap.sh*. When booting or
+logging into (default) that image, it will setup itself
+non-interactively (default) or interactively.
 
 You can also create new [plugins](#plugins) for complex tasks.
 
@@ -33,6 +32,20 @@ You can also create new [plugins](#plugins) for complex tasks.
 this can cause damage when handled improperly.
 Use at your own risk and do provide fixes ;) !!
 ```
+
+
+<div style="font-size:larger;">&#160;</div>
+
+
+## Features
+
+* lightweight - written in bash, will run on plain raspberry image
+* reusable - plugins + bootstrap.cfg are building blocks to create
+             raspberry pi installations
+* customizable - create every image with your personal modifications (e.g.
+                 your personal wifi credentials)
+* interoperable - uses shellscripts
+* extendable - plugins can use other plugins and can be written easily
 
 
 <div style="font-size:larger;">&#160;</div>
