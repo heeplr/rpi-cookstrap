@@ -5,7 +5,7 @@ A lightweight raspberry pi bakery shell script framework to customize, bootstrap
 <div style="font-size:larger;">&#160;</div>
 
 <p align="center">
-  <a href="https://asciinema.org/a/a3uxkgMQ0NxnL8Ri5wnbLxXzn?speed=4&cols=125&rows=24" target="_blank">
+  <a href="https://asciinema.org/a/a3uxkgMQ0NxnL8Ri5wnbLxXzn?speed=2&cols=125&rows=24" target="_blank">
     <img src="https://asciinema.org/a/a3uxkgMQ0NxnL8Ri5wnbLxXzn.svg" width="75%" height="75%" />
   </a>
 </p>
