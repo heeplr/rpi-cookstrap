@@ -25,7 +25,6 @@ final image by just running *bootstrap.sh*. When booting or
 logging into (default) that image, it will setup itself
 non-interactively (default) or interactively.
 
-You can also create new [plugins](#plugins) for complex tasks.
 
 ```
 !! A LOT of **sudo** is used. Be aware that
@@ -39,13 +38,14 @@ Use at your own risk and do provide fixes ;) !!
 
 ## Features
 
-* lightweight - written in bash, will run on plain raspberry image
-* reusable - plugins + bootstrap.cfg are building blocks to create
+* **lightweight** - written in bash, will run on plain raspberry image,
+                configure with any text editor
+* **reusable** - [plugins](#plugins) + bootstrap.cfg are building blocks to create
              raspberry pi installations
-* customizable - create every image with your personal modifications (e.g.
+* **customizable** - create every image with your personal modifications (e.g.
                  your personal wifi credentials)
-* interoperable - uses shellscripts
-* extendable - plugins can use other plugins and can be written easily
+* **interoperable** - uses shellscripts and standard tools
+* **extendable** - plugins can use other [plugins](#plugins) and can be written easily
 
 
 <div style="font-size:larger;">&#160;</div>
@@ -53,15 +53,14 @@ Use at your own risk and do provide fixes ;) !!
 
 ## Getting started
 
-This will create a working image without any personal customizations:
+This will create a working raspbian-lite image without any personal customizations.
+Wifi will be configured wifi and a full upgrade will be perfomed:
 
-1. Download/Clone a project or choose an example
-   ```cd examples/wifi+upgrade```
-   (will setup wifi and perform a full raspbian upgrade)
+1. Clone and ```cd examples/wifi+upgrade``` (or any other project)
 
 2. run ```./bootstrap.sh``` and wait until bootstrap is done.
    (It will download the latest OS release, mount it via loopback and
-   modify it using it's plugins.)
+   modify it according to the settings in *bootstrap.cfg*.)
 
 3. copy image to your SD card:
    ```dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX conv=fsync status=progress```
@@ -77,7 +76,8 @@ Now you got a fresh, upgraded image and wifi setup with wrong
 credentials, since *examples/wifi+upgrade/bootstrap.cfg* doesn't
 contain your wifi's name and password (hopefully).
 
-It's time to do some customizations. Create a *~/.bootstrap.cfg~*:
+It's time to do some customizations. Create a *~/.bootstrap.cfg* and
+modify according to your needs:
 ```
 # WIFI
 RPI_BOOTSTRAP_PLUGINS+=( "wifi" )
@@ -93,9 +93,9 @@ RPI_BOOTSTRAP_PLUGINS+=( "password" )
 RPI_PASSWORD_PW=( "$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c24;echo;)" )
 ```
 
-*~/.bootstrap.cfg* is included after the project specific
-bootstrap.cfg and override settings accordingly. Also, *~/.bootstrap-plugins*
-can contain user plugins and will override project plugins.
+*~/.bootstrap.cfg* will be included after the project specific
+*bootstrap.cfg* and will override settings accordingly.
+(Also, *~/.bootstrap-plugins* can contain user plugins and will override project plugins).
 
 
 This example will:
