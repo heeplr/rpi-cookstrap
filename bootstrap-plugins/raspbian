@@ -2,21 +2,22 @@
 
 # download & mount raspbian image
 
+# default options
 RPI_DOWNLOAD_RASPBIAN_FLAVOR="${RPI_DOWNLOAD_RASPBIAN_FLAVOR:=lite}"
 RPI_DOWNLOAD_RASPBIAN_URL="${RPI_DOWNLOAD_RASPBIAN_URL:=https://downloads.raspberrypi.org/raspbian_${RPI_DOWNLOAD_RASPBIAN_FLAVOR}_latest}"
+
+# load dependencies
+plugin_load download || return 1
+plugin_load loopback || return 1
 
 
 function rpi_raspbian_prerun() {
     # check arguments
     [[ -n "${RPI_DOWNLOAD_RASPBIAN_FLAVOR}" ]] || error "RPI_DOWNLOAD_RASPBIAN_FLAVOR check"
     [[ -n "${RPI_DOWNLOAD_RASPBIAN_URL:=}" ]] || error "RPI_DOWNLOAD_RASPBIAN_URL check"
-    # load dependencies
-    plugin_load "download" || return 1
-    plugin_load "loopback" || return 1
 }
 
 function rpi_raspbian_run() {
-
     local name="raspbian-${RPI_DOWNLOAD_RASPBIAN_FLAVOR}.img"
     local dest="${RPI_WORKDIR}/${name}"
 
