@@ -49,7 +49,7 @@ function rpi_loopback_setup() {
         # attach image
         device="$(sudo losetup --show --find --partscan "${image}")" || error losetup
     fi
-    log "using \"${device}\""
+    echo " using \"${device}\""
     # store device
     RPI_LOOPBACK_DEVICE="${device}"
     # store img name
@@ -64,7 +64,7 @@ function rpi_loopback_cleanup() {
 
 # mount raspberry image
 function rpi_loopback_mount() {
-    log "mounting image..."
+    echo " mounting image..."
     # already mounted?
     mount | grep --quiet "${RPI_LOOPBACK_DEVICE}" && return 0
     # wait for sync

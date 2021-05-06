@@ -59,7 +59,7 @@ function rpi_dist_cp() {
     local permissions="$2"
     local dst
     [[ -n "${path}" ]] || error "missing parameter. rpi_dist_cp"
-    log " copying ${path} ..."
+    echo " copying ${path} ..."
     # directory?
     dst="${RPI_ROOT}/$(dirname "${path}")"
     if [[ -d "${RPI_DISTDIR}/${path}" ]] ; then
@@ -93,7 +93,7 @@ function rpi_dist_cp_after_boot() {
     local permissions="$2"
     local distdir="${RPI_ROOT}/home/pi/bootstrap-dist"
     [[ -n "${path}" ]] || error "missing parameter. rpi_dist_cp_after_boot"
-    log " registering ${path} for copying after boot ..."
+    echo " registering ${path} for copying after boot ..."
     # create directory?
     [[ -d "${distdir}" ]] || {
         sudo mkdir "${distdir}" || error "mkdir"
