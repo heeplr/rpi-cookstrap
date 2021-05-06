@@ -158,9 +158,9 @@ It would just download the default latest raspbian-lite and extract the image.
 <div style="font-size:larger;">&#160;</div>
 
 
-## Plugins
+## [Plugins](../../wiki/plugins)
 
-Run ```./bootstrap.sh -p``` for a list of plugins.
+Run ```./bootstrap.sh -p``` for a list of plugins or check the [wiki](../../wiki/plugins).
 
 Plugins reside in **RPI_PLUGINDIR** (and optionally in **RPI_USER_PLUGINDIR**).
 They all provide a set of functions prefixed by rpi_ and their name (bold ones are mandatory):
