@@ -2,10 +2,12 @@
 
 # append string, file, stdin to file & avoid doubles
 
+# default options
 RPI_APPEND_FILE="${RPI_APPEND_FILE:=}"
 RPI_APPEND_STRING="${RPI_APPEND_STRING:=}"
 RPI_APPEND_APPENDIX="${RPI_APPEND_APPENDIX:=}"
 RPI_APPEND_STDIN="${RPI_APPEND_STDIN:=false}"
+
 
 function rpi_append_prerun() {
     # check arguments

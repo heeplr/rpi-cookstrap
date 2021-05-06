@@ -2,11 +2,13 @@
 
 # setup sshfs
 
+# default options
 RPI_SSHFS_URL="${RPI_SSHFS_URL:=}"
 RPI_SSHFS_MOUNTPOINT="${RPI_SSHFS_MOUNTPOINT:=/mnt/net}"
 
 # load dependencies
 plugin_load apt || return 1
+
 
 function rpi_sshfs_prerun() {
     # check arguments

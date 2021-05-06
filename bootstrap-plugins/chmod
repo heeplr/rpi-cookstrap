@@ -2,6 +2,7 @@
 
 # chmod a file on the image
 
+# default options
 RPI_CHMOD_PERM="${RPI_CHMOD_PERM:=}"
 RPI_CHMOD_PATH="${RPI_CHMOD_PATH:=}"
 RPI_CHMOD_RECURSIVE="${RPI_CHMOD_RECURSIVE:=false}"

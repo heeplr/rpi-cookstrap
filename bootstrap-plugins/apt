@@ -2,11 +2,13 @@
 
 # apt jobs to run upon first login
 
+# default options
 RPI_APT_CMDS="${RPI_APT_CMDS:=""}"
 RPI_APT_INTERACTIVE="${RPI_APT_INTERACTIVE:=false}"
 
 # load dependencies
 plugin_load run || return 1
+
 
 rpi_apt_prerun() {
     [[ -n "${RPI_APT_CMDS}" ]] || return 1

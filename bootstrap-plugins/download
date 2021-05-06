@@ -2,6 +2,7 @@
 
 # download a file from the internet
 
+# default options
 RPI_DOWNLOAD_URL="${RPI_DOWNLOAD_URL:=}"
 RPI_DOWNLOAD_FILE="${RPI_DOWNLOAD_FILE:=}"
 

@@ -2,11 +2,12 @@
 
 # run systemctl commands
 
+# default options
 RPI_SYSTEMCTL_CMDS="${RPI_SYSTEMCTL_CMDS:=""}"
-
 
 # load dependencies
 plugin_load run || return 1
+
 
 function rpi_systemctl_prerun() {
     [[ -n "${RPI_SYSTEMCTL_CMDS}" ]] || { warn "RPI_SYSTEMCTL_CMDS must be set" ; return 1 ; }

@@ -2,6 +2,7 @@
 
 # setup loopback device & mount image
 
+# default options
 RPI_LOOPBACK_IMAGE="${RPI_LOOPBACK_IMAGE:=}"
 
 

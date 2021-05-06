@@ -2,6 +2,10 @@
 
 # customize config.txt
 
+# default options
+RPI_CONFIG_ADD="${RPI_CONFIG_ADD:=}"
+RPI_CONFIG_REMOVE="${RPI_CONFIG_REMOVE:=}"
+
 # load dependencies
 plugin_load append || return 1
 plugin_load remove || return 1

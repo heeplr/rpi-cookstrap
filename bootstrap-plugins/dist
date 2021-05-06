@@ -2,6 +2,7 @@
 
 # transfer files from dist directory to the disk image
 
+# default options
 RPI_DIST_COPY="${RPI_DIST_COPY:=}"
 RPI_DIST_APPEND="${RPI_DIST_APPEND:=}"
 

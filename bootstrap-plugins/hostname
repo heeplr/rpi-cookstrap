@@ -2,6 +2,7 @@
 
 # bootstrap hostname of rpi image
 
+# default options
 RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
 
 # load dependencies

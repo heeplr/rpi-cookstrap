@@ -2,6 +2,7 @@
 
 # run raspi-config
 
+# default options
 RPI_RASPICONFIG_NONINT="${RPI_RASPICONFIG_NONINT:=}"
 
 # load dependencies

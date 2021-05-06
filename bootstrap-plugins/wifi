@@ -2,6 +2,7 @@
 
 # bootstrap wifi configuation for rpi image
 
+# default options
 RPI_WIFI_SSID="${RPI_WIFI_SSID:=}"
 RPI_WIFI_PSK="${RPI_WIFI_PSK:=}"
 RPI_WIFI_COUNTRY="${RPI_WIFI_COUNTRY:=}"
@@ -11,6 +12,7 @@ RPI_WIFI_POWERSAVE="${RPI_WIFI_POWERSAVE:=false}"
 plugin_load append || return 1
 plugin_load dist || return 1
 plugin_load run || return 1
+
 
 function rpi_wifi_prerun() {
     true

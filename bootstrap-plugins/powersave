@@ -7,7 +7,7 @@ plugin_load systemctl || return 1
 plugin_load config || return 1
 plugin_load run || return 1
 
-# ---------------------------------------------------------------------
+
 function rpi_powersave_prerun() {
     true
 }

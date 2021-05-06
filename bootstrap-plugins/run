@@ -2,11 +2,15 @@
 
 # run command after image boot/login
 
+# default options
+RPI_RUN_ONCE="${RPI_RUN_ONCE:=}"
+RPI_RUN_ON_BOOT="${RPI_RUN_ON_BOOT:=false}"
 
 # load dependencies
 plugin_load append || return 1
 plugin_load remove || return 1
 plugin_load chown || return 1
+
 
 function rpi_run_prerun() {
     [[ -n "${RPI_RUN_ONCE}" ]] || error "RPI_RUN_ONCE unset."

@@ -2,6 +2,7 @@
 
 # setup remote logging
 
+# default options
 RPI_RSYSLOGD_TYPE="${RPI_RSYSLOGD_TYPE:=omfwd}"
 RPI_RSYSLOGD_TARGET="${RPI_RSYSLOGD_TARGET:=127.0.0.1}"
 RPI_RSYSLOGD_PORT="${RPI_RSYSLOGD_PORT:=55514}"
@@ -15,6 +16,7 @@ RPI_RSYSLOGD_QUEUE_SIZE="${RPI_RSYSLOGD_QUEUE_SIZE:=10000}"
 plugin_load append || return 1
 plugin_load replace || return 1
 plugin_load dist || return 1
+
 
 function rpi_rsyslogd_prerun() {
     true
