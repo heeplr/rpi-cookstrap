@@ -95,7 +95,9 @@ RPI_PASSWORD_PW=( "$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c24;echo;)" )
 
 *~/.bootstrap.cfg* will be included after the project specific
 *bootstrap.cfg* and will override settings accordingly.
-(Also, *~/.bootstrap-plugins* can contain user plugins and will override project plugins).
+(Also, *~/.bootstrap-plugins* can contain user plugins and
+ *~/.bootstrap-dist* user distfiles. They will override
+ project plugins or distfiles.)
 
 
 This example will:
