@@ -24,8 +24,9 @@ bold="$(tput bold)"
 underline="$(tput smul)"
 invert="$(tput smso)"
 normal="$(tput sgr0)"
-red="$(tput setaf 1)"
+red="$(tput setaf 9)"
 green="$(tput setaf 2)"
+yellow="$(tput setaf 11)"
 
 # print banner
 function banner() {
@@ -43,12 +44,12 @@ function verbose() {
 
 # print log msg
 function log() {
-    echo "[INFO]: $*" 2>&2
+    echo "[${bold}INFO${normal}]: $*" 2>&2
 }
 
 # print warning
 function warn() {
-    echo "[${bold}WARNING${normal}]: ${bold}$*${normal}" >&2
+    echo "[${yellow}WARNING${normal}]: ${bold}$*${normal}" >&2
 }
 
 # print error msg
@@ -157,7 +158,7 @@ function parse_cmdline_args() {
 # check if plugin provides function
 function plugin_check_for_func() {
     local funcname="$1"
-    type "${funcname}">/dev/null 2>&1
+    type "${funcname}" >/dev/null 2>&1
 }
 
 # preflight check for plugin
