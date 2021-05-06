@@ -54,7 +54,7 @@ function rpi_run_on_first_login() {
     rpi_append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
     rpi_append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
     rpi_chown_pi "${once_script}" || error "chown"
-    echo " run (login) cmd installed: \"$*\""
+    echo " (login) cmd installed: \"$*\""
 }
 
 # run on every boot
@@ -82,7 +82,7 @@ function rpi_run_on_first_boot() {
     rpi_append_to_file "echo -e '--------------------------------------\nexecuting: $*\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
     rpi_append_to_file "$* || exit 1"         "${RPI_ROOT}/${once_script}"
     rpi_chown_pi "${once_script}" || error "chown"
-    echo " run (boot) cmd installed: \"$*\""
+    echo " (boot) cmd installed: \"$*\""
 }
 
 # run command once (either on first boot or on first login)
