@@ -24,7 +24,7 @@ function rpi_run_description() {
 
 function rpi_run_help_vars() {
     help_var "RPI_RUN_ONCE" "command to run once (on setup)"
-    help_var "RPI_RUN_ON_BOOT" "run command on boot (true) otherwise on login"
+    help_var "RPI_RUN_ON_BOOT" "run command on boot from rc.local (true) otherwise on login from .bashrc"
 }
 
 # ---------------------------------------------------------------------

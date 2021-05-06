@@ -40,64 +40,74 @@ Use at your own risk and do provide fixes ;) !!
 
 ## Getting started
 
-Try ```./bootstrap.sh -h``` to list commandline arguments.
+This will create a working image without any personal customizations:
 
+1. Download/Clone a project or choose an example
+   ```cd examples/wifi+upgrade```
+   (will setup wifi and perform a full raspbian upgrade)
 
-### bootstrapping an image
+2. run ```./bootstrap.sh``` and wait until bootstrap is done.
+   (It will download the latest OS release, mount it via loopback and
+   modify it using it's plugins.)
 
-*examples/wifi+ssh/bootstrap.sh* will download the latest OS release and mount it via loopback. It will change/copy files and add commands to run upon first boot or first login of the pi user. The one-time script will delete itself after successful execution leaving you with a clean, pre-configured image like if you did it manually.
+3. copy image to your SD card:
+   ```dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX conv=fsync status=progress```
+   (replace /dev/sdX with you sdcard)
 
+4. boot raspberry pi with image
+
+5. login as "pi" like normal and wait until setup has finished
+   (a line into */home/pi/.bashrc* has been added. It executes the
+   setup script which deletes itself after successful execution)
+
+Now you got a fresh, upgraded image and wifi setup with wrong
+credentials, since *examples/wifi+upgrade/bootstrap.cfg* doesn't
+contain your wifi's name and password (hopefully).
+
+It's time to do some customizations. Create a *~/.bootstrap.cfg~*:
 ```
-$ cd examples/wifi+ssh
-$ ./bootstrap.sh
- ----------------------------------------
-  example bootstrap script
- ----------------------------------------
-running plugin: raspbian
-downloading https://downloads.raspberrypi.org/raspbian_lite_latest ...
-/tmp/tmp.nyYe5qv7xp                                  100%[=====================================================================================================================>] 433,01M  10,7MB/s    in 44s
-unzipping "/tmp/tmp.nyYe5qv7xp"
-Archive:  /tmp/tmp.nyYe5qv7xp
-  inflating: 2020-02-13-raspbian-buster-lite.img
-setting up loopback for .bootstrap-work/raspbian-lite.img
-Password:
-using "/dev/loop0"
-mounting image...
-running plugin: hostname
- setting hostname to "example"
- setting /etc/hostname
- processing /etc/hosts
-running plugin: wifi
- creating /etc/wpa_supplicant.conf
-running plugin: ssh
- copying /etc/ssh/sshd_config ...
-cleaning up...
+# WIFI
+RPI_BOOTSTRAP_PLUGINS+=( "wifi" )
+RPI_WIFI_SSID="yourwifiname"
+RPI_WIFI_PSK="your-secret-password"
 
+# SSH
+RPI_BOOTSTRAP_PLUGINS+=( "ssh" )
+RPI_SSH_AUTHORIZE=( "ssh-ed25519 AAAA... you@host" )
 
-Image creation successful. Copy ".bootstrap-work/raspbian-lite.img" to an SD card.
-(e.g. dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard bs=32M status=progress )
-
-$ dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard bs=4M conv=fsync status=progress
-$ eject /dev/sdcard
+# set random password
+RPI_BOOTSTRAP_PLUGINS+=( "password" )
+RPI_PASSWORD_PW=( "$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c24;echo;)" )
 ```
-with /dev/sdcard being your sdcard, (e.g. /dev/sda)
 
-Boot that image in your raspberrypi and trigger self-setup by logging in locally or remotely:
-```
-ssh pi@example
-```
-(replace "example" by the IP address or the FQDN of your pi).
+*~/.bootstrap.cfg* is included after the project specific
+bootstrap.cfg and override settings accordingly. Also, *~/.bootstrap-plugins*
+can contain user plugins and will override project plugins.
 
 
+This example will:
+- run the "wifi" plugin and configure access to your network.
+- run the "ssh" plugin, enable the ssh server and authorize
+  you@host's key in /home/pi/.ssh/authorized_keys
+- run the "password" plugin and set a random 24 char password for the "pi" user
 
-### creating your own project
+Now repeat step 2 and following from above (run ```./bootstrap.sh``` again).
+
+
+Try running ```./bootstrap.sh -h``` to list commandline arguments and
+```./bootstrap.sh -p``` to list plugins.
+
+
+## creating your own project
+
+To use bootstrap.sh for building your own projects:
 
 * copy *"bootstrap.sh"* to your project directory
 * create a *["bootstrap-dist"](#dist-dir)* directory with
-all the files you want to copy unchanged to your raspi.
-* copy the [plugins](#plugins) you need to *"bootstrap-plugins"* directory
+all the files you want to copy/append to your raspi.
+* copy the [plugins](#plugins) you need to the *"bootstrap-plugins"*
+  directory
 * create a *[bootstrap.cfg](#config)*
-* run ```./bootstrap.sh```
 
 
 <div style="font-size:larger;">&#160;</div>
@@ -137,7 +147,7 @@ It would just download the default latest raspbian-lite and extract the image.
 
 ## Plugins
 
-Try ```./bootstrap.sh -p``` for a list of plugins.
+Run ```./bootstrap.sh -p``` for a list of plugins.
 
 Plugins reside in **RPI_PLUGINDIR** (and optionally in **RPI_USER_PLUGINDIR**).
 They all provide a set of functions prefixed by rpi_ and their name (bold ones are mandatory):
@@ -172,10 +182,7 @@ A plugin can access files in the [dist dir](#dist-dir). Possible
 candidates are listed using the ```-p``` argument.
 
 
-<div style="font-size:larger;">&#160;</div>
-
-
-## dist dir
+### dist dir
 The dist dir resembles a root directory tree for plugins to copy files
 to the image while preserving the path. Default ''RPI_DISTDIR'' is "./bootstrap_dist)
 
@@ -186,44 +193,6 @@ on the image.
 
 <div style="font-size:larger;">&#160;</div>
 
-
-## Advanced usage
-
-If you build a lot of different rpi-cookstrap projects, you can create a user specific
-config, that will be applied to all projects you bootstrap.
-
-### A simple example
-
-Say you want to use the [wifi+upgrade](/examples/wifi+upgrade) example but add your own WIFI
-credentials and authorize two of your public keys. Then just create a *~/.bootstrap.cfg* containing:
-```
-# wifi credentials
-RPI_WIFI_SSID="yournetwork"
-RPI_WIFI_PSK="very-secret-password"
-# ssh pubkey
-RPI_SSH_AUTHORIZE=( "ssh-ed25519 AAAA... user1@host" "ssh-ed25519 AAAA... user2@host" )
-# run ssh plugin in addition to the plugins from the wifi+upgrade example
-RPI_BOOTSTRAP_PLUGINS+=( "ssh" )
-```
-
-That's it.
-
-These settings will always override any other RPI_WIFI_SSID/PSK in a project's config.
-For arrays, you can append values to not override the project settings. E.g.
-
-```
-RPI_APT_CMDS+=( "install screen" )
-```
-will run "apt install screen" whenever a project runs the apt plugin.
-
-To always run a plugin after all project's plugins are executed, do
-```
-RPI_BOOTSTRAP_PLUGINS+=( "wifi" )
-```
-(All plugins *should* behave nicely when run multiple times.)
-
-
-<div style="font-size:larger;">&#160;</div>
 
 
 # Examples
