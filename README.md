@@ -1,21 +1,19 @@
-# RPi CookStrap - [![CI](https://github.com/heeplr/rpi-cookstrap/actions/workflows/main.yml/badge.svg)](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml)
+## RPi CookStrap - [![CI](https://github.com/heeplr/rpi-cookstrap/actions/workflows/main.yml/badge.svg)](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml)
 
 A lightweight raspberry pi bakery shell script framework to customize, bootstrap & provision OS disk images with ease.
 
-bootstrap.sh demo:
+<div style="font-size:larger;">&#160;</div>
 
-[![asciicast](https://asciinema.org/a/ELWTfaMCbMnuIv87KPliFC3G3.svg)](https://asciinema.org/a/ELWTfaMCbMnuIv87KPliFC3G3?speed=4&cols=145&rows=30)
-
-
-self-provisioning on raspberry pi demo:
-
-[![asciicast](https://asciinema.org/a/4bumTwt4d9WTY9MpJE7MNDsen.svg)](https://asciinema.org/a/4bumTwt4d9WTY9MpJE7MNDsen?speed=4&cols=145&rows=30)
-
+<p align="center">
+  <a href="https://asciinema.org/a/a3uxkgMQ0NxnL8Ri5wnbLxXzn" target="_blank">
+    <img src="https://asciinema.org/a/a3uxkgMQ0NxnL8Ri5wnbLxXzn.svg" width="75%" height="75%" />
+  </a>
+</p>
 
 <div style="font-size:larger;">&#160;</div>
 
 
-## Why?
+# Why?
 If you work a lot with raspberry pi's, you find yourself repeatedly
 downloading OS images, customize settings like changing config.txt,
 set the password, install packages etc.
@@ -36,7 +34,7 @@ Use at your own risk and do provide fixes ;) !!
 <div style="font-size:larger;">&#160;</div>
 
 
-## Features
+# Features
 
 * **lightweight** - written in bash, will run on plain raspberry image,
                 configure with any text editor
@@ -51,7 +49,7 @@ Use at your own risk and do provide fixes ;) !!
 <div style="font-size:larger;">&#160;</div>
 
 
-## Getting started
+# Getting started
 
 This will create a working raspbian-lite image without any personal customizations.
 Wifi will be configured wifi and a full upgrade will be perfomed:
@@ -113,7 +111,10 @@ Try running ```./bootstrap.sh -h``` to list commandline arguments and
 ```./bootstrap.sh -p``` to list plugins.
 
 
-## creating your own project
+<div style="font-size:larger;">&#160;</div>
+
+
+# Creating your own project
 
 To use bootstrap.sh for building your own projects:
 
@@ -128,7 +129,7 @@ all the files you want to copy/append to your raspi.
 <div style="font-size:larger;">&#160;</div>
 
 
-## Config
+# Config
 Configuration (i.e. the "receipe" to cook the image) is done by defining
 bash key/value pairs in *"bootstrap.cfg"* (must be in same directory as the
 *"bootstrap.sh"* script)
@@ -140,7 +141,7 @@ RPI_PLUGINS=("raspbian")
 It would just download the default latest raspbian-lite and extract the image.
 
 
-### builtin config variables
+## builtin config variables
 
 | name                     | description                                                        | default value |
 |--------------------------|--------------------------------------------------------------------|---------------|
@@ -160,7 +161,7 @@ It would just download the default latest raspbian-lite and extract the image.
 <div style="font-size:larger;">&#160;</div>
 
 
-## [Plugins](../../wiki/plugins)
+# [Plugins](../../wiki/plugins)
 
 Run ```./bootstrap.sh -p``` for a list of plugins or check the [wiki](../../wiki/plugins).
 
@@ -186,18 +187,18 @@ All plugins can read/write all variables and share one context.
 Thus plugins can use other plugins to maximize code reuse.
 
 
-### plugin config variables
+## plugin config variables
 All plugins should read/write variables starting with RPI_ followed by the
 capitalized plugin name. So a plugin named "foo" would use RPI_FOO_* and
 thus could use a variable like "RPI_FOO_SOME_VAR=123".
 
 
-### plugin dist files
+## plugin dist files
 A plugin can access files in the [dist dir](#dist-dir). Possible
 candidates are listed using the ```-p``` argument.
 
 
-### dist dir
+## dist dir
 The dist dir resembles a root directory tree for plugins to copy files
 to the image while preserving the path. Default ''RPI_DISTDIR'' is "./bootstrap_dist)
 
@@ -207,7 +208,6 @@ on the image.
 
 
 <div style="font-size:larger;">&#160;</div>
-
 
 
 # Examples
@@ -220,7 +220,7 @@ see [examples/](examples/) for further examples
 # Troubleshooting
 
 Everything should be straight forward & verbose. You can always ```rm -rf .bootstrap-work``` to clean up and start over.
-Feel free to file an [issue](https://github.com/heeplr/rpi-cookstrap/issues) or even submit a pull request.
+Feel free to file an [issue](https://github.com/heeplr/rpi-cookstrap/issues/new) or even submit a pull request.
 
 
 <div style="font-size:larger;">&#160;</div>
