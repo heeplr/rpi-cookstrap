@@ -86,9 +86,9 @@ function help_plugins() {
         plugin_load "${p}"
         # general description
         if plugin_check_for_func "rpi_${p}_description" ; then
-            printf "%-20s - %s\n\n" "${invert}${p}${normal}" "${underline}$("rpi_${p}_description")${normal}"
+            printf "%-20s - %s\n\n" "${invert}${bold}${p}${normal}" "${underline}$("rpi_${p}_description")${normal}"
         else
-            printf "%-20s\n\n" "${invert}${p}${normal}"
+            printf "%-20s\n\n" "${invert}${bold}${p}${normal}"
         fi
         # config var description
         if plugin_check_for_func "rpi_${p}_help_vars" ; then
@@ -204,7 +204,7 @@ function plugin_load_all() {
 function plugin_run() {
     local plugin="$1"
     plugin_check_for_func "rpi_${plugin}_run" || error "${plugin} not loaded"
-    log "running plugin: ${plugin}"
+    log "running plugin: ${green}${plugin}${normal}"
     "rpi_${plugin}_run" || error "plugin \"${plugin}\" run"
 }
 
