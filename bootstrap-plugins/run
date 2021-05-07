@@ -39,6 +39,7 @@ function rpi_run_on_login() {
 }
 
 # run command once upon first login
+# (you should use rpi_run_once() instead)
 function rpi_run_on_first_login() {
     [[ -n "$*" ]] || error "missing argument"
     local once_script="/home/pi/.bootstrap_run_on_first_login"
@@ -67,6 +68,7 @@ function rpi_run_on_boot() {
 }
 
 # run command once upon first boot
+# (you should use rpi_run_once() instead)
 function rpi_run_on_first_boot() {
     [[ -n "$*" ]] || error "missing argument"
     local once_script="/home/pi/.bootstrap_run_on_first_boot"
