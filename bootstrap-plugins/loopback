@@ -37,11 +37,8 @@ rpi_loopback_help_vars() {
 
 # ---------------------------------------------------------------------
 
-# setup loopback device to mount image
-function rpi_loopback_setup() {
-    local image="$1"
-    # argument valid?
-    [[ -f "${image}" ]] || error "${image} not found"
+# linux specific stuff
+function loopback_linux() {
     # already attached?
     local device
     device="$(sudo losetup -l | grep "$(basename "${image}")" | cut -d " " -f1)"
@@ -54,6 +51,21 @@ function rpi_loopback_setup() {
     RPI_LOOPBACK_DEVICE="${device}"
     # store img name
     RPI_LOOPBACK_IMAGE="${image}"
+}
+
+# setup loopback device to mount image
+function rpi_loopback_setup() {
+    local image="$1"
+    # argument valid?
+    [[ -f "${image}" ]] || error "${image} not found"
+
+    if [[ "${OSTYPE}" == "linux-gnu"* ]]; then
+        loopback_linux "${image}"
+    else
+        error "I have no clue how to mount the image on a ${OSTYPE} system." \
+              "Please file an issue if you know: https://github.com/heeplr/rpi-cookstrap/issues/new/choose" \
+              "loopback mount"
+    fi
 }
 
 # tear down loopback device
