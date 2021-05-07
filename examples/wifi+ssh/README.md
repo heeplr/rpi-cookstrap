@@ -1,5 +1,14 @@
 
-Example to use rpi-cookstrap to bootstrap a minimal image:
+# wifi+ssh
+
+Example to use rpi-cookstrap to bootstrap a minimal image.
+
+run:
+```
+./bootstrap.sh
+dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard bs=32M status=progress
+eject /dev/sdcard
+```
 
 * the "raspbian" plugin downloads and decompresses the
   latest raspbian lite image

@@ -1,6 +1,15 @@
 
+# powersave
+
 Example to use rpi-cookstrap to bootstrap an image with reduced
-ressource usage:
+ressource usage.
+
+run:
+```
+./bootstrap.sh
+dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdcard bs=32M status=progress
+eject /dev/sdcard
+```
 
 * the "raspbian" plugin downloads and decompresses the
   latest raspbian lite image
