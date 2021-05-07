@@ -225,5 +225,5 @@ Feel free to file an [issue](https://github.com/heeplr/rpi-cookstrap/issues/new)
 # ToDo
 * lots of stuff still missing (plugins, plugin features)
 * dry-run mode (output all actions without performing them)
-* [tests](https://github.com/sstephenson/bats)
+* [tests](https://github.com/bats-core/bats-core/)
 
