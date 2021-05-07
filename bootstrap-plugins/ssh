@@ -6,6 +6,7 @@
 RPI_SSH_KEY_TYPE="${RPI_SSH_KEY_TYPE:=ed25519}"
 RPI_SSH_KEY_ROUNDS="${RPI_SSH_KEY_ROUNDS:=100}"
 RPI_SSH_KEYGEN="${RPI_SSH_KEYGEN:=false}"
+RPI_SSH_KEYGEN_SERVER="${RPI_SSH_KEYGEN_SERVER:=false}"
 RPI_SSH_AUTHORIZE="${RPI_SSH_AUTHORIZE:=}"
 
 # load dependencies
@@ -13,6 +14,7 @@ plugin_load append || return 1
 plugin_load dist || return 1
 plugin_load chmod || return 1
 plugin_load chown || return 1
+plugin_load run || return 1
 
 
 function rpi_ssh_prerun() {
@@ -63,6 +65,13 @@ function rpi_ssh_run() {
             rpi_chown_pi "/home/pi/.ssh" "true" || error "chown"
         fi
     fi
+
+    # regenerate server keys?
+    if [[ "${RPI_SSH_KEYGEN_SERVER}" == "true" ]] ; then
+        echo " regenerating /etc/ssh/ssh_host_*"
+        sudo rm "${RPI_ROOT}/etc/ssh/ssh_host_"*
+        rpi_run_once "sudo dpkg-reconfigure openssh-server"
+    fi
 }
 
 function rpi_ssh_description() {
@@ -72,8 +81,9 @@ function rpi_ssh_description() {
 function rpi_ssh_help_vars() {
     help_var "RPI_SSH_KEY_TYPE" "key type to generate"
     help_var "RPI_SSH_KEY_ROUNDS" "KDF rounds for generated key"
-    help_var "RPI_SSH_KEYGEN" "generate a key for pi user"
-    help_var "RPI_SSH_AUTHORIZE" "array of public keys to add to authorized_keys"
+    help_var "RPI_SSH_KEYGEN" "use local ssh-keygen to generate a key for the pi user"
+    help_var "RPI_SSH_KEYGEN_SERVER" "(re)generate server keys on the pi"
+    help_var "RPI_SSH_AUTHORIZE" "array of public keys to add to authorized_keys for the pi user"
 }
 
 function rpi_ssh_help_distfiles() {
