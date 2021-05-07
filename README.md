@@ -57,8 +57,8 @@ Wifi will be configured and a full upgrade will be perfomed:
 1. Clone and ```cd examples/wifi+upgrade``` (or any other project)
 
 2. run ```./bootstrap.sh``` and wait until bootstrap is done.
-   (It will download the latest OS release, mount it via loopback and
-   modify it according to the settings in *bootstrap.cfg*.)
+   It will load the project's *bootstrap.cfg* and download/modify
+   the image accordingly.)
 
 3. copy image to your SD card:
    ```dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX conv=fsync status=progress```
@@ -70,26 +70,27 @@ Wifi will be configured and a full upgrade will be perfomed:
    (a line into */home/pi/.bashrc* has been added. It executes the
    setup script which deletes itself after successful execution)
 
-Now you got a fresh, upgraded image and wifi setup with wrong
+Now you got a fresh, upgraded image. But the wifi is setup with wrong
 credentials, since *examples/wifi+upgrade/bootstrap.cfg* doesn't
 contain your wifi's name and password (hopefully).
 
 It's time to do some customizations. Create a *~/.bootstrap.cfg* and
 modify according to your needs:
 ```
-# WIFI
+# setup WIFI
 RPI_BOOTSTRAP_PLUGINS+=( "wifi" )
 RPI_WIFI_SSID="yourwifiname"
 RPI_WIFI_PSK="your-secret-password"
 
-# SSH
+# authorize SSH public key
 RPI_BOOTSTRAP_PLUGINS+=( "ssh" )
 RPI_SSH_AUTHORIZE=( "ssh-ed25519 AAAA... you@host" )
 
-# set random password
+# set random 24 char PASSWORD for pi user
 RPI_BOOTSTRAP_PLUGINS+=( "password" )
 RPI_PASSWORD_PW=( "$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c24;echo;)" )
 ```
+
 
 *~/.bootstrap.cfg* will be included after the project specific
 *bootstrap.cfg* and will override settings accordingly.
@@ -98,16 +99,10 @@ RPI_PASSWORD_PW=( "$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c24;echo;)" )
  project plugins or distfiles.)
 
 
-This example will:
-- run the "wifi" plugin and configure access to your network.
-- run the "ssh" plugin, enable the ssh server and authorize
-  you@host's key in /home/pi/.ssh/authorized_keys
-- run the "password" plugin and set a random 24 char password for the "pi" user
-
-Now repeat step 2 and following from above (run ```./bootstrap.sh``` again).
+Now run ```./bootstrap.sh``` again (repeat from step 2 from above).
 
 
-Try running ```./bootstrap.sh -h``` to list commandline arguments and
+Also try running ```./bootstrap.sh -h``` to list commandline arguments and
 ```./bootstrap.sh -p``` to list plugins.
 
 
