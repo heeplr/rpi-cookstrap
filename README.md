@@ -58,7 +58,7 @@ Wifi will be configured and a full upgrade will be perfomed:
 
 2. run ```./bootstrap.sh``` and wait until bootstrap is done.
    It will load the project's *bootstrap.cfg* and download/modify
-   the image accordingly.)
+   the image accordingly.
 
 3. copy image to your SD card:
    ```dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX conv=fsync status=progress```
