@@ -95,7 +95,7 @@ RPI_PASSWORD_PW=( "$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c24;echo;)" )
 *~/.bootstrap.cfg* will be included after the project specific
 *bootstrap.cfg* and will override settings accordingly.
 (Also, *~/.bootstrap-plugins* can contain user plugins and
- *~/.bootstrap-dist* user distfiles. They will override
+ *~/.bootstrap-dist* user distfiles. They will also override
  project plugins or distfiles.)
 
 
@@ -201,6 +201,7 @@ e.g. the file "./bootstrap_dist/etc/wpa_supplicant/wpa_supplicant.conf"
 would be detected by the wifi plugin and end up in "/etc/wpa_supplicant/"
 on the image.
 
+For an overview of all plugins, run ```./bootstrap.sh -p``` or visit the [wiki](../../wiki/plugins).
 
 <div style="font-size:larger;">&#160;</div>
 
@@ -222,7 +223,7 @@ Feel free to file an [issue](https://github.com/heeplr/rpi-cookstrap/issues/new)
 
 
 # ToDo
-* detailed plugin documentation (wiki)
+* lots of stuff still missing (plugins, plugin features)
 * dry-run mode (output all actions without performing them)
 * [tests](https://github.com/sstephenson/bats)
 
