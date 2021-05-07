@@ -52,7 +52,7 @@ Use at your own risk and do provide fixes ;) !!
 # Getting started
 
 This will create a working raspbian-lite image without any personal customizations.
-Wifi will be configured wifi and a full upgrade will be perfomed:
+Wifi will be configured and a full upgrade will be perfomed:
 
 1. Clone and ```cd examples/wifi+upgrade``` (or any other project)
 
