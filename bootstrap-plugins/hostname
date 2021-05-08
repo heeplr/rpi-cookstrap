@@ -27,7 +27,7 @@ function rpi_hostname_prerun() {
 }
 
 function rpi_hostname_run() {
-    log " setting hostname to \"${RPI_HOSTNAME}\""
+    log "setting hostname to \"${RPI_HOSTNAME}\""
     # create from config parameters
     if [[ -n "${RPI_HOSTNAME}" ]] ; then
         # /etc/hostname

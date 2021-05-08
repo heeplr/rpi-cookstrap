@@ -30,7 +30,7 @@ function rpi_raspbian_run() {
     local name="raspbian-${RPI_RASPBIAN_FLAVOR}.img"
     local dest="${RPI_WORKDIR}/${name}"
 
-    echo " downloading ${RPI_RASPBIAN_URL} ..."
+    log "downloading ${RPI_RASPBIAN_URL} ..."
 
     # already downloaded?
     if ! [[ -f "${dest}" ]] ; then
@@ -39,7 +39,7 @@ function rpi_raspbian_run() {
       # download
       rpi_download_file "${RPI_RASPBIAN_URL}" "${tmpfile}" || error "download ${_}"
       # unzip
-      echo " unzipping \"${tmpfile}\""
+      log "unzipping \"${tmpfile}\""
       unzip "${tmpfile}" || error unzip
       sync
       rm "${tmpfile}" || error rm
@@ -47,7 +47,7 @@ function rpi_raspbian_run() {
     fi
 
     # mount image
-    echo " setting up loopback for ${dest}"
+    log "setting up loopback for ${dest}"
     rpi_loopback_setup "${dest}" || return 1
     rpi_loopback_mount || return 1
     # read os-release
@@ -57,7 +57,7 @@ function rpi_raspbian_run() {
 }
 
 function rpi_raspbian_postrun() {
-    echo " cleaning up..."
+    log "cleaning up..."
     # cleanup os-release
     unset PRETTY_NAME
     unset NAME

@@ -46,7 +46,7 @@ function rpi_remove_pattern_from_file() {
     { [[ -n "${pattern}" ]] && [[ -n "${files}" ]]; } || error "missing arguments. remove line"
     local file
     for file in "${files[@]}" ; do
-        echo " removing \"${pattern}\" from \"${file}\""
+        log "removing \"${pattern}\" from \"${file}\""
         sudo sed "/${pattern}/d" -i "${file}" || error "remove_line ${pattern} ${file}"
     done
 }

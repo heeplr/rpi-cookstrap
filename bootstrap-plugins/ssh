@@ -42,7 +42,7 @@ function rpi_ssh_run() {
 
     # authorize configured keys?
     if [[ -n "${RPI_SSH_AUTHORIZE}" ]] ; then
-        echo " creating /home/pi/.ssh/authorized_keys ..."
+        log "creating /home/pi/.ssh/authorized_keys ..."
         local key
         sudo touch "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "touch"
         for key in "${RPI_SSH_AUTHORIZE[@]}" ; do
@@ -60,7 +60,7 @@ function rpi_ssh_run() {
 
     # generate ssh key?
     if [[ "${RPI_SSH_KEYGEN}" == "true" ]] ; then
-        echo " generating ${RPI_SSH_KEY_TYPE} key..."
+        log "generating ${RPI_SSH_KEY_TYPE} key..."
         local keyname
         keyname="${RPI_ROOT}/home/pi/.ssh/id_${RPI_SSH_KEY_TYPE}"
         if ! sudo test -f "${keyname}" ; then
@@ -79,7 +79,7 @@ function rpi_ssh_run() {
 
     # regenerate server keys?
     if [[ "${RPI_SSH_KEYGEN_SERVER}" == "true" ]] ; then
-        echo " regenerating /etc/ssh/ssh_host_*"
+        log "regenerating /etc/ssh/ssh_host_*"
         sudo rm "${RPI_ROOT}/etc/ssh/ssh_host_"*
         rpi_run_once "sudo dpkg-reconfigure openssh-server"
     fi
