@@ -6,6 +6,10 @@
 # download raspbian full
 # RPI_RASPBIAN_FLAVOR="full"
 
+# @example
+# use local file instead of download
+# RPI_RASPBIAN_URL="/path/to/downloaded.zip"
+
 
 # default options
 RPI_RASPBIAN_FLAVOR="${RPI_RASPBIAN_FLAVOR:=lite}"
