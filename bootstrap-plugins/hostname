@@ -27,11 +27,11 @@ function rpi_hostname_prerun() {
 }
 
 function rpi_hostname_run() {
-    echo " setting hostname to \"${RPI_HOSTNAME}\""
+    log " setting hostname to \"${RPI_HOSTNAME}\""
     # create from config parameters
     if [[ -n "${RPI_HOSTNAME}" ]] ; then
         # /etc/hostname
-        echo " setting /etc/hostname"
+        log "setting /etc/hostname"
         sudo rm -f "${RPI_ROOT}/etc/hostname"
         rpi_append_to_file "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hostname"
     fi
@@ -43,7 +43,7 @@ function rpi_hostname_run() {
     RPI_HOSTNAME="$(cat "${RPI_ROOT}/etc/hostname")"
     # hostname already in /etc/hosts?
     if ! grep "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hosts" >/dev/null ; then
-        echo " processing /etc/hosts"
+        log "processing /etc/hosts"
         sudo sed "s|raspberrypi|${RPI_HOSTNAME}|g" -i "${RPI_ROOT}/etc/hosts"
     fi
     return 0
