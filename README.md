@@ -103,7 +103,7 @@ Now run ```./bootstrap.sh``` again (repeat from step 2 from above).
 
 
 Also try running ```./bootstrap.sh -h``` to list commandline arguments and
-```./bootstrap.sh -p``` to list plugins.
+```./bootstrap.sh -p``` to list [plugins](../../wiki/plugins).
 
 
 <div style="font-size:larger;">&#160;</div>
@@ -111,14 +111,14 @@ Also try running ```./bootstrap.sh -h``` to list commandline arguments and
 
 # Documentation
 
-Further documentation [can be found in the wiki](https://github.com/heeplr/rpi-cookstrap/wiki).
+Further documentation [can be found in the wiki](../../wiki/).
 
 
 <div style="font-size:larger;">&#160;</div>
 
 
 # Examples
-see [examples/](examples/) for further examples
+see [examples/](examples/) for "complete" examples and [plugin's](../../wiki/plugins) documentation for plugin specific examples.
 
 
 <div style="font-size:larger;">&#160;</div>
