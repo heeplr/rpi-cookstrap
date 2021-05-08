@@ -58,7 +58,7 @@ Wifi will be configured and a full upgrade will be perfomed:
 
 2. run ```./bootstrap.sh``` and wait until bootstrap is done.
    It will load the project's *bootstrap.cfg* and download/modify
-   the image accordingly.
+   the image accordingly.)
 
 3. copy image to your SD card:
    ```dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX conv=fsync status=progress```
@@ -109,99 +109,10 @@ Also try running ```./bootstrap.sh -h``` to list commandline arguments and
 <div style="font-size:larger;">&#160;</div>
 
 
-# Creating your own project
+# Documentation
 
-To use bootstrap.sh for building your own projects:
+Further documentation [can be found in the wiki](https://github.com/heeplr/rpi-cookstrap/wiki).
 
-* copy *"bootstrap.sh"* to your project directory
-* create a *["bootstrap-dist"](#dist-dir)* directory with
-all the files you want to copy/append to your raspi.
-* copy the [plugins](#plugins) you need to the *"bootstrap-plugins"*
-  directory
-* create a *[bootstrap.cfg](#config)*
-
-
-<div style="font-size:larger;">&#160;</div>
-
-
-# Config
-Configuration (i.e. the "receipe" to cook the image) is done by defining
-bash key/value pairs in *"bootstrap.cfg"* (must be in same directory as the
-*"bootstrap.sh"* script)
-
-a minimal working example *"bootstrap.cfg"* file would look like this:
-```
-RPI_PLUGINS=("raspbian")
-```
-It would just download the default latest raspbian-lite and extract the image.
-
-
-## builtin config variables
-
-| name                     | description                                                        | default value |
-|--------------------------|--------------------------------------------------------------------|---------------|
-|**RPI_BOOTSTRAP_PLUGINS** | run those plugins in this order                                    | () |
-|**RPI_HOSTNAME**          | hostname the image will use                                        | unnamed
-|**RPI_PLUGINDIR**         | path to plugins                                                    | *./bootstrap-plugins*|
-|**RPI_DISTDIR**           | s. [dist dir](#dist-dir)                                           | *./bootstrap_dist*|
-|**RPI_WORKDIR**           | work dir. can be removed at any time to start from scratch         | *./.bootstrap-work*|
-|**RPI_TMPDIR**            | temporary dir                                                      | */tmp*|
-|**RPI_USER_PLUGINDIR**    | user specific plugins. If a plugin exists here, it will be prefered over the one in RPI_PLUGINDIR | *~/.bootstrap-plugins*|
-|**RPI_USER_DISTDIR**      | user specific distdir. If files exist here, they will be prefered over the ones in RPI_DISTDIR | *~/.bootstrap-dist*|
-|**RPI_USER_CONFIG**       | user specific config. Additional to the project's *bootstrap.cfg*  | *~/.bootstrap.cfg*|
-|**RPI_ROOT**              | mountpoint for root partition                                      | *./.bootstrap-work/root*
-|**RPI_BOOT**              | mountpoint for boot partition                                      | *./.bootstrap-work/boot*
-
-
-<div style="font-size:larger;">&#160;</div>
-
-
-# [Plugins](../../wiki/plugins)
-
-Run ```./bootstrap.sh -p``` for a list of plugins or check the [wiki](../../wiki/plugins).
-
-Plugins reside in **RPI_PLUGINDIR** (and optionally in **RPI_USER_PLUGINDIR**).
-They all provide a set of functions prefixed by rpi_ and their name (bold ones are mandatory):
-
-| function           | description |
-|--------------------|-------------------------------------------------------------------------------------------|
-|**rpi_*_prerun()**       | runs before anything is done (before download etc.) Will halt execution when failing.
-|**rpi_*_run()**          | execute main plugin task. Will also halt execution when failing.
-|*rpi_*_postrun()*        | runs after all plugins are done (cleaning up etc.)
-|*rpi_*_description()*    | print a general short description of the plugin
-|*rpi_*_help_vars()*      | will call "help_for_vars" function passing an array of "name\|helptext\|default_value" strings to describe each variable specific to this plugin.
-|*rpi_*_help_distfiles()* | call "help_for_distfiles" passing an array of "name\|helptext" strings to describe each file used by this plugin.
-
-Plugins are run sequentially. Execution order matters, so plugins that provide
-a disk image always need to run first.
-If you want to run the "raspbian" plugin to download the image and
-the "wifi" plugin to configure wireless networking for example, you
-would set: ```RPI_BOOTSTRAP_PLUGINS=( "raspbian" "wifi" )```
-
-All plugins can read/write all variables and share one context.
-Thus plugins can use other plugins to maximize code reuse.
-
-
-## plugin config variables
-All plugins should read/write variables starting with RPI_ followed by the
-capitalized plugin name. So a plugin named "foo" would use RPI_FOO_* and
-thus could use a variable like "RPI_FOO_SOME_VAR=123".
-
-
-## plugin dist files
-A plugin can access files in the [dist dir](#dist-dir). Possible
-candidates are listed using the ```-p``` argument.
-
-
-## dist dir
-The dist dir resembles a root directory tree for plugins to copy files
-to the image while preserving the path. Default ''RPI_DISTDIR'' is "./bootstrap_dist)
-
-e.g. the file "./bootstrap_dist/etc/wpa_supplicant/wpa_supplicant.conf"
-would be detected by the wifi plugin and end up in "/etc/wpa_supplicant/"
-on the image.
-
-For an overview of all plugins, run ```./bootstrap.sh -p``` or visit the [wiki](../../wiki/plugins).
 
 <div style="font-size:larger;">&#160;</div>
 
@@ -225,5 +136,5 @@ Feel free to file an [issue](https://github.com/heeplr/rpi-cookstrap/issues/new)
 # ToDo
 * lots of stuff still missing (plugins, plugin features)
 * dry-run mode (output all actions without performing them)
-* [tests](https://github.com/bats-core/bats-core/)
+* [tests](https://github.com/sstephenson/bats)
 
