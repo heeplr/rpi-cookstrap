@@ -41,7 +41,7 @@ function rpi_remove_help_vars() {
 # ---------------------------------------------------------------------
 function rpi_remove_pattern_from_file() {
     local pattern="$1"
-    local files="${@:2}"
+    local files="${*:2}"
     { [[ -n "${pattern}" ]] && [[ -n "${files}" ]]; } || error "missing arguments. remove line"
     local file
     for file in "${files[@]}" ; do
