@@ -42,9 +42,14 @@ function verbose() {
     [[ -n "${V}" ]] && echo "[VERBOSE]: $*" 2>&2
 }
 
+# print log internal msg
+function _log() {
+    echo "[${bold}INFO${normal}]: $*" 2>&2
+}
+
 # print log msg
 function log() {
-    echo "[${bold}INFO${normal}]: $*" 2>&2
+    echo " :: $*" 2>&2
 }
 
 # print warning
@@ -204,7 +209,7 @@ function plugin_load_all() {
 function plugin_run() {
     local plugin="$1"
     plugin_check_for_func "rpi_${plugin}_run" || error "${plugin} not loaded"
-    log "running plugin: ${green}${plugin}${normal}"
+    _log "running plugin: ${green}${plugin}${normal}"
     "rpi_${plugin}_run" || error "plugin \"${plugin}\" run"
 }
 
