@@ -3,7 +3,7 @@
 # replace string in file (sed pattern)
 
 RPI_REPLACE_FILE="${RPI_REPLACE_FILE:=}"
-RPI_REPLACE_PATTERN="{RPI_REPLACE_PATTERN:=}"
+RPI_REPLACE_PATTERN="${RPI_REPLACE_PATTERN:=}"
 
 
 function rpi_replace_prerun() {
