@@ -2,6 +2,15 @@
 
 # customize config.txt
 
+# @example
+# turn off audio
+# RPI_CONFIG_ADD="dtparam=audio=off"
+
+# @example
+# turn off i2c and spi
+# RPI_CONFIG_ADD=( "dtparam=i2c_arm=off" "dtparam=spi=off" )
+
+
 # default options
 RPI_CONFIG_ADD="${RPI_CONFIG_ADD:=}"
 RPI_CONFIG_REMOVE="${RPI_CONFIG_REMOVE:=}"

@@ -2,6 +2,15 @@
 
 # bootstrap hostname of rpi image
 
+# @example
+# set hostname to "foobar"
+# RPI_HOSTNAME="foobar"
+
+# @example
+# set random hostname from dict
+# RPI_HOSTNAME="$(shuf --head-count=1 /usr/share/dict/cracklib-small)"
+
+
 # default options
 RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
 

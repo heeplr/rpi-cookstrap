@@ -2,6 +2,11 @@
 
 # transfer files from dist directory to the disk image
 
+# @example
+# copy "etc/timezone" from ./bootstrap-dist or ~/.bootstrap-dist to image
+# RPI_DIST_COPY="/etc/timezone"
+
+
 # default options
 RPI_DIST_COPY="${RPI_DIST_COPY:=}"
 RPI_DIST_APPEND="${RPI_DIST_APPEND:=}"
