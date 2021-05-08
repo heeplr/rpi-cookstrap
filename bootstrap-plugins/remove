@@ -2,23 +2,35 @@
 
 # remove string from file (remove line where pattern matches)
 
+# @example
+# delete lines containing "exit 0" from /etc/rc.local
+# RPI_REMOVE_FILE="${RPI_ROOT}/etc/rc.local"
+# RPI_REMOVE_PATTERN="exit 0"
+
+# @example
+# remove user "foo" from /etc/passwd and /etc/shadow
+# RPI_REMOVE_FILE=( "${RPI_ROOT}/etc/passwd" "${RPI_ROOT}/etc/shadow" )
+# RPI_REMOVE_PATTERN="^foo.*"
+
 # default options
 RPI_REMOVE_FILE="${RPI_REMOVE_FILE:=}"
-RPI_REMOVE_PATTERN="{RPI_REMOVE_PATTERN:=}"
+RPI_REMOVE_PATTERN="${RPI_REMOVE_PATTERN:=}"
 
 
 function rpi_remove_prerun() {
     [[ -n "${RPI_REMOVE_PATTERN}" ]] || error "RPI_REMOVE_PATTERN"
     [[ -n "${RPI_REMOVE_FILE}" ]] || error "RPI_REMOVE_FILE is not set."
-    [[ -f "${RPI_REMOVE_FILE}" ]] || error "opening ${RPI_REMOVE_FILE}"
 }
 
 function rpi_remove_run() {
-    rpi_remove_pattern_from_file "${RPI_REMOVE_PATTERN}" "${RPI_REMOVE_FILE}"
+    local file
+    for file in "${RPI_REMOVE_FILE[@]}" ; do
+        rpi_remove_pattern_from_file "${RPI_REMOVE_PATTERN}" "${file}"
+    done
 }
 
 function rpi_remove_description() {
-    echo "remove sed pattern from file where it matches"
+    echo "remove sed pattern \"/.../d\" from file where it matches"
 }
 
 function rpi_remove_help_vars() {
@@ -29,7 +41,11 @@ function rpi_remove_help_vars() {
 # ---------------------------------------------------------------------
 function rpi_remove_pattern_from_file() {
     local pattern="$1"
-    local file="$2"
-    { [[ -n "${pattern}" ]] && [[ -n "${file}" ]]; } || error "missing arguments. remove line"
-    sudo sed "/${pattern}/d" -i "${file}" || error "remove_line ${pattern} ${file}"
+    local files="${@:2}"
+    { [[ -n "${pattern}" ]] && [[ -n "${files}" ]]; } || error "missing arguments. remove line"
+    local file
+    for file in "${files[@]}" ; do
+        echo " removing \"${pattern}\" from \"${file}\""
+        sudo sed "/${pattern}/d" -i "${file}" || error "remove_line ${pattern} ${file}"
+    done
 }
