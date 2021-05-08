@@ -8,8 +8,8 @@
 
 
 # default options
-RPI_DOWNLOAD_RASPBIAN_FLAVOR="${RPI_DOWNLOAD_RASPBIAN_FLAVOR:=lite}"
-RPI_DOWNLOAD_RASPBIAN_URL="${RPI_DOWNLOAD_RASPBIAN_URL:=https://downloads.raspberrypi.org/raspbian_${RPI_DOWNLOAD_RASPBIAN_FLAVOR}_latest}"
+RPI_RASPBIAN_FLAVOR="${RPI_RASPBIAN_FLAVOR:=lite}"
+RPI_RASPBIAN_URL="${RPI_RASPBIAN_URL:=https://downloads.raspberrypi.org/raspbian_${RPI_RASPBIAN_FLAVOR}_latest}"
 
 # load dependencies
 plugin_load download || return 1
@@ -18,22 +18,22 @@ plugin_load loopback || return 1
 
 function rpi_raspbian_prerun() {
     # check arguments
-    [[ -n "${RPI_DOWNLOAD_RASPBIAN_FLAVOR}" ]] || error "RPI_DOWNLOAD_RASPBIAN_FLAVOR check"
-    [[ -n "${RPI_DOWNLOAD_RASPBIAN_URL:=}" ]] || error "RPI_DOWNLOAD_RASPBIAN_URL check"
+    [[ -n "${RPI_RASPBIAN_FLAVOR}" ]] || error "RPI_RASPBIAN_FLAVOR check"
+    [[ -n "${RPI_RASPBIAN_URL:=}" ]] || error "RPI_RASPBIAN_URL check"
 }
 
 function rpi_raspbian_run() {
-    local name="raspbian-${RPI_DOWNLOAD_RASPBIAN_FLAVOR}.img"
+    local name="raspbian-${RPI_RASPBIAN_FLAVOR}.img"
     local dest="${RPI_WORKDIR}/${name}"
 
-    echo " downloading ${RPI_DOWNLOAD_RASPBIAN_URL} ..."
+    echo " downloading ${RPI_RASPBIAN_URL} ..."
 
     # already downloaded?
     if ! [[ -f "${dest}" ]] ; then
       local tmpfile
       tmpfile="$(TMPDIR=${RPI_TMPDIR} mktemp || error mktemp)"
       # download
-      rpi_download_file "${RPI_DOWNLOAD_RASPBIAN_URL}" "${tmpfile}" || error "download ${_}"
+      rpi_download_file "${RPI_RASPBIAN_URL}" "${tmpfile}" || error "download ${_}"
       # unzip
       echo " unzipping \"${tmpfile}\""
       unzip "${tmpfile}" || error unzip
@@ -74,7 +74,7 @@ function rpi_raspbian_description() {
 }
 
 function rpi_raspbian_help_vars() {
-    help_var "RPI_DOWNLOAD_RASPBIAN_FLAVOR" "flavor of raspbian to use: lite or full"
-    help_var "RPI_DOWNLOAD_RASPBIAN_URL" "alternative download URL or local path to downloaded zip"
+    help_var "RPI_RASPBIAN_FLAVOR" "flavor of raspbian to use: lite or full"
+    help_var "RPI_RASPBIAN_URL" "alternative download URL or local path to downloaded zip"
 }
 
