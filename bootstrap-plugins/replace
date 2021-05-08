@@ -9,15 +9,17 @@ RPI_REPLACE_PATTERN="${RPI_REPLACE_PATTERN:=}"
 function rpi_replace_prerun() {
     [[ -n "${RPI_REPLACE_PATTERN}" ]] || error "RPI_REPLACE_PATTERN"
     [[ -n "${RPI_REPLACE_FILE}" ]] || error "RPI_REPLACE_FILE is not set."
-    [[ -f "${RPI_REPLACE_FILE}" ]] || error "opening ${RPI_REPLACE_FILE}"
 }
 
 function rpi_replace_run() {
-    rpi_replace_string_in_file "${RPI_REPLACE_PATTERN}" "${RPI_REPLACE_FILE}"
+    local file
+    for file in "${RPI_REMOVE_FILE[@]}" ; do
+        rpi_replace_string_in_file "${RPI_REPLACE_PATTERN}" "${file}"
+    done
 }
 
 function rpi_replace_description() {
-    echo "replace string in file (sed pattern)"
+    echo "replace string in file (sed pattern \"s/.../g\")"
 }
 
 function rpi_replace_help_vars() {
