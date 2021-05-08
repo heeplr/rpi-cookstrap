@@ -2,6 +2,11 @@
 
 # apt jobs to run upon first login
 
+# @example
+# update, upgrade and autoremove
+# RPI_APT_CMDS=( "update" "full-upgrade" "autoremove" )
+
+
 # default options
 RPI_APT_CMDS="${RPI_APT_CMDS:=""}"
 RPI_APT_INTERACTIVE="${RPI_APT_INTERACTIVE:=false}"

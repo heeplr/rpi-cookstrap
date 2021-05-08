@@ -2,6 +2,11 @@
 
 # run systemctl commands
 
+# @example
+# disable avahi-daemon
+# RPI_SYSTEMCTL_CMDS=( "disable avahi-daemon avahi-daemon.socket" )
+
+
 # default options
 RPI_SYSTEMCTL_CMDS="${RPI_SYSTEMCTL_CMDS:=""}"
 

@@ -2,6 +2,24 @@
 
 # run raspi-config
 
+# @example
+# localization -> locale & timezone settings
+# RPI_RASPICONFIG_NONINT=(
+#    "do_change_locale de_DE.UTF-8"
+#    "do_change_timezone Europe/Berlin"
+# )
+
+# @example
+# interface options -> disable serial, onewire, i2c, spi and camera
+# RPI_RASPICONFIG_NONINT=(
+#    "do_serial 1"
+#    "do_onewire 1"
+#    "do_i2c 1"
+#    "do_spi 1"
+#    "do_camera 1"
+# )
+
+
 # default options
 RPI_RASPICONFIG_NONINT="${RPI_RASPICONFIG_NONINT:=}"
 

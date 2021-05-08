@@ -2,6 +2,12 @@
 
 # bootstrap wifi configuation for rpi image
 
+# @example
+# configure wifi
+# RPI_WIFI_SSID="name-of-the-network"
+# RPI_WIFI_PSK="very_secret_password"
+
+
 # default options
 RPI_WIFI_SSID="${RPI_WIFI_SSID:=}"
 RPI_WIFI_PSK="${RPI_WIFI_PSK:=}"

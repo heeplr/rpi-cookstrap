@@ -2,6 +2,17 @@
 
 # bootstrap ssh access and key for pi user
 
+# @example
+# just generate new ssh key for pi user
+# RPI_SSH_KEYGEN="true"
+# RPI_SSH_KEY_ROUNDS=500
+
+# @example
+# authorize key and trigger regeneration of server keys
+# RPI_SSH_KEYGEN_SERVER="true"
+# RPI_SSH_AUTHORIZE="ssh-rsa AAAA... user@host"
+
+
 # default options
 RPI_SSH_KEY_TYPE="${RPI_SSH_KEY_TYPE:=ed25519}"
 RPI_SSH_KEY_ROUNDS="${RPI_SSH_KEY_ROUNDS:=100}"

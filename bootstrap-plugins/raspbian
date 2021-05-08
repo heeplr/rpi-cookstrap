@@ -2,6 +2,11 @@
 
 # download & mount raspbian image
 
+# @example
+# download raspbian full
+# RPI_RASPBIAN_FLAVOR="full"
+
+
 # default options
 RPI_DOWNLOAD_RASPBIAN_FLAVOR="${RPI_DOWNLOAD_RASPBIAN_FLAVOR:=lite}"
 RPI_DOWNLOAD_RASPBIAN_URL="${RPI_DOWNLOAD_RASPBIAN_URL:=https://downloads.raspberrypi.org/raspbian_${RPI_DOWNLOAD_RASPBIAN_FLAVOR}_latest}"
