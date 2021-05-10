@@ -6,15 +6,12 @@
 RPI_APPEND_FILE="${RPI_APPEND_FILE:=}"
 RPI_APPEND_STRING="${RPI_APPEND_STRING:=}"
 RPI_APPEND_APPENDIX="${RPI_APPEND_APPENDIX:=}"
-RPI_APPEND_STDIN="${RPI_APPEND_STDIN:=false}"
 
 
 function rpi_append_prerun() {
     # check arguments
     [[ -n "${RPI_APPEND_FILE}" ]] || error "RPI_APPEND_FILE unset. appending to unknown file"
-    [[ -f "${RPI_APPEND_FILE}" ]] || error "${RPI_APPEND_FILE} no file"
-    { [[ -n "${RPI_APPEND_STRING}" ]] || [[ -n "${RPI_APPEND_APPENDIX}" ]] || [[ "${RPI_APPEND_STDIN}" == "true" ]] ; } || error "either need RPI_APPEND_STRING or RPI_APPEND_APPENDIX"
-    { [[ -n "${RPI_APPEND_APPENDIX}" ]] && [[ -f "${RPI_APPEND_APPENDIX}" ]] ; } || error "${RPI_APPEND_APPENDIX} no file"
+    { [[ -n "${RPI_APPEND_STRING}" ]] || [[ -n "${RPI_APPEND_APPENDIX}" ]] ; } || error "either need RPI_APPEND_STRING or RPI_APPEND_APPENDIX"
 }
 
 function rpi_append_run() {
@@ -26,10 +23,6 @@ function rpi_append_run() {
     if [[ -n "${RPI_APPEND_STRING}" ]] ; then
         rpi_append_to_file "${RPI_APPEND_STRING}" "${RPI_APPEND_FILE}" || error "rpi_append_to_file"
     fi
-    # append from stdin to file?
-    if [[ "${RPI_APPEND_STDIN}" == "true" ]] ; then
-        rpi_append_stdin "${RPI_APPEND_FILE}"
-    fi
 }
 
 function rpi_append_description() {
@@ -40,7 +33,6 @@ function rpi_append_help_vars() {
     help_var "RPI_APPEND_FILE" "the file to append to"
     help_var "RPI_APPEND_STRING" "string to append"
     help_var "RPI_APPEND_APPENDIX" "file which contents should be appended"
-    help_var "RPI_APPEND_STDIN" "append from stdin if true"
 }
 
 # ---------------------------------------------------------------------
