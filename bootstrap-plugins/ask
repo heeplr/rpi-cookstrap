@@ -24,11 +24,12 @@ function rpi_ask_prerun() {
 function rpi_ask_run() {
     for i in $(seq "${#RPI_ASK_QUESTION[@]}") ; do
         warn "${i}"
-        local varname="$(echo "RPI_${RPI_ASK_VARIABLE[$[i-1]]}" | tr '[:lower:]' '[:upper:]')"
+        local varname
+        varname="$(echo "RPI_${RPI_ASK_VARIABLE[$((i-1))]}" | tr '[:lower:]' '[:upper:]')"
         case "${RPI_ASK_METHOD}" in
             "read")
-                printf ":: ${bold}%s${normal} " "${RPI_ASK_QUESTION[$[i-1]]}"
-                read "${varname}"
+                printf ":: ${bold}%s${normal} " "${RPI_ASK_QUESTION[$((i-1))]}"
+                read -r "${varname?}"
                 verbose "read: ${varname}=\"${!varname}\""
                 ;;
 
