@@ -2,6 +2,16 @@
 
 # run command after image boot/login
 
+# @example
+# run a command once (via rc.local on boot if RPI_RUN_ON_BOOT=="true", via .bashrc on first login otherwise)
+# RPI_RUN_ONCE=(
+#     'echo "*********************************************************"'
+#     'echo "Welcome to this install."'
+#     'echo "It is $(date) and we are about to bake this pi."'
+#     'echo "Please standby..."'
+# )
+
+
 # default options
 RPI_RUN_ONCE="${RPI_RUN_ONCE:=}"
 RPI_RUN_ON_BOOT="${RPI_RUN_ON_BOOT:=false}"
