@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# place a commenting character in front of a string in a file
+
+# @example
+# comment out "dtparam=spi=off" in config.txt
+# RPI_OUTCOMMENT_FILE="${RPI_BOOT}/config.txt"
+# RPI_OUTCOMMENT_STRING="dtparam=spi=off"
+
+
+RPI_OUTCOMMENT_FILE="${RPI_OUTCOMMENT_FILE:=}"
+RPI_OUTCOMMENT_CHAR="${RPI_OUTCOMMENT_CHAR:=#}"
+RPI_OUTCOMMENT_STRING="${RPI_OUTCOMMENT_STRING:=#}"
+
+
+rpi_outcomment_prerun() {
+    # check arguments
+    [[ -n "${RPI_OUTCOMMENT_FILE}" ]] || error "RPI_OUTCOMMENT_FILE check"
+    [[ -n "${RPI_OUTCOMMENT_STRING}" ]] || error "RPI_OUTCOMMENT_STRING check"
+}
+
+rpi_outcomment_run() {
+    for s in "${RPI_OUTCOMMENT_STRING[@]}" ; do
+        rpi_outcomment "${RPI_OUTCOMMENT_FILE}" "${s}"
+    done
+}
+
+rpi_outcomment_description() {
+    echo "place a commenting character in front of a string in a file"
+}
+
+rpi_outcomment_help_vars() {
+    help_var "RPI_OUTCOMMENT_FILE" "the target file"
+    help_var "RPI_OUTCOMMENT_CHAR" "the comment character"
+    help_var "RPI_OUTCOMMENT_STRING" "the string to comment out"
+}
+
+# ---------------------------------------------------------------------
+
+rpi_outcomment() {
+    local file="$1"
+    local string="$2"
+
+    sudo sed -i "s|${string}|${RPI_OUTCOMMENT_CHAR} ${string}|g" "${file}" || error "sed $_"
+}
