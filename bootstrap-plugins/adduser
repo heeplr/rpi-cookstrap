@@ -2,6 +2,11 @@
 
 # add pi user to group
 
+# @example
+# add user to "disk" and "staff" group
+# RPI_ADDUSER_GROUP=( "disk" "staff" )
+
+
 # default options
 RPI_ADDUSER_GROUP="${RPI_ADDUSER_GROUP:=}"
 
@@ -14,7 +19,9 @@ rpi_adduser_prerun() {
 }
 
 rpi_adduser_run() {
-    rpi_run_once "sudo adduser pi ${RPI_ADDUSER_GROUP}" || error "add to group ${RPI_ADDUSER_GROUP}"
+    for g in "${RPI_ADDUSER_GROUP[@]}" ; do
+        rpi_run_once "sudo adduser pi ${g}" || error "add to group ${g}"
+    done
 }
 
 rpi_adduser_description() {
