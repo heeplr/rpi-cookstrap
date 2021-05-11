@@ -41,5 +41,5 @@ rpi_outcomment() {
     local file="$1"
     local string="$2"
 
-    sudo sed -i "s|${string}|${RPI_OUTCOMMENT_CHAR} ${string}|g" "${file}" || error "sed $_"
+    sudo sed -i "s|${string}|${RPI_OUTCOMMENT_CHAR} ${string}|g" "${file}" || error "sed ${_}"
 }
