@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# ask user for input and store it in a variable
+
+# @example
+# ask user for RPI_ASK_WHAT and RPI_ASK_WHY
+# RPI_ASK_QUESTION=("What ?" "Why ?")
+# RPI_ASK_VARIABLE=("ASK_WHAT" "ASK_WHY")
+
+
+# default options
+RPI_ASK_METHOD="${RPI_ASK_METHOD:=read}"
+RPI_ASK_QUESTION="${RPI_ASK_QUESTION:=}"
+RPI_ASK_VARIABLE="${RPI_ASK_VARIABLE:=}"
+
+
+function rpi_ask_prerun() {
+    # check arguments
+    [[ -n "${RPI_ASK_QUESTION}" ]] || error "RPI_ASK_QUESTION check"
+    [[ -n "${RPI_ASK_VARIABLE}" ]] || error "RPI_ASK_VARIABLE check"
+    [[ "${#RPI_ASK_QUESTION[@]}" == "${#RPI_ASK_VARIABLE[@]}" ]] || error "need a RPI_ASK_VARIABLE for every RPI_ASK_QUESTION"
+}
+
+function rpi_ask_run() {
+    for i in $(seq "${#RPI_ASK_QUESTION[@]}") ; do
+        warn "${i}"
+        local varname="$(echo "RPI_${RPI_ASK_VARIABLE[$[i-1]]}" | tr '[:lower:]' '[:upper:]')"
+        case "${RPI_ASK_METHOD}" in
+            "read")
+                printf ":: ${bold}%s${normal} " "${RPI_ASK_QUESTION[$[i-1]]}"
+                read "${varname}"
+                verbose "read: ${varname}=\"${!varname}\""
+                ;;
+
+            ?|*)
+                error "unknown RPI_ASK_METHOD: ${OPTARG}"
+                ;;
+        esac
+    done
+}
+
+function rpi_ask_description() {
+    echo "ask user for input and store it in a variable"
+}
+
+function rpi_ask_help_vars() {
+    help_var "RPI_ASK_METHOD" "method used to ask the user (read)"
+    help_var "RPI_ASK_QUESTION" "prompt user for input"
+    help_var "RPI_ASK_VARIABLE" "name of variable. will be uppercased and prefixed by RPI_"
+}
+
