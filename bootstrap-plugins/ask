@@ -40,7 +40,7 @@ function rpi_ask_run() {
 }
 
 function rpi_ask_description() {
-    echo "ask user for input and store it in a variable"
+    echo "ask user interactively for input and store it in a variable"
 }
 
 function rpi_ask_help_vars() {
