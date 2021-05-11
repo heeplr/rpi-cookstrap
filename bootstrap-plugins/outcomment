@@ -7,10 +7,13 @@
 # RPI_OUTCOMMENT_FILE="${RPI_BOOT}/config.txt"
 # RPI_OUTCOMMENT_STRING="dtparam=spi=off"
 
-
+# default options
 RPI_OUTCOMMENT_FILE="${RPI_OUTCOMMENT_FILE:=}"
 RPI_OUTCOMMENT_CHAR="${RPI_OUTCOMMENT_CHAR:=#}"
 RPI_OUTCOMMENT_STRING="${RPI_OUTCOMMENT_STRING:=#}"
+
+# load dependencies
+plugin_load replace || return 1
 
 
 rpi_outcomment_prerun() {
@@ -41,5 +44,6 @@ rpi_outcomment() {
     local file="$1"
     local string="$2"
 
-    sudo sed -i "s|${string}|${RPI_OUTCOMMENT_CHAR} ${string}|g" "${file}" || error "sed ${_}"
+    log "commenting out \"${string}\""
+    rpi_replace_string_in_file "^${string}/${RPI_OUTCOMMENT_CHAR} ${string}" "${file}" || error "rpi_replace_string_in_file"
 }
