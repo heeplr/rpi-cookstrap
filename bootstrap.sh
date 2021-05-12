@@ -96,9 +96,9 @@ function help_plugins() {
             printf "%-20s\n\n" "${invert}${bold}${p}${normal}"
         fi
         # config var description
-        if plugin_check_for_func "rpi_${p}_help_vars" ; then
-            echo " variables:"
-            "rpi_${p}_help_vars"
+        if plugin_check_for_func "rpi_${p}_help_params" ; then
+            echo " parameters:"
+            "rpi_${p}_help_params"
             echo
         fi
         # distfile description
@@ -113,8 +113,8 @@ function help_plugins() {
     shopt -u nullglob
 }
 
-# print help for plugin specific variables
-function help_var() {
+# print help for plugin specific parameters
+function help_param() {
     local name="$1"
     local description="$2"
     local default="${!name}"
@@ -238,7 +238,7 @@ function plugin_postrun_all() {
     done
 }
 
-# return a all RPI_* variables
+# return all RPI_* variables
 function allvars() {
     { set -o posix ; set ; } | grep "RPI_"
 }

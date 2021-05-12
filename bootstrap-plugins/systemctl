@@ -29,6 +29,6 @@ function rpi_systemctl_description() {
     echo "run systemctl commands once"
 }
 
-function rpi_systemctl_help_vars() {
-    help_var "RPI_SYSTEMCTL_CMDS" "array of systemctl commands"
+function rpi_systemctl_help_params() {
+    help_param "RPI_SYSTEMCTL_CMDS" "array of systemctl commands"
 }

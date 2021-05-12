@@ -24,9 +24,9 @@ rpi_download_description() {
     echo "download url"
 }
 
-rpi_download_help_vars() {
-    help_var "RPI_DOWNLOAD_URL" "url or path to file"
-    help_var "RPI_DOWNLOAD_FILE" "path to destination file"
+rpi_download_help_params() {
+    help_param "RPI_DOWNLOAD_URL" "url or path to file"
+    help_param "RPI_DOWNLOAD_FILE" "path to destination file"
 }
 
 # ---------------------------------------------------------------------

@@ -66,11 +66,11 @@ function rpi_wifi_description() {
     echo "configure wifi"
 }
 
-function rpi_wifi_help_vars() {
-    help_var "RPI_WIFI_SSID" "SSID of network"
-    help_var "RPI_WIFI_PSK" "network password"
-    help_var "RPI_WIFI_COUNTRY" "wifi country standard. optional."
-    help_var "RPI_WIFI_POWERSAVE" "turn wifi powersave on/off on boot"
+function rpi_wifi_help_params() {
+    help_param "RPI_WIFI_SSID" "SSID of network"
+    help_param "RPI_WIFI_PSK" "network password"
+    help_param "RPI_WIFI_COUNTRY" "wifi country standard. optional."
+    help_param "RPI_WIFI_POWERSAVE" "turn wifi powersave on/off on boot"
 }
 
 function rpi_wifi_help_distfiles() {

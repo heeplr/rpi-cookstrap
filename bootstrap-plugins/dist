@@ -43,10 +43,10 @@ function rpi_dist_description() {
     echo "transfer files from dist directory to disk image"
 }
 
-function rpi_dist_help_vars() {
-    help_var "RPI_DIST_COPY" "array of files to copy to disk image"
-    help_var "RPI_DIST_COPY_BOOT" "array of files to copy when the pi is booting"
-    help_var "RPI_DIST_APPEND" "array of files to append to files on disk image"
+function rpi_dist_help_params() {
+    help_param "RPI_DIST_COPY" "array of files to copy to disk image"
+    help_param "RPI_DIST_COPY_BOOT" "array of files to copy when the pi is booting"
+    help_param "RPI_DIST_APPEND" "array of files to append to files on disk image"
 }
 
 # ---------------------------------------------------------------------

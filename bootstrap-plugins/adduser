@@ -28,6 +28,6 @@ rpi_adduser_description() {
     echo "add pi user to group"
 }
 
-rpi_adduser_help_vars() {
-    help_var "RPI_ADDUSER_GROUP" "group to add user to"
+rpi_adduser_help_params() {
+    help_param "RPI_ADDUSER_GROUP" "group to add user to"
 }

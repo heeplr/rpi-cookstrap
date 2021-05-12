@@ -41,10 +41,10 @@ function rpi_run_description() {
     echo "run commands on image after boot/login"
 }
 
-function rpi_run_help_vars() {
-    help_var "RPI_RUN_ONCE" "command to run once (on setup)"
-    help_var "RPI_RUN" "command to run on every boot/login"
-    help_var "RPI_RUN_ON_BOOT" "if true, run command on boot from rc.local otherwise run on login from .bashrc"
+function rpi_run_help_params() {
+    help_param "RPI_RUN_ONCE" "command to run once (on setup)"
+    help_param "RPI_RUN" "command to run on every boot/login"
+    help_param "RPI_RUN_ON_BOOT" "if true, run command on boot from rc.local otherwise run on login from .bashrc"
 }
 
 # ---------------------------------------------------------------------

@@ -77,8 +77,8 @@ function rpi_raspbian_description() {
     echo "download raspbian image"
 }
 
-function rpi_raspbian_help_vars() {
-    help_var "RPI_RASPBIAN_FLAVOR" "flavor of raspbian to use: lite or full"
-    help_var "RPI_RASPBIAN_URL" "alternative download URL or local path to downloaded zip"
+function rpi_raspbian_help_params() {
+    help_param "RPI_RASPBIAN_FLAVOR" "flavor of raspbian to use: lite or full"
+    help_param "RPI_RASPBIAN_URL" "alternative download URL or local path to downloaded zip"
 }
 

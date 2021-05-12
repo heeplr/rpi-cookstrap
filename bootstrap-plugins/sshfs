@@ -39,7 +39,7 @@ function rpi_sshfs_description() {
     echo "mount local filesystem on raspberry pi via ssh + fuse"
 }
 
-function rpi_sshfs_help_vars() {
-    help_var "RPI_SSHFS_URL" "sftp url"
-    help_var "RPI_SSHFS_MOUNTPOINT" "directory to mount fs"
+function rpi_sshfs_help_params() {
+    help_param "RPI_SSHFS_URL" "sftp url"
+    help_param "RPI_SSHFS_MOUNTPOINT" "directory to mount fs"
 }

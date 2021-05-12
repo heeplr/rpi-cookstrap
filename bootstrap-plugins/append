@@ -29,10 +29,10 @@ function rpi_append_description() {
     echo "append string, file, stdin to file & avoid doubles"
 }
 
-function rpi_append_help_vars() {
-    help_var "RPI_APPEND_FILE" "the file to append to"
-    help_var "RPI_APPEND_STRING" "string to append"
-    help_var "RPI_APPEND_APPENDIX" "file which contents should be appended"
+function rpi_append_help_params() {
+    help_param "RPI_APPEND_FILE" "the file to append to"
+    help_param "RPI_APPEND_STRING" "string to append"
+    help_param "RPI_APPEND_APPENDIX" "file which contents should be appended"
 }
 
 # ---------------------------------------------------------------------

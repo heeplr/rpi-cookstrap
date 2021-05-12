@@ -67,14 +67,14 @@ function rpi_rsyslogd_description() {
     echo "configure remote logging"
 }
 
-function rpi_rsyslogd_help_vars() {
-    help_var "RPI_RSYSLOGD_TARGET" "target syslog server"
-    help_var "RPI_RSYSLOGD_PORT" "target port"
-    help_var "RPI_RSYSLOGD_LOCAL" "enable/disable local logfiles"
-    help_var "RPI_RSYSLOGD_PROTOCOL" "network protocol"
-    help_var "RPI_RSYSLOGD_RESUME_RETRY_COUNT" "amount of resume retries"
-    help_var "RPI_RSYSLOGD_QUEUE_TYPE" "message queue type"
-    help_var "RPI_RSYSLOGD_QUEUE_SIZE" "message queue size"
+function rpi_rsyslogd_help_params() {
+    help_param "RPI_RSYSLOGD_TARGET" "target syslog server"
+    help_param "RPI_RSYSLOGD_PORT" "target port"
+    help_param "RPI_RSYSLOGD_LOCAL" "enable/disable local logfiles"
+    help_param "RPI_RSYSLOGD_PROTOCOL" "network protocol"
+    help_param "RPI_RSYSLOGD_RESUME_RETRY_COUNT" "amount of resume retries"
+    help_param "RPI_RSYSLOGD_QUEUE_TYPE" "message queue type"
+    help_param "RPI_RSYSLOGD_QUEUE_SIZE" "message queue size"
 }
 
 function rpi_rsyslogd_help_distfiles() {

@@ -22,9 +22,9 @@ function rpi_replace_description() {
     echo "replace string in file (sed pattern \"s/.../g\")"
 }
 
-function rpi_replace_help_vars() {
-    help_var "RPI_REPLACE_FILE" "file to search & replace pattern in"
-    help_var "RPI_REPLACE_PATTERN" "sed pattern to match (and replace)"
+function rpi_replace_help_params() {
+    help_param "RPI_REPLACE_FILE" "file to search & replace pattern in"
+    help_param "RPI_REPLACE_PATTERN" "sed pattern to match (and replace)"
 }
 
 # ---------------------------------------------------------------------

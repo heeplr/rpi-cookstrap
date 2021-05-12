@@ -89,12 +89,12 @@ function rpi_ssh_description() {
     echo "configure ssh"
 }
 
-function rpi_ssh_help_vars() {
-    help_var "RPI_SSH_KEY_TYPE" "key type to generate"
-    help_var "RPI_SSH_KEY_ROUNDS" "KDF rounds for generated key"
-    help_var "RPI_SSH_KEYGEN" "use local ssh-keygen to generate a key for the pi user"
-    help_var "RPI_SSH_KEYGEN_SERVER" "(re)generate server keys on the pi"
-    help_var "RPI_SSH_AUTHORIZE" "array of public keys to add to authorized_keys for the pi user"
+function rpi_ssh_help_params() {
+    help_param "RPI_SSH_KEY_TYPE" "key type to generate"
+    help_param "RPI_SSH_KEY_ROUNDS" "KDF rounds for generated key"
+    help_param "RPI_SSH_KEYGEN" "use local ssh-keygen to generate a key for the pi user"
+    help_param "RPI_SSH_KEYGEN_SERVER" "(re)generate server keys on the pi"
+    help_param "RPI_SSH_AUTHORIZE" "array of public keys to add to authorized_keys for the pi user"
 }
 
 function rpi_ssh_help_distfiles() {

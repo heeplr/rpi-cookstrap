@@ -21,10 +21,10 @@ function rpi_chmod_description() {
     echo "chmod a file on the image"
 }
 
-function rpi_chmod_help_vars() {
-    help_var "RPI_CHMOD_PERM" "permissions"
-    help_var "RPI_CHMOD_PATH" "path to chmod target"
-    help_var "RPI_CHMOD_RECURSIVE" "chmod (only files) recursively if true"
+function rpi_chmod_help_params() {
+    help_param "RPI_CHMOD_PERM" "permissions"
+    help_param "RPI_CHMOD_PATH" "path to chmod target"
+    help_param "RPI_CHMOD_RECURSIVE" "chmod (only files) recursively if true"
 }
 
 # ---------------------------------------------------------------------

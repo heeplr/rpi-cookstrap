@@ -42,6 +42,6 @@ rpi_raspiconfig_description() {
     echo "run raspi-config noninteractively"
 }
 
-rpi_raspiconfig_help_vars() {
-    help_var "RPI_RASPICONFIG_NONINT" "list of /usr/bin/raspi-config functions + parameters to run"
+rpi_raspiconfig_help_params() {
+    help_param "RPI_RASPICONFIG_NONINT" "list of /usr/bin/raspi-config functions + parameters to run"
 }

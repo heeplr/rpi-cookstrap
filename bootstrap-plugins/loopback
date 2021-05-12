@@ -28,11 +28,11 @@ rpi_loopback_description() {
     echo "setup loopback device & mount image"
 }
 
-rpi_loopback_help_vars() {
-    help_var "RPI_BOOT" "mountpoint for BOOT partition"
-    help_var "RPI_ROOT" "mountpoint for root partition"
-    help_var "RPI_LOOPBACK_IMAGE" "image filename"
-    help_var "RPI_LOOPBACK_DEVICE" "will be set to used /dev/loopX device"
+rpi_loopback_help_params() {
+    help_param "RPI_BOOT" "mountpoint for BOOT partition"
+    help_param "RPI_ROOT" "mountpoint for root partition"
+    help_param "RPI_LOOPBACK_IMAGE" "image filename"
+    help_param "RPI_LOOPBACK_DEVICE" "will be set to used /dev/loopX device"
 }
 
 # ---------------------------------------------------------------------

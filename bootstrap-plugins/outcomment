@@ -32,10 +32,10 @@ rpi_outcomment_description() {
     echo "place a commenting character in front of a string in a file"
 }
 
-rpi_outcomment_help_vars() {
-    help_var "RPI_OUTCOMMENT_FILE" "the target file"
-    help_var "RPI_OUTCOMMENT_CHAR" "the comment character"
-    help_var "RPI_OUTCOMMENT_STRING" "the string to comment out"
+rpi_outcomment_help_params() {
+    help_param "RPI_OUTCOMMENT_FILE" "the target file"
+    help_param "RPI_OUTCOMMENT_CHAR" "the comment character"
+    help_param "RPI_OUTCOMMENT_STRING" "the string to comment out"
 }
 
 # ---------------------------------------------------------------------

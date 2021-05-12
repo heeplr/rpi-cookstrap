@@ -34,9 +34,9 @@ function rpi_remove_description() {
     echo "remove sed pattern \"/.../d\" from file where it matches"
 }
 
-function rpi_remove_help_vars() {
-    help_var "RPI_REMOVE_FILE" "file to remove pattern from"
-    help_var "RPI_REMOVE_PATTERN" "sed pattern to match (and remove)"
+function rpi_remove_help_params() {
+    help_param "RPI_REMOVE_FILE" "file to remove pattern from"
+    help_param "RPI_REMOVE_PATTERN" "sed pattern to match (and remove)"
 }
 
 # ---------------------------------------------------------------------

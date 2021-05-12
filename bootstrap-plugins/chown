@@ -21,10 +21,10 @@ function rpi_chown_description() {
     echo "chown for pi user"
 }
 
-function rpi_chown_help_vars() {
-    help_var "RPI_CHOWN_USER" "user (if not pi)"
-    help_var "RPI_CHOWN_PATH" "path to chown target"
-    help_var "RPI_CHOWN_RECURSIVE" "chown recursively if true"
+function rpi_chown_help_params() {
+    help_param "RPI_CHOWN_USER" "user (if not pi)"
+    help_param "RPI_CHOWN_PATH" "path to chown target"
+    help_param "RPI_CHOWN_RECURSIVE" "chown recursively if true"
 }
 
 # ---------------------------------------------------------------------

@@ -44,9 +44,9 @@ function rpi_ask_description() {
     echo "ask user interactively for input and store it in a variable"
 }
 
-function rpi_ask_help_vars() {
-    help_var "RPI_ASK_METHOD" "method used to ask the user (read)"
-    help_var "RPI_ASK_QUESTION" "prompt user for input"
-    help_var "RPI_ASK_VARIABLE" "name of variable. will be uppercased and prefixed by RPI_"
+function rpi_ask_help_params() {
+    help_param "RPI_ASK_METHOD" "method used to ask the user (read)"
+    help_param "RPI_ASK_QUESTION" "prompt user for input"
+    help_param "RPI_ASK_VARIABLE" "name of variable. will be uppercased and prefixed by RPI_"
 }
 

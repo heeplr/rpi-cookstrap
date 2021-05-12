@@ -53,8 +53,8 @@ function rpi_hostname_description() {
     echo "configure hostname"
 }
 
-function rpi_hostname_help_vars() {
-    help_var "RPI_HOSTNAME" "hostname to set"
+function rpi_hostname_help_params() {
+    help_param "RPI_HOSTNAME" "hostname to set"
 }
 
 function rpi_hostname_help_distfiles() {
