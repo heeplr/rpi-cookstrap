@@ -246,6 +246,9 @@ function allvars() {
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 
+# are we included ?
+[[ "${RPI_TESTING}" == "true" ]] && return
+
 # load project config
 { [[ -f "$(dirname "$0")/bootstrap.cfg" ]] && . "$(dirname "$0")/bootstrap.cfg" ; } || warn "loading bootstrap.cfg failed"
 # load user config (overrides project config)
