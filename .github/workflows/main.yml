@@ -40,7 +40,7 @@ jobs:
       # some tests
       - name: run tests
         run: ./test.sh
-      - name: test example
+      - name: build examples/complete-test
         run: |
           cd examples/complete-test
           ./bootstrap.sh
