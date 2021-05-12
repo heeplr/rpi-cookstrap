@@ -20,15 +20,13 @@ RPI_RUN_ON_BOOT="${RPI_RUN_ON_BOOT:=false}"
 
 # ---------------------------------------------------------------------
 # font effects
-if [[ -n "${TERM}" ]] ; then
-    bold="$(tput bold)"
-    underline="$(tput smul)"
-    invert="$(tput smso)"
-    normal="$(tput sgr0)"
-    red="$(tput setaf 9)"
-    green="$(tput setaf 2)"
-    yellow="$(tput setaf 11)"
-fi
+bold="$(tput bold)"
+underline="$(tput smul)"
+invert="$(tput smso)"
+normal="$(tput sgr0)"
+red="$(tput setaf 9)"
+green="$(tput setaf 2)"
+yellow="$(tput setaf 11)"
 
 # print banner
 function banner() {
