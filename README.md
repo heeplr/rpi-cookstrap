@@ -52,15 +52,15 @@ Use at your own risk and do provide fixes ;) !!
 # Getting started
 
 This will create a working raspbian-lite image without any personal customizations.
-Wifi will be configured and a full upgrade will be perfomed:
+Wifi will be configured (with the preset SSID and PSK) and a full upgrade will be perfomed:
 
-1. Clone and ```cd examples/wifi+upgrade``` (or any other project)
+1. ```git clone https://github.com/heeplr/rpi-cookstrap``` and ```cd rpi-cookstrap/examples/wifi+upgrade``` (or any other project)
 
-2. run ```./bootstrap.sh``` and wait until bootstrap is done.
+2. run ```./bootstrap.sh```
    It will load the project's *bootstrap.cfg* and download/modify
-   the image accordingly.)
+   the image accordingly.
 
-3. copy image to your SD card:
+3. write the freshly baked image to your SD card:
    ```dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX conv=fsync status=progress```
    (replace /dev/sdX with you sdcard)
 
@@ -70,12 +70,12 @@ Wifi will be configured and a full upgrade will be perfomed:
    (a line into */home/pi/.bashrc* has been added. It executes the
    setup script which deletes itself after successful execution)
 
-Now you got a fresh, upgraded image. But the wifi is setup with wrong
+Now you got a fresh and fully upgraded image. But the wifi is setup with wrong
 credentials, since *examples/wifi+upgrade/bootstrap.cfg* doesn't
 contain your wifi's name and password (hopefully).
 
 It's time to do some customizations. Create a *~/.bootstrap.cfg* and
-modify according to your needs:
+modify according to your needs (comment out to disable):
 ```
 # setup WIFI
 RPI_BOOTSTRAP_PLUGINS+=( "wifi" )
@@ -99,10 +99,11 @@ RPI_PASSWORD_PW=( "$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c24;echo;)" )
  project plugins or distfiles.)
 
 
-Now run ```./bootstrap.sh``` again (repeat from step 2 from above).
+Now run ```./bootstrap.sh``` again (repeat from step 2 from above)
+to create the image with your personal settings instead of the presets.
 
 
-Also try running ```./bootstrap.sh -h``` to list commandline arguments and
+Try running ```./bootstrap.sh -h``` to list commandline arguments and
 ```./bootstrap.sh -p``` to list [plugins](../../wiki/plugins).
 
 
