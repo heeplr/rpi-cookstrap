@@ -39,7 +39,7 @@ jobs:
 
       # some tests
       - name: run tests
-        run: ./test.sh
+        run: ./test/test.sh
       - name: build examples/complete-test
         run: |
           cd examples/complete-test
