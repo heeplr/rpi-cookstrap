@@ -20,6 +20,7 @@ setup() {
     source bootstrap.sh
     plugin_load append
     # create fake image
+    mkdir -p "${RPI_BOOT}"
     printf "[all]\n#dtoverlay=vc4-fkms-v3d\ndtparam=audio=off\ndisable_auto_turbo=1\n" > "${RPI_BOOT}/config.txt"
     mkdir -p "${RPI_ROOT}/etc"
     printf "testpi\n" > "${RPI_ROOT}/etc/hostname"
