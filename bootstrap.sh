@@ -40,21 +40,25 @@ EOF
 # print msg in verbose mode
 function verbose() {
     [[ -n "${V}" ]] && echo "[VERBOSE]: $*" 2>&2
+    return 0
 }
 
 # print log internal msg
 function _log() {
     echo "[${bold}INFO${normal}]: $*" 2>&2
+    return 0
 }
 
 # print log msg
 function log() {
     echo " :: $*" 2>&2
+    return 0
 }
 
 # print warning
 function warn() {
     echo "[${yellow}WARNING${normal}]: ${bold}$*${normal}" >&2
+    return 0
 }
 
 # print error msg
