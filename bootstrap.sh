@@ -254,9 +254,13 @@ function allvars() {
 [[ "${RPI_TESTING}" == "true" ]] && return
 
 # load project config
-{ [[ -f "$(dirname "$0")/bootstrap.cfg" ]] && . "$(dirname "$0")/bootstrap.cfg" ; } || warn "loading bootstrap.cfg failed"
+if [[ -f "$(dirname "$0")/bootstrap.cfg" ]] ; then
+    . "$(dirname "$0")/bootstrap.cfg" || warn "loading bootstrap.cfg failed"
+fi
 # load user config (overrides project config)
-[[ -f "${RPI_USER_CONFIG}" ]] && . "${RPI_USER_CONFIG}" 2>/dev/null
+if [[ -f "${RPI_USER_CONFIG}" ]] ; then
+    . "${RPI_USER_CONFIG}" 2>/dev/null && _log "loaded \"${RPI_USER_CONFIG}\""
+fi
 
 # parse cmdline options
 parse_cmdline_args "$@"
