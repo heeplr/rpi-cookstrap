@@ -17,7 +17,7 @@ RPI_BOOT="${RPI_BOOT:=.bootstrap-work/boot}"
 RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
 RPI_RUN_ON_BOOT="${RPI_RUN_ON_BOOT:=false}"
 # parse comma separated array from env var
-IFS=, read -a RPI_BOOTSTRAP_PLUGINS <<< "${RPI_BOOTSTRAP_PLUGINS}"
+IFS=, read -r -a RPI_BOOTSTRAP_PLUGINS <<< "${RPI_BOOTSTRAP_PLUGINS}"
 
 # ---------------------------------------------------------------------
 # font effects
