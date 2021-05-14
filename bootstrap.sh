@@ -272,6 +272,7 @@ commarray RPI_BOOTSTRAP_PLUGINS
 if [[ -f "$(dirname "$0")/bootstrap.cfg" ]] ; then
     # (file doesn't need to exist during shellcheck)
     # shellcheck disable=SC1091
+    # shellcheck disable=SC1090
     . "$(dirname "$0")/bootstrap.cfg" || warn "loading bootstrap.cfg failed"
 fi
 # load user config (overrides project config)
