@@ -29,7 +29,7 @@ function rpi_powersave_run() {
     RPI_SYSTEMCTL_CMDS="disable ${disable_services[*]}" plugin_run systemctl || error "disable ${_}"
 
     # turn off unneeded things
-    RPI_CONFIG_ADD=(
+    export RPI_CONFIG_ADD=(
         "dtparam=audio=off"
         "disable_auto_turbo=1"
         "dtoverlay=disable-bluetooth"
@@ -38,7 +38,7 @@ function rpi_powersave_run() {
         "dtparam=spi=off"
         "start_x=0"
     )
-    rpi_config_run || error "config.txt modification"
+    plugin_run config || error "config.txt modification"
 
     # turn off HDMI
     rpi_run_on_boot "# turn off HDMI" || error "run_on_boot"
