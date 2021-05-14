@@ -16,8 +16,6 @@ RPI_ROOT="${RPI_ROOT:=.bootstrap-work/root}"
 RPI_BOOT="${RPI_BOOT:=.bootstrap-work/boot}"
 RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
 RPI_RUN_ON_BOOT="${RPI_RUN_ON_BOOT:=false}"
-# parse comma separated array from env var
-IFS=, read -r -a RPI_BOOTSTRAP_PLUGINS <<< "${RPI_BOOTSTRAP_PLUGINS}"
 
 # ---------------------------------------------------------------------
 # font effects
@@ -28,6 +26,12 @@ normal="$(tput sgr0)"
 red="$(tput setaf 9)"
 green="$(tput setaf 2)"
 yellow="$(tput setaf 11)"
+
+# parse comma separated array from var and store in same var
+function commarray() {
+    local varname="$1"
+    IFS=, read -r -a "${varname}" <<< "${!varname}"
+}
 
 # print banner
 function banner() {
@@ -253,6 +257,9 @@ function allvars() {
 
 # are we included ?
 [[ "${RPI_TESTING}" == "true" ]] && return
+
+# parse comma separated array from env var
+commarray RPI_BOOTSTRAP_PLUGINS
 
 # load project config
 if [[ -f "$(dirname "$0")/bootstrap.cfg" ]] ; then
