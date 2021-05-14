@@ -9,6 +9,8 @@ A lightweight raspberry pi bakery shell script framework to customize, bootstrap
     <img src="https://asciinema.org/a/LMhf6fXg7pGo9J3B51Mgn2GE4.svg" />
   </a>
 </p>
+Demo of image download, build, flash and boot
+
 
 <div style="font-size:larger;">&#160;</div>
 
@@ -56,6 +58,7 @@ RPI_BOOTSTRAP_PLUGINS=raspbian,password RPI_PASSWORD_PW=secret ./bootstrap.sh
 ```
 
 will download the latest raspbian lite and set the password of the *pi* user to "secret".
+
 
 <div style="font-size:larger;">&#160;</div>
 
