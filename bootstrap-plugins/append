@@ -59,6 +59,7 @@ function rpi_append_to_file() {
     # append
     sudo touch "${file}"
     printf "%s\n" "${string}" | sudo tee -a "${file}" >/dev/null || error "sudo_append ${string} ${file}"
+    verbose "appended \"${string}\" to \"${file}\""
 }
 
 # append input from stdin to file
