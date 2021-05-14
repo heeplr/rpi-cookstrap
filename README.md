@@ -134,6 +134,14 @@ Further documentation [can be found in the wiki](../../wiki/).
 <div style="font-size:larger;">&#160;</div>
 
 
+# Plugins
+The wiki has a [list of available plugins](../../wiki/plugins).
+There's also more [documentation on the general plugin concept](../../wiki/Doc-Plugins).
+
+
+<div style="font-size:larger;">&#160;</div>
+
+
 # Examples
 see [examples/](examples/) for "complete" examples and [plugin's](../../wiki/plugins) documentation for plugin specific examples.
 
