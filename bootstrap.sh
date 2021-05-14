@@ -32,7 +32,7 @@ function commarray() {
     local defaultvalue="$2"
     local content
     content="${!varname}"
-    IFS=, read -r -a "${varname}" <<< "${content:-$defaultvalue}"
+    IFS=, read -r -a "${varname?}" <<< "${content:-${defaultvalue}}"
 }
 
 # print banner
