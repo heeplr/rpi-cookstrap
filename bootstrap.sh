@@ -15,7 +15,6 @@ RPI_TMPDIR="${RPI_TMPDIR:=/tmp}"
 RPI_ROOT="${RPI_ROOT:=.bootstrap-work/root}"
 RPI_BOOT="${RPI_BOOT:=.bootstrap-work/boot}"
 RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
-RPI_RUN_ON_BOOT="${RPI_RUN_ON_BOOT:=false}"
 
 # ---------------------------------------------------------------------
 # font effects
