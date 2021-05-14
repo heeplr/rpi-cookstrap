@@ -49,12 +49,25 @@ Use at your own risk and do provide fixes ;) !!
 <div style="font-size:larger;">&#160;</div>
 
 
-# Getting started
+# Quickstart
 
-This will create a working raspbian-lite image without any personal customizations.
-Wifi will be configured (with the preset SSID and PSK) and a full upgrade will be perfomed:
+```
+RPI_BOOTSTRAP_PLUGINS=raspbian,password RPI_PASSWORD_PW=secret ./bootstrap.sh
+```
 
-1. ```git clone https://github.com/heeplr/rpi-cookstrap``` and ```cd rpi-cookstrap/examples/wifi+upgrade``` (or any other project)
+will download the latest raspbian lite and set the password of the *pi* user to "secret".
+
+<div style="font-size:larger;">&#160;</div>
+
+
+# Building a project
+
+This build of the *wifi+upgrade* example will create a working
+raspbian-lite image without any personal customizations.
+Wifi will be configured (with the preset SSID and PSK) and a
+full upgrade will be perfomed:
+
+1. ```git clone https://github.com/heeplr/rpi-cookstrap``` and ```cd rpi-cookstrap/examples/wifi+upgrade```
 
 2. run ```./bootstrap.sh```
    It will load the project's *bootstrap.cfg* and download/modify
