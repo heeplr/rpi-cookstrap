@@ -270,7 +270,7 @@ parse_cmdline_args "$@"
 banner
 
 # check if there are plugins
-[[ -n "${RPI_BOOTSTRAP_PLUGINS}" ]] || error "no plugins configured. set RPI_BOOTSTRAP_PLUGINS"
+[[ -n "${RPI_BOOTSTRAP_PLUGINS[*]}" ]] || error "no plugins configured. set RPI_BOOTSTRAP_PLUGINS"
 
 # load plugins
 plugin_load_all
