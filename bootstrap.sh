@@ -30,7 +30,10 @@ yellow="$(tput setaf 11)"
 # parse comma separated array from var and store in same var
 function commarray() {
     local varname="$1"
-    IFS=, read -r -a "${varname}" <<< "${!varname}"
+    local defaultvalue="$2"
+    local content
+    content="${!varname}"
+    IFS=, read -r -a "${varname}" <<< "${content:-$defaultvalue}"
 }
 
 # print banner
