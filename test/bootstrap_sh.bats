@@ -69,3 +69,12 @@ EOF
     assert_output --partial "ran"
     assert_success
 }
+
+@test "comma array parser" {
+    RPI_FOO="bla\,bla, foo, bar,baz"
+    commarray RPI_FOO
+    [ "${RPI_FOO[0]}" == "bla,bla" ]
+    [ "${RPI_FOO[1]}" == "foo" ]
+    [ "${RPI_FOO[2]}" == "bar" ]
+    [ "${RPI_FOO[3]}" == "baz" ]
+}
