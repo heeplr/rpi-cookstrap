@@ -32,7 +32,8 @@ function commarray() {
     local defaultvalue="$2"
     local content
     content="${!varname}"
-    IFS='\t\n, ' read -a "${varname?}" <<< "${content:-${defaultvalue}}"
+    # shellcheck disable=SC2162
+    IFS=$'\t'$'\n'", " read -a "${varname?}" <<< "${content:-${defaultvalue}}"
 }
 
 # print banner
