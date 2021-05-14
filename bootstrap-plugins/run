@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# run command after image boot/login
+# run command on image
 
 # @example
-# run a command once (via rc.local on boot if RPI_RUN_ON_BOOT=="true", via .bashrc on first login otherwise)
+# print a custom message once
 # RPI_RUN_ONCE=(
 #     'echo "*********************************************************"'
 #     'echo "Welcome to this install."'
@@ -13,9 +13,9 @@
 
 
 # default options
-RPI_RUN_ONCE="${RPI_RUN_ONCE:=}"
-RPI_RUN_ON_BOOT="${RPI_RUN_ON_BOOT:=false}"
 RPI_RUN="${RPI_RUN:=}"
+RPI_RUN_ONCE="${RPI_RUN_ONCE:=}"
+RPI_RUN_MODE="${RPI_RUN_MODE:=login}"
 
 # load dependencies
 plugin_load append || return 1
@@ -38,13 +38,13 @@ function rpi_run_run() {
 }
 
 function rpi_run_description() {
-    echo "run commands on image after boot/login"
+    echo "run commands on image after boot, login or manually"
 }
 
 function rpi_run_help_params() {
     help_param "RPI_RUN_ONCE" "command to run once (on setup)"
-    help_param "RPI_RUN" "command to run on every boot/login"
-    help_param "RPI_RUN_ON_BOOT" "if true, run command on boot from rc.local otherwise run on login from .bashrc"
+    help_param "RPI_RUN" "command to run regularly (on every boot/login/script call)"
+    help_param "RPI_RUN_MODE" "decides how to run the command: login (from .bashrc when pi user logs in), boot (rc.local when pi boots), script (external script)"
 }
 
 # ---------------------------------------------------------------------
@@ -111,23 +111,60 @@ function rpi_run_on_first_boot() {
     done
 }
 
+# output command to script
+function rpi_run_script() {
+    local scriptname="${RPI_WORKDIR}/rpi_run.sh"
+    for cmd in "$@" ; do
+        rpi_append_to_file "${cmd}" "${scriptname}" || error "append ${cmd} to $_"
+        log "(rpi_run.sh) cmd installed: \"${cmd}\""
+    done
+}
+
+# output command to once-script
+function rpi_run_once_script() {
+    local scriptname="${RPI_WORKDIR}/rpi_run_once.sh"
+    for cmd in "$@" ; do
+        rpi_append_to_file "${cmd}" "${scriptname}" || error "append ${cmd} to $_"
+        log "(rpi_run_once.sh) cmd installed: \"${cmd}\""
+    done
+}
+
 # run command once (either on first boot or on first login)
 function rpi_run_once() {
     [[ -n "$*" ]] || error "missing argument"
-    if [[ "${RPI_RUN_ON_BOOT}" == "true" ]] ; then
-        rpi_run_on_first_boot "$@"
-    else
-        rpi_run_on_first_login "$@"
-    fi
+    case "${RPI_RUN_MODE}" in
+        "login")
+            rpi_run_on_first_login "$@"
+            ;;
+
+        "boot")
+            rpi_run_on_first_boot "$@"
+            ;;
+
+        "script")
+            rpi_run_once_script "$@"
+            ;;
+    esac
 }
 
 
 # run command (either on boot or on login)
 function rpi_run() {
     [[ -n "$*" ]] || error "missing argument"
-    if [[ "${RPI_RUN_ON_BOOT}" == "true" ]] ; then
-        rpi_run_on_boot "$@"
-    else
-        rpi_run_on_login "$@"
-    fi
+    case "${RPI_RUN_MODE}" in
+        "login")
+            rpi_run_on_login "$@"
+            ;;
+
+        "boot")
+            rpi_run_on_boot "$@"
+            ;;
+
+        "script")
+            rpi_run_script "$@"
+            ;;
+
+        ?|*)
+            error "invalid RPI_RUN_MODE. Use one of login, boot, script. rpi_run"
+    esac
 }
