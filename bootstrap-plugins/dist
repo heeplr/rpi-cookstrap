@@ -8,8 +8,8 @@
 
 
 # default options
-RPI_DIST_COPY="${RPI_DIST_COPY:=}"
-RPI_DIST_APPEND="${RPI_DIST_APPEND:=}"
+commarray RPI_DIST_COPY
+commarray RPI_DIST_APPEND
 
 # load dependencies
 plugin_load append || return 1

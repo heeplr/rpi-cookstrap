@@ -10,7 +10,7 @@
 # default options
 RPI_OUTCOMMENT_FILE="${RPI_OUTCOMMENT_FILE:=}"
 RPI_OUTCOMMENT_CHAR="${RPI_OUTCOMMENT_CHAR:=#}"
-RPI_OUTCOMMENT_STRING="${RPI_OUTCOMMENT_STRING:=#}"
+commarray RPI_OUTCOMMENT_STRING
 
 # load dependencies
 plugin_load replace || return 1

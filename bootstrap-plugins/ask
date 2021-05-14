@@ -10,8 +10,8 @@
 
 # default options
 RPI_ASK_METHOD="${RPI_ASK_METHOD:=read}"
-RPI_ASK_QUESTION="${RPI_ASK_QUESTION:=}"
-RPI_ASK_VARIABLE="${RPI_ASK_VARIABLE:=}"
+commarray RPI_ASK_QUESTION
+commarray RPI_ASK_VARIABLE
 
 
 function rpi_ask_prerun() {

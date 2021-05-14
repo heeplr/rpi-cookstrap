@@ -12,8 +12,8 @@
 
 
 # default options
-RPI_CONFIG_ADD="${RPI_CONFIG_ADD:=}"
-RPI_CONFIG_REMOVE="${RPI_CONFIG_REMOVE:=}"
+commarray RPI_CONFIG_ADD
+commarray RPI_CONFIG_REMOVE
 
 # load dependencies
 plugin_load append || return 1

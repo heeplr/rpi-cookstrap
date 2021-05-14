@@ -8,7 +8,7 @@
 
 
 # default options
-RPI_ADDUSER_GROUP="${RPI_ADDUSER_GROUP:=}"
+commarray RPI_ADDUSER_GROUP
 
 # load dependencies
 plugin_load run || return 1

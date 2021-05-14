@@ -8,8 +8,8 @@
 
 
 # default options
-RPI_APT_CMDS="${RPI_APT_CMDS:=""}"
 RPI_APT_INTERACTIVE="${RPI_APT_INTERACTIVE:=false}"
+commarray RPI_APT_CMDS
 
 # load dependencies
 plugin_load run || return 1
