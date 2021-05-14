@@ -195,9 +195,13 @@ function plugin_load() {
     # load plugin
     if [[ -f "${RPI_USER_PLUGINDIR}/${plugin}" ]] ; then
         verbose "loading ${RPI_USER_PLUGINDIR}/${plugin}"
+        # (shellcheck cannot source non-constant source)
+        # shellcheck disable=SC1090
         . "${RPI_USER_PLUGINDIR}/${plugin}"
     elif [[ -f "${RPI_PLUGINDIR}/${plugin}" ]] ; then
         verbose "loading ${RPI_PLUGINDIR}/${plugin}"
+        # (shellcheck cannot source non-constant source)
+        # shellcheck disable=SC1090
         . "${RPI_PLUGINDIR}/${plugin}"
     else
         error "plugin ${plugin} load"
@@ -266,10 +270,14 @@ commarray RPI_BOOTSTRAP_PLUGINS
 
 # load project config
 if [[ -f "$(dirname "$0")/bootstrap.cfg" ]] ; then
+    # (file doesn't need to exist during shellcheck)
+    # shellcheck disable=SC1091
     . "$(dirname "$0")/bootstrap.cfg" || warn "loading bootstrap.cfg failed"
 fi
 # load user config (overrides project config)
 if [[ -f "${RPI_USER_CONFIG}" ]] ; then
+    # (shellcheck cannot source non-constant source)
+    # shellcheck disable=SC1090
     . "${RPI_USER_CONFIG}" 2>/dev/null && _log "loaded \"${RPI_USER_CONFIG}\""
 fi
 
@@ -306,6 +314,7 @@ if [[ "${RPI_DONT_CLEANUP}" != "true" ]] ; then
 else
     warn "NOT CLEANING UP! Don't forget to umount & losetup -d"
 fi
+
 
 printf "\n\n%s\n" \
     "Image creation successful. Copy \"${RPI_LOOPBACK_IMAGE}\" to an SD card." \
