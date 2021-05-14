@@ -51,6 +51,8 @@ function rpi_raspbian_run() {
     rpi_loopback_setup "${dest}" || return 1
     rpi_loopback_mount || return 1
     # read os-release
+    # (shellcheck cannot source non-constant source)
+    # shellcheck disable=SC1091
     . "${RPI_ROOT}/etc/os-release"
 
     return 0
