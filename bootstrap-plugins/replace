@@ -2,8 +2,8 @@
 
 # replace string in file (sed pattern)
 
-RPI_REPLACE_FILE="${RPI_REPLACE_FILE:=}"
 RPI_REPLACE_PATTERN="${RPI_REPLACE_PATTERN:=}"
+commarray RPI_REPLACE_FILE
 
 
 function rpi_replace_prerun() {
@@ -13,7 +13,7 @@ function rpi_replace_prerun() {
 
 function rpi_replace_run() {
     local file
-    for file in "${RPI_REMOVE_FILE[@]}" ; do
+    for file in "${RPI_REPLACE_FILE[@]}" ; do
         rpi_replace_string_in_file "${RPI_REPLACE_PATTERN}" "${file}"
     done
 }
