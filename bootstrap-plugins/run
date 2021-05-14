@@ -13,9 +13,9 @@
 
 
 # default options
-RPI_RUN="${RPI_RUN:=}"
-RPI_RUN_ONCE="${RPI_RUN_ONCE:=}"
 RPI_RUN_MODE="${RPI_RUN_MODE:=login}"
+commarray RPI_RUN
+commarray RPI_RUN_ONCE
 
 # load dependencies
 plugin_load append || return 1
@@ -115,7 +115,7 @@ function rpi_run_on_first_boot() {
 function rpi_run_script() {
     local scriptname="${RPI_WORKDIR}/rpi_run.sh"
     for cmd in "$@" ; do
-        rpi_append_to_file "${cmd}" "${scriptname}" || error "append ${cmd} to $_"
+        rpi_append_to_file "${cmd}" "${scriptname}" || error "append ${cmd} to ${_}"
         log "(rpi_run.sh) cmd installed: \"${cmd}\""
     done
 }
@@ -124,7 +124,7 @@ function rpi_run_script() {
 function rpi_run_once_script() {
     local scriptname="${RPI_WORKDIR}/rpi_run_once.sh"
     for cmd in "$@" ; do
-        rpi_append_to_file "${cmd}" "${scriptname}" || error "append ${cmd} to $_"
+        rpi_append_to_file "${cmd}" "${scriptname}" || error "append ${cmd} to ${_}"
         log "(rpi_run_once.sh) cmd installed: \"${cmd}\""
     done
 }
@@ -144,6 +144,9 @@ function rpi_run_once() {
         "script")
             rpi_run_once_script "$@"
             ;;
+
+        ?|*)
+            error "invalid RPI_RUN_MODE. Use one of login, boot, script. rpi_run_once"
     esac
 }
 
