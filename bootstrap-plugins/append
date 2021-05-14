@@ -43,6 +43,8 @@ function rpi_append_file_to_file() {
     if [[ -z "${appendix}" ]] || [[ -z "${appendee}" ]] ; then error "missing argument. append" ; fi
     # already appended ?
     [[ -f "${appendix}" ]] && [[ -f "${appendee}" ]] && grep --quiet --fixed-strings --file="${appendix}" "${appendee}" && return 0
+    # shellcheck disable=SC2024
+    # (sudo is only meant for tee, not redirect)
     # append
     sudo tee -a "${appendee}" < "${appendix}" >/dev/null || error "sudo_append ${appendix} ${appendee}"
 }
