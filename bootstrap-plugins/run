@@ -25,6 +25,19 @@ plugin_load chown || return 1
 
 function rpi_run_prerun() {
     { [[ -n "${RPI_RUN_ONCE}" ]] || [[ -n "${RPI_RUN}" ]] ; } || error "RPI_RUN_ONCE and RPI_RUN unset."
+    case "${RPI_RUN_MODE}" in
+        "login")
+            ;;
+
+        "boot")
+            ;;
+
+        "script")
+            ;;
+
+        ?|*)
+            error "invalid RPI_RUN_MODE. Use one of login, boot, script. rpi_run_once"
+    esac
 }
 
 function rpi_run_run() {
