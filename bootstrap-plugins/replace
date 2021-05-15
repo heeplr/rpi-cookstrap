@@ -2,6 +2,11 @@
 
 # replace string in file (sed pattern)
 
+# @example
+# replace "exit 0" with "# exit 0" in /etc/rc.local
+# RPI_REPLACE_PATTERN="exit 0/# exit 0"
+# RPI_REPLACE_FILE="${RPI_ROOT}/etc/rc.local"
+
 RPI_REPLACE_PATTERN="${RPI_REPLACE_PATTERN:=}"
 commarray RPI_REPLACE_FILE
 
