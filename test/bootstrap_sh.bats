@@ -14,6 +14,7 @@ function rpi_success_run() {
 # ---------------------------------------------------------------------
 setup() {
     load 'test_helper/bats-assert/load'
+    load 'test_helper/bats-support/load'
     DIR="$( cd "$( dirname "$BATS_TEST_FILENAME" )" >/dev/null 2>&1 && pwd )"
     PATH="${DIR}/..:${PATH}"
     RPI_PLUGINDIR="${DIR}/../bootstrap-plugins"
