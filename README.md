@@ -10,12 +10,12 @@ A lightweight plugin based raspberry pi bakery shell script framework to customi
 
 * **lightweight** - written in bash, will run on plain raspberry image,
                 configure with any text editor
-* **reusable** - [plugins](#plugins) + bootstrap.cfg are building blocks to create
+* **reusable** - [plugins](../../wiki/Doc-Plugins) + [bootstrap.cfg](../../wiki/Doc-Config) are building blocks to create
              raspberry pi installations
 * **customizable** - create every image with your personal modifications (e.g.
                  your personal wifi credentials)
 * **interoperable** - uses shellscripts and standard tools
-* **extendable** - plugins can use other [plugins](#plugins) and can be written easily
+* **extendable** - plugins can use other [plugins](../../wiki/Doc-Plugins) and can be written easily
 
 
 <div style="font-size:larger;">&#160;</div>
