@@ -1,36 +1,6 @@
 ## RPi CookStrap - [![CI](https://github.com/heeplr/rpi-cookstrap/actions/workflows/main.yml/badge.svg)](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml)
 
-A lightweight raspberry pi bakery shell script framework to customize, bootstrap & provision OS disk images with ease.
-
-<div style="font-size:larger;">&#160;</div>
-
-<p align="center">
-  <a href="https://asciinema.org/a/LMhf6fXg7pGo9J3B51Mgn2GE4?speed=2" target="_blank">
-    <img src="https://asciinema.org/a/LMhf6fXg7pGo9J3B51Mgn2GE4.svg" />
-  </a>
-</p>
-Demo of image download, build, flash and boot
-
-
-<div style="font-size:larger;">&#160;</div>
-
-
-# Why?
-If you work a lot with raspberry pi's, you find yourself repeatedly
-downloading OS images, customize settings like changing config.txt,
-set the password, install packages etc.
-
-With rpi-cookstrap you can set up everything beforehand and build the
-final image by just running *bootstrap.sh*. When booting or
-logging into (default) that image, it will setup itself
-non-interactively (default) or interactively.
-
-
-```
-!! A LOT of **sudo** is used. Be aware that
-this can cause damage when handled improperly.
-Use at your own risk and do provide fixes ;) !!
-```
+A lightweight plugin based raspberry pi bakery shell script framework to customize, bootstrap & provision OS disk images.
 
 
 <div style="font-size:larger;">&#160;</div>
@@ -61,6 +31,32 @@ will download the latest raspbian lite and set the password of the *pi* user to 
 
 
 <div style="font-size:larger;">&#160;</div>
+
+
+<p align="center">
+  <a href="https://asciinema.org/a/LMhf6fXg7pGo9J3B51Mgn2GE4?speed=2" target="_blank">
+    <img src="https://asciinema.org/a/LMhf6fXg7pGo9J3B51Mgn2GE4.svg" />
+  </a>
+</p>
+Complete demo of image download, bootstrap, flash and setup on pi login
+
+
+<div style="font-size:larger;">&#160;</div>
+
+
+# Why?
+If you work a lot with raspberry pi's, you find yourself repeatedly
+downloading OS images, customize settings like changing config.txt,
+set the password, install packages etc.
+
+With rpi-cookstrap you can create & use building blocks to build your
+final image by just running *bootstrap.sh*. When booting or
+logging in, the image can setup everything by itself non-interactively
+(default) or interactively.
+
+
+<div style="font-size:larger;">&#160;</div>
+
 
 
 # Building a project
