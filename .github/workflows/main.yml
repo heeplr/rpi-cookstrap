@@ -28,14 +28,13 @@ jobs:
         with:
           submodules: 'true'
 
+      # seetup
       - name: Add user to disk group
         run: sudo gpasswd -a "$USER" disk
 
       # shellcheck
       - name: Install shellcheck
         run: sudo apt install shellcheck
-      - name: Run shellcheck
-        run: shellcheck --check-sourced --external-sources --enable all --exclude SC2154 bootstrap-plugins/* bootstrap.sh
 
       # some tests
       - name: run tests
