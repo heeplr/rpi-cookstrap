@@ -26,7 +26,9 @@ A lightweight plugin based raspberry pi bakery shell script framework to customi
     <img src="https://asciinema.org/a/LMhf6fXg7pGo9J3B51Mgn2GE4.svg" />
   </a>
 </p>
-Complete demo of image download, bootstrap, flash and setup on pi login
+Complete demo of image download, bootstrap, flash and setup on pi login. 
+
+(2x speed, most of it is output from apt on the pi, use pause if it's too fast)
 
 
 <div style="font-size:larger;">&#160;</div>
