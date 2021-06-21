@@ -51,7 +51,7 @@ logging in, the image can setup everything by itself non-interactively
 # Quickstart
 
 ```
-RPI_BOOTSTRAP_PLUGINS=raspbian,password RPI_PASSWORD_PW=secret ./bootstrap.sh
+$ RPI_BOOTSTRAP_PLUGINS=raspbian,password RPI_PASSWORD_PW=secret ./bootstrap.sh
 ```
 
 is a minimal example and will download the latest raspbian lite and set the password of the *pi* user to "secret".
