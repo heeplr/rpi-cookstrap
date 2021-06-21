@@ -9,25 +9,13 @@ A lightweight plugin based raspberry pi bakery shell script framework to customi
 # Features
 
 * **lightweight** - written in bash, will run on plain raspberry image,
-                configure with any text editor
+                no additional installation needed on the pi, configure with any text editor
 * **reusable** - [plugins](../../wiki/Doc-Plugins) + [bootstrap.cfg](../../wiki/Doc-Config) are building blocks to create
              raspberry pi installations
-* **customizable** - create every image with your personal modifications (e.g.
-                 your personal wifi credentials)
+* **customizable** - do your personal customizations once (e.g.
+                 your personal wifi credentials) and use them with every project 
 * **interoperable** - uses shellscripts and standard tools
 * **extendable** - plugins can use other [plugins](../../wiki/Doc-Plugins) and can be written easily
-
-
-<div style="font-size:larger;">&#160;</div>
-
-
-# Quickstart
-
-```
-RPI_BOOTSTRAP_PLUGINS=raspbian,password RPI_PASSWORD_PW=secret ./bootstrap.sh
-```
-
-will download the latest raspbian lite and set the password of the *pi* user to "secret".
 
 
 <div style="font-size:larger;">&#160;</div>
@@ -58,27 +46,36 @@ logging in, the image can setup everything by itself non-interactively
 <div style="font-size:larger;">&#160;</div>
 
 
+# Quickstart
 
-# Building a project
+```
+RPI_BOOTSTRAP_PLUGINS=raspbian,password RPI_PASSWORD_PW=secret ./bootstrap.sh
+```
 
-This build of the *wifi+upgrade* example will create a working
-raspbian-lite image without any personal customizations.
-Wifi will be configured (with the preset SSID and PSK) and a
-full upgrade will be perfomed:
+is a minimal example and will download the latest raspbian lite and set the password of the *pi* user to "secret".
 
-1. ```git clone https://github.com/heeplr/rpi-cookstrap``` and ```cd rpi-cookstrap/examples/wifi+upgrade```
 
-2. run ```./bootstrap.sh```
-   It will load the project's *bootstrap.cfg* and download/modify
-   the image accordingly.
+<div style="font-size:larger;">&#160;</div>
 
-3. write the freshly baked image to your SD card:
-   ```dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX conv=fsync status=progress```
-   (replace /dev/sdX with you sdcard)
 
-4. boot raspberry pi with image
+# Basic usage by example
 
-5. login as "pi" like normal and wait until setup has finished
+The *wifi+upgrade* example will create a working raspbian-lite image without any personal customizations.
+Wifi will be configured (with the preset SSID and PSK) and a full upgrade will be perfomed:
+
+The following will:
+* ...clone rpi-cookstrap
+* ...load the project's *bootstrap.cfg* and download/modify the image accordingly.
+* ...write the freshly baked image to your SD card (replace /dev/sdX with you sdcard)
+
+```
+$ git clone https://github.com/heeplr/rpi-cookstrap
+$ cd rpi-cookstrap/examples/wifi+upgrade
+$ ./bootstrap.sh
+$ dd if=.bootstrap-work/raspbian-lite.img of=/dev/sdX conv=fsync status=progress
+```
+* Then boot raspberry pi with image
+* login as "pi" like normal and wait until setup has finished
    (a line into */home/pi/.bashrc* has been added. It executes the
    setup script which deletes itself after successful execution)
 
@@ -86,8 +83,28 @@ Now you got a fresh and fully upgraded image. But the wifi is setup with wrong
 credentials, since *examples/wifi+upgrade/bootstrap.cfg* doesn't
 contain your wifi's name and password (hopefully).
 
-It's time to do some customizations. Create a *~/.bootstrap.cfg* and
-modify according to your needs (comment out to disable):
+
+<div style="font-size:larger;">&#160;</div>
+
+
+# Integration into your project
+You can add rpi-cookstrap into your raspberry project simply by using symbolic links.
+e.g. with a git submodule:
+```
+$ cd my-raspberry-project-image
+$ git submodule add https://github.com/heeplr/rpi-cookstrap bootstrap
+$ ln -s bootstrap/bootstrap.sh bootstrap.sh
+$ ln -s bootstrap/bootstrap-plugins bootstrap-plugins
+```
+Then create bootstrap *bootstrap.cfg* and *bootstrap-dist* in your project directory (s. below).
+
+
+<div style="font-size:larger;">&#160;</div>
+
+
+# Permanent customization
+You can create a customized config that will always override a project's *bootstrap.cfg*:
+Create *~/.bootstrap.cfg* and modify according to your needs, for example (comment out to disable):
 ```
 # setup WIFI
 RPI_BOOTSTRAP_PLUGINS+=( "wifi" )
@@ -103,19 +120,17 @@ RPI_BOOTSTRAP_PLUGINS+=( "password" )
 RPI_PASSWORD_PW=( "$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c24;echo;)" )
 ```
 
-
-Now run ```./bootstrap.sh``` again (repeat from step 2 from above)
-to create the image with your personal settings instead of the presets.
-
-
-Try running ```./bootstrap.sh -h``` to list commandline arguments and
-```./bootstrap.sh -p``` to list [plugins](../../wiki/plugins).
+Now if you run ```./bootstrap.sh``` for any project, the image is created with
+your personal settings.
 
 
 <div style="font-size:larger;">&#160;</div>
 
 
 # Documentation
+
+Try running ```./bootstrap.sh -h``` to list commandline arguments and
+```./bootstrap.sh -p``` to list [plugins](../../wiki/plugins).
 
 Further documentation [can be found in the wiki](../../wiki/).
 
@@ -131,7 +146,7 @@ There's also more [documentation on the general plugin concept](../../wiki/Doc-P
 <div style="font-size:larger;">&#160;</div>
 
 
-# Examples
+# More Examples
 see [examples/](examples/) for "complete" examples and [plugin's](../../wiki/plugins) documentation for plugin specific examples.
 
 
