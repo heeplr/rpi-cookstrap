@@ -1,6 +1,6 @@
 ## RPi CookStrap - [![CI](https://github.com/heeplr/rpi-cookstrap/actions/workflows/main.yml/badge.svg)](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml)
 
-A lightweight plugin based raspberry pi bakery shell script framework to customize, bootstrap & provision OS disk images.
+A lightweight, plugin based bakery shell script framework to customize, bootstrap & provision raspberry pi OS disk images.
 
 
 <div style="font-size:larger;">&#160;</div>
@@ -171,3 +171,4 @@ Feel free to file an [issue](https://github.com/heeplr/rpi-cookstrap/issues/new)
 * dry-run mode (output all actions without performing them)
 * more [tests](test/)
 
+Contributions welcome!
