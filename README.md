@@ -36,8 +36,8 @@ Complete demo of image download, bootstrap, flash and setup on pi login.
 
 # Why?
 If you work a lot with raspberry pi's, you find yourself repeatedly
-downloading OS images, customize settings like changing config.txt,
-set the password, install packages etc.
+downloading OS images, customize settings like changing /config.txt,
+set the password, setup network, install packages, copy files etc.
 
 With rpi-cookstrap you can create & use building blocks to build your
 final image by just running *bootstrap.sh*. When booting or
