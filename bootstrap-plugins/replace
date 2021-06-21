@@ -7,7 +7,7 @@
 # RPI_REPLACE_PATTERN="exit 0/# exit 0"
 # RPI_REPLACE_FILE="${RPI_ROOT}/etc/rc.local"
 
-RPI_REPLACE_PATTERN="${RPI_REPLACE_PATTERN:=}"
+commarray RPI_REPLACE_PATTERN
 commarray RPI_REPLACE_FILE
 
 
@@ -18,8 +18,14 @@ function rpi_replace_prerun() {
 
 function rpi_replace_run() {
     local file
+    local pattern
+    local i
+    i=0
     for file in "${RPI_REPLACE_FILE[@]}" ; do
-        rpi_replace_string_in_file "${RPI_REPLACE_PATTERN}" "${file}"
+        pattern="${RPI_REPLACE_PATTERN["${i}"]}"
+        file="${RPI_REPLACE_FILE["${i}"]}"
+        rpi_replace_string_in_file "${pattern}" "${file}"
+        i+=1
     done
 }
 
