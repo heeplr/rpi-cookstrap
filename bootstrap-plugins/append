@@ -3,9 +3,9 @@
 # append string, file, stdin to file & avoid doubles
 
 # default options
-RPI_APPEND_FILE="${RPI_APPEND_FILE:=}"
-RPI_APPEND_STRING="${RPI_APPEND_STRING:=}"
-RPI_APPEND_APPENDIX="${RPI_APPEND_APPENDIX:=}"
+commarray RPI_APPEND_FILE
+commarray RPI_APPEND_STRING
+commarray RPI_APPEND_APPENDIX
 
 
 function rpi_append_prerun() {
@@ -15,13 +15,27 @@ function rpi_append_prerun() {
 }
 
 function rpi_append_run() {
+    local i
+    local file
+    local appendix
+    local string
     # append file to file ?
-    if [[ -n "${RPI_APPEND_APPENDIX}" ]] ; then
-        rpi_append_file_to_file "${RPI_APPEND_APPENDIX}" "${RPI_APPEND_FILE}" || error "rpi_append_file_to_file"
+    if [[ -n "${RPI_APPEND_APPENDIX[*]}" ]] ; then
+        i=0
+        for appendix in "${RPI_APPEND_APPENDIX[@]}" ; do
+            file="${RPI_APPEND_FILE["${i}"]}"
+            rpi_append_file_to_file "${appendix}" "${file}" || error "rpi_append_file_to_file"
+            i+=1
+        done
     fi
     # append string to file ?
-    if [[ -n "${RPI_APPEND_STRING}" ]] ; then
-        rpi_append_to_file "${RPI_APPEND_STRING}" "${RPI_APPEND_FILE}" || error "rpi_append_to_file"
+    if [[ -n "${RPI_APPEND_STRING[*]}" ]] ; then
+        i=0
+        for string in "${RPI_APPEND_STRING[@]}" ; do
+            file="${RPI_APPEND_FILE["${i}"]}"
+            rpi_append_to_file "${string}" "${file}" || error "rpi_append_to_file"
+            i+=1
+        done
     fi
 }
 
