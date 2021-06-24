@@ -80,17 +80,44 @@ function help_usage() {
     cat << EOF
 
 Usage: $0 [-h] [-l] [-v]
- -h    print help text
- -p    plugin help
- -v    verbose mode
- -l    leave loopback mounted, don't clean up
- -i    ignore ~/.bootstrap*
+ -h          print help text
+ -p          all plugins help
+ -P <name>   help for specific plugin
+ -v          verbose mode
+ -l          leave loopback mounted, don't clean up
+ -i          ignore ~/.bootstrap*
 EOF
+}
+
+# print help of a plugin
+function help_plugin() {
+    local p="${1}"
+    # load this plugin
+    plugin_load "${p}"
+    # general description
+    if plugin_check_for_func "rpi_${p}_description" ; then
+        printf "%-20s - %s\n\n" "${invert}${bold}${p}${normal}" "${underline}$("rpi_${p}_description")${normal}"
+    else
+        printf "%-20s\n\n" "${invert}${bold}${p}${normal}"
+    fi
+    # config var description
+    if plugin_check_for_func "rpi_${p}_help_params" ; then
+        echo " parameters:"
+        "rpi_${p}_help_params"
+        echo
+    fi
+    # distfile description
+    if plugin_check_for_func "rpi_${p}_help_distfiles" ; then
+        echo " distfiles:"
+        "rpi_${p}_help_distfiles"
+        echo
+    fi
+    echo
 }
 
 # print plugin help msgs
 function help_plugins() {
-    # print plugin help
+    # print help for all plugins
     printf "%s plugins:%s\n\n" "${bold}$0" "${normal}"
     local f
     # enable nullglob to not expand * if there are no files
@@ -99,27 +126,7 @@ function help_plugins() {
         # plugin name from path
         local p
         p="$(basename "${f}")"
-        # load this plugin
-        plugin_load "${p}"
-        # general description
-        if plugin_check_for_func "rpi_${p}_description" ; then
-            printf "%-20s - %s\n\n" "${invert}${bold}${p}${normal}" "${underline}$("rpi_${p}_description")${normal}"
-        else
-            printf "%-20s\n\n" "${invert}${bold}${p}${normal}"
-        fi
-        # config var description
-        if plugin_check_for_func "rpi_${p}_help_params" ; then
-            echo " parameters:"
-            "rpi_${p}_help_params"
-            echo
-        fi
-        # distfile description
-        if plugin_check_for_func "rpi_${p}_help_distfiles" ; then
-            echo " distfiles:"
-            "rpi_${p}_help_distfiles"
-            echo
-        fi
-        echo
+        help_plugin "${p}"
     done
     # disable nullglob
     shopt -u nullglob
@@ -142,7 +149,7 @@ function help_distfile() {
 # parse commandline arguments
 function parse_cmdline_args() {
     local arg
-    while getopts "hlipv" arg ; do
+    while getopts "hlipP:v" arg ; do
         case "${arg}" in
             "h")
                 # print main help
@@ -159,8 +166,12 @@ function parse_cmdline_args() {
                 ;;
 
             "p")
-                # print plugin help
                 help_plugins
+                exit 1
+                ;;
+
+            "P")
+                help_plugin "${OPTARG}"
                 exit 1
                 ;;
 
@@ -208,7 +219,7 @@ function plugin_load() {
         # shellcheck disable=SC1090
         . "${RPI_PLUGINDIR}/${plugin}"
     else
-        error "plugin ${plugin} load"
+        error "plugin \"${plugin}\" load"
     fi
     # check for mandatory functions
     plugin_check_for_func "rpi_${plugin}_run" || ( warn "plugin \"${plugin}\" needs a \"rpi_${plugin}_run\" function." ; return 1 )
@@ -284,7 +295,6 @@ if [[ -f "$(dirname "$0")/bootstrap.cfg" ]] ; then
 fi
 # load user config (overrides project config)
 if [[ -f "${RPI_USER_CONFIG}" ]] && [[ "${RPI_IGNORE_USER_SETTINGS}" != "true" ]] ; then
-    echo foo
     # (shellcheck cannot source non-constant source)
     # shellcheck disable=SC1090
     . "${RPI_USER_CONFIG}" 2>/dev/null && _log "loaded \"${RPI_USER_CONFIG}\""
