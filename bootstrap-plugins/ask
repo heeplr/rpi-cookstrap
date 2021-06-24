@@ -1,52 +1,73 @@
 #!/bin/bash
 
-# ask user for input and store it in a variable
+# ask for user input interactively
+# (@todo either on image bootstrap or on first boot)
 
-# @example
-# ask user for RPI_ASK_WHAT and RPI_ASK_WHY
-# RPI_ASK_QUESTION=("What ?" "Why ?")
-# RPI_ASK_VARIABLE=("ASK_WHAT" "ASK_WHY")
+# @todo
+# RPI_ASK_METHOD="${RPI_ASK_METHOD:=read}"
+RPI_ASK_ON="${RPI_ASK_ON:=bootstrap}"
 
-
-# default options
-RPI_ASK_METHOD="${RPI_ASK_METHOD:=read}"
-commarray RPI_ASK_QUESTION
-commarray RPI_ASK_VARIABLE
 
 
 function rpi_ask_prerun() {
-    # check arguments
-    [[ -n "${RPI_ASK_QUESTION}" ]] || error "RPI_ASK_QUESTION check"
-    [[ -n "${RPI_ASK_VARIABLE}" ]] || error "RPI_ASK_VARIABLE check"
-    [[ "${#RPI_ASK_QUESTION[@]}" == "${#RPI_ASK_VARIABLE[@]}" ]] || error "need a RPI_ASK_VARIABLE for every RPI_ASK_QUESTION"
+    [[ -n "${RPI_ASK_QUESTION0}" ]] || error "RPI_ASK_QUESTION0 not set"
+    [[ -n "${RPI_ASK_VARIABLE0}" ]] || error "RPI_ASK_VARIABLE0 not set"
+    return 0
 }
 
 function rpi_ask_run() {
-    for i in $(seq "${#RPI_ASK_QUESTION[@]}") ; do
-        warn "${i}"
-        local varname
-        varname="$(echo "RPI_${RPI_ASK_VARIABLE[$((i-1))]}" | tr '[:lower:]' '[:upper:]')"
-        case "${RPI_ASK_METHOD}" in
-            "read")
-                printf ":: ${bold}%s${normal} " "${RPI_ASK_QUESTION[$((i-1))]}"
-                read -r "${varname?}"
-                verbose "read: ${varname}=\"${!varname}\""
-                ;;
-
-            ?|*)
-                error "unknown RPI_ASK_METHOD: ${OPTARG}"
-                ;;
-        esac
+    local i=0
+    local destvar
+    local argsvar
+    local questionvar="RPI_ASK_QUESTION0"
+    while [[ -n "${!questionvar+x}" ]] ; do
+        destvar="RPI_ASK_VARIABLE${i}"
+        argsvar="RPI_ASK_ARGUMENTS${i}"
+        ask "${!questionvar}" "${argsvar}"
+        # export target variable
+        log "setting: ${!destvar}=\"${answer}\""
+        export "${!destvar}=\"${answer}\""
+        # next question
+        i=$[i+1]
+        questionvar="RPI_ASK_QUESTION${i}"
     done
 }
 
 function rpi_ask_description() {
-    echo "ask user interactively for input and store it in a variable"
+    echo "ask for input"
 }
 
 function rpi_ask_help_params() {
-    help_param "RPI_ASK_METHOD" "method used to ask the user (read)"
-    help_param "RPI_ASK_QUESTION" "prompt user for input"
-    help_param "RPI_ASK_VARIABLE" "name of variable. will be uppercased and prefixed by RPI_"
+    # @todo
+    #help_param "RPI_ASK_METHOD" "the asking method (One of: read, zenity)"
+    help_param "RPI_ASK_ON" "when to ask question: \"bootstrap\" or \"boot\""
+    help_param "RPI_ASK_QUESTIONn" "question number n (starting from 0)"
+    help_param "RPI_ASK_VARIABLEn" "name of variable to store answer for question n"
+    help_param "RPI_ASK_ARGUMENTSn" "method specific arguments to pass to method (s. manual of specific method)"
 }
 
+# ---------------------------------------------------------------------
+function ask() {
+    local args
+    local argsvar="${2}"
+    declare -n args="${argsvar}"
+    commarray "${argsvar}"
+
+    case "${RPI_ASK_METHOD}" in
+        "read")
+            echo -n "$1 : "
+            read -r answer
+            ;;
+
+        "zenity")
+            [[ -n "${args[@]}" ]] || args=("--entry")
+            answer=$(zenity ${args[@]} --text "$1")
+            ;;
+
+        ?|*)
+            error "unknown RPI_ASK_METHOD: \"${OPTARG}\""
+            ;;
+    esac
+
+
+}
