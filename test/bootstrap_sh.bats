@@ -29,10 +29,12 @@ setup() {
     assert_output --partial - << EOF
 
 Usage: ${DIR}/../bootstrap.sh [-h] [-l] [-v]
- -h    print help text
- -p    plugin help
- -l    leave loopback mounted, don't clean up
- -v    verbose mode
+ -h          print help text
+ -p          all plugins help
+ -P <name>   help for specific plugin
+ -v          verbose mode
+ -l          leave loopback mounted, don't clean up
+ -i          ignore ~/.bootstrap*
 EOF
 }
 
