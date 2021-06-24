@@ -56,9 +56,9 @@ function rpi_ask_description() {
 }
 
 function rpi_ask_help_params() {
+    help_param "RPI_ASK_METHOD" "the asking method (One of: read, zenity)"
     # @todo
-    #help_param "RPI_ASK_METHOD" "the asking method (One of: read, zenity)"
-    help_param "RPI_ASK_ON" "when to ask question: \"bootstrap\" or \"boot\""
+    #help_param "RPI_ASK_ON" "when to ask question: \"bootstrap\" or \"boot\""
     help_param "RPI_ASK_QUESTIONn" "question number n (starting from 0)"
     help_param "RPI_ASK_VARIABLEn" "name of variable to store answer for question n"
     help_param "RPI_ASK_ARGUMENTSn" "method specific arguments to pass to method (s. manual of specific method)"
