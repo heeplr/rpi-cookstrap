@@ -82,9 +82,9 @@ function help_usage() {
 Usage: $0 [-h] [-l] [-v]
  -h    print help text
  -p    plugin help
- -l    leave loopback mounted, don't clean up
  -v    verbose mode
-
+ -l    leave loopback mounted, don't clean up
+ -i    ignore ~/.bootstrap*
 EOF
 }
 
@@ -142,7 +142,7 @@ function help_distfile() {
 # parse commandline arguments
 function parse_cmdline_args() {
     local arg
-    while getopts "hlpv" arg ; do
+    while getopts "hlipv" arg ; do
         case "${arg}" in
             "h")
                 # print main help
@@ -152,6 +152,10 @@ function parse_cmdline_args() {
 
             "l")
                 RPI_DONT_CLEANUP="true"
+                ;;
+
+            "i")
+                RPI_IGNORE_USER_SETTINGS="true"
                 ;;
 
             "p")
@@ -265,6 +269,9 @@ function allvars() {
 # are we included ?
 [[ "${RPI_TESTING}" == "true" ]] && return
 
+# parse cmdline options
+parse_cmdline_args "$@"
+
 # parse comma separated array from env var
 commarray RPI_BOOTSTRAP_PLUGINS
 
@@ -276,14 +283,12 @@ if [[ -f "$(dirname "$0")/bootstrap.cfg" ]] ; then
     . "$(dirname "$0")/bootstrap.cfg" || warn "loading bootstrap.cfg failed"
 fi
 # load user config (overrides project config)
-if [[ -f "${RPI_USER_CONFIG}" ]] ; then
+if [[ -f "${RPI_USER_CONFIG}" ]] && [[ "${RPI_IGNORE_USER_SETTINGS}" != "true" ]] ; then
+    echo foo
     # (shellcheck cannot source non-constant source)
     # shellcheck disable=SC1090
     . "${RPI_USER_CONFIG}" 2>/dev/null && _log "loaded \"${RPI_USER_CONFIG}\""
 fi
-
-# parse cmdline options
-parse_cmdline_args "$@"
 
 # say hello
 banner
