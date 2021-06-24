@@ -4,7 +4,6 @@
 # GPLv3
 # Author: Daniel Hiepler (d-cookstrap@coderdu.de) - 2021
 
-
 RPI_WORKDIR="${RPI_WORKDIR:=.bootstrap-work}"
 RPI_PLUGINDIR="${RPI_PLUGINDIR:=bootstrap-plugins}"
 RPI_DISTDIR="${RPI_DISTDIR:=bootstrap-dist}"
@@ -72,7 +71,7 @@ function warn() {
 # print error msg
 function error() {
     echo "[${red}ERROR${normal}]: ${bold}$* failed.${normal}" >&2
-    exit 1
+    kill -s TERM "${TOP_PID}"
 }
 
 # print usage info
@@ -279,6 +278,10 @@ function allvars() {
 
 # are we included ?
 [[ "${RPI_TESTING}" == "true" ]] && return
+
+# install trap so we can emergency exit everywhere
+trap "exit 1" TERM
+export TOP_PID=$$
 
 # parse cmdline options
 parse_cmdline_args "$@"
