@@ -3,6 +3,24 @@
 # ask for user input interactively
 # (@todo either on image bootstrap or on first boot)
 
+# @example
+# ask user for current mood and store answer in RPI_MOOD variable
+# RPI_ASK_QUESTION0="How are you?"
+# RPI_ASK_VARIABLE0="RPI_MOOD"
+
+# @example
+# ask user for mood but use GUI zenity instead of CLI read
+# RPI_ASK_QUESTION0="How are you?"
+# RPI_ASK_VARIABLE0="RPI_MOOD"
+# RPI_ASK_METHOD="zenity"
+
+# @example
+# ask user for mood and pass custom parameters to zenity
+# RPI_ASK_QUESTION0="How are you?"
+# RPI_ASK_VARIABLE0="RPI_MOOD"
+# RPI_ASK_ARGUMENTS0="--entry,--entry-text=totally\ fine,--title=the\ big\ questions..."
+
+
 # @todo
 # RPI_ASK_METHOD="${RPI_ASK_METHOD:=read}"
 RPI_ASK_ON="${RPI_ASK_ON:=bootstrap}"
@@ -61,7 +79,7 @@ function ask() {
 
         "zenity")
             [[ -n "${args[*]}" ]] || args=("--entry")
-            answer=$(zenity "${args[@]}" --text "$1" || error "zenity")
+            answer=$(zenity "${args[@]}" --text "$1" || error "zenity aborted or")
             ;;
 
         ?|*)
