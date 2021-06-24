@@ -71,6 +71,7 @@ function warn() {
 # print error msg
 function error() {
     echo "[${red}ERROR${normal}]: ${bold}$* failed.${normal}" >&2
+    [[ "${RPI_TESTING}" == "true" ]] && exit 1
     kill -s TERM "${TOP_PID}"
 }
 
@@ -277,11 +278,13 @@ function allvars() {
 # ---------------------------------------------------------------------
 
 # are we included ?
-[[ "${RPI_TESTING}" == "true" ]] && return
-
-# install trap so we can emergency exit everywhere
-trap "exit 1" TERM
-export TOP_PID=$$
+if [[ "${RPI_TESTING}" == "true" ]] ; then
+    return
+else
+    # install trap so we can emergency exit everywhere
+    trap "exit 1" TERM
+    export TOP_PID=$$
+fi
 
 # parse cmdline options
 parse_cmdline_args "$@"
