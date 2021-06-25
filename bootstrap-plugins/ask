@@ -4,9 +4,10 @@
 # (@todo either on image bootstrap or on first boot)
 
 # @example
-# ask user for current mood and store answer in RPI_MOOD variable
+# ask user for current mood and store answer in RPI_MOOD variable, default answer is preset
 # RPI_ASK_QUESTION0="How are you?"
 # RPI_ASK_VARIABLE0="RPI_MOOD"
+# RPI_ASK_DEFAULT0="I'm fine!"
 
 # @example
 # ask user for mood but use GUI zenity instead of CLI read
@@ -37,11 +38,13 @@ function rpi_ask_run() {
     local i=0
     local destvar
     local argsvar
+    local defaultvar
     local questionvar="RPI_ASK_QUESTION0"
     while [[ -n "${!questionvar+x}" ]] ; do
         destvar="RPI_ASK_VARIABLE${i}"
         argsvar="RPI_ASK_ARGUMENTS${i}"
-        ask "${!questionvar}" "${argsvar}"
+        defaultvar="RPI_ASK_DEFAULT${i}"
+        ask "${!questionvar}" "${!defaultvar}" "${argsvar}"
         # export target variable
         log "setting: ${!destvar}=\"${answer}\""
         export "${!destvar}=\"${answer}\""
@@ -56,30 +59,48 @@ function rpi_ask_description() {
 }
 
 function rpi_ask_help_params() {
-    help_param "RPI_ASK_METHOD" "the asking method (One of: read, zenity)"
+    help_param "RPI_ASK_METHOD" "the asking method (One of: read, dialog, zenity)"
     # @todo
     #help_param "RPI_ASK_ON" "when to ask question: \"bootstrap\" or \"boot\""
     help_param "RPI_ASK_QUESTIONn" "question number n (starting from 0)"
+    # RPI_ASK_DEFAULT_ANSWERn
     help_param "RPI_ASK_VARIABLEn" "name of variable to store answer for question n"
-    help_param "RPI_ASK_ARGUMENTSn" "method specific arguments to pass to method (s. manual of specific method)"
+    help_param "RPI_ASK_ARGUMENTSn" "method specific arguments to pass to method (s. manual of specific method for possible arguments)"
 }
 
 # ---------------------------------------------------------------------
 function ask() {
+    # receive question, default answer and cmdline arguments and
+    # put results into $answer
+    local question="$1"
+    local default_answer="$2"
+    local argsvar="$3"
     local args
-    local argsvar="${2}"
     declare -n args="${argsvar}"
     commarray "${argsvar}"
 
     case "${RPI_ASK_METHOD}" in
         "read")
-            echo -n "$1 : "
+            echo -n "${question} : "
             read -r answer
+            ;;
+
+        "dialog")
+            [[ -n "${args[*]}" ]] || args=("--inputbox" "${question}" "15" "50")
+            [[ -z "${default_answer}" ]] || args+=("${default_answer}")
+            # open fd 3 for dialog to output
+            exec 3>&1
+            answer=$(dialog "${args[@]}" 2>&1 1>&3)
+            exitcode=$?
+            # close fd 3
+            exec 3>&-
+            [[ ${exitcode} == 0 ]] || error "dialog aborted or"
             ;;
 
         "zenity")
             [[ -n "${args[*]}" ]] || args=("--entry")
-            answer=$(zenity "${args[@]}" --text "$1" || error "zenity aborted or")
+            [[ -z "${default_answer}" ]] || args+=("--entry-text" "${default_answer}")
+            answer=$(zenity "${args[@]}" --text "$1") || error "zenity aborted or"
             ;;
 
         ?|*)
