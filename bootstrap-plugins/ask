@@ -10,10 +10,10 @@
 # RPI_ASK_DEFAULT0="I'm fine!"
 
 # @example
-# ask user for mood but use GUI zenity instead of CLI read
+# ask user for mood but use dialog (TUI) instead of read (CLI)
 # RPI_ASK_QUESTION0="How are you?"
 # RPI_ASK_VARIABLE0="RPI_MOOD"
-# RPI_ASK_METHOD="zenity"
+# RPI_ASK_METHOD="dialog"
 
 # @example
 # ask user for mood and pass custom parameters to zenity
@@ -63,8 +63,8 @@ function rpi_ask_help_params() {
     # @todo
     #help_param "RPI_ASK_ON" "when to ask question: \"bootstrap\" or \"boot\""
     help_param "RPI_ASK_QUESTIONn" "question number n (starting from 0)"
-    # RPI_ASK_DEFAULT_ANSWERn
-    help_param "RPI_ASK_VARIABLEn" "name of variable to store answer for question n"
+    help_param "RPI_ASK_DEFAULTn" "preset answer to question n"
+    help_param "RPI_ASK_VARIABLEn" "name of variable to store answer to question n"
     help_param "RPI_ASK_ARGUMENTSn" "method specific arguments to pass to method (s. manual of specific method for possible arguments)"
 }
 
