@@ -86,7 +86,7 @@ function ask() {
             ;;
 
         "dialog")
-            [[ -n "${args[*]}" ]] || args=("--inputbox" "${question}" "15" "50")
+            [[ -n "${args[*]}" ]] || args=("--inputbox" "${question}" "0" "0")
             [[ -z "${default_answer}" ]] || args+=("${default_answer}")
             # open fd 3 for dialog to output
             exec 3>&1
@@ -94,6 +94,8 @@ function ask() {
             exitcode=$?
             # close fd 3
             exec 3>&-
+            # clear screen
+            clear
             [[ ${exitcode} == 0 ]] || error "dialog aborted or"
             ;;
 
