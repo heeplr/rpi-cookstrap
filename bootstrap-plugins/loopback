@@ -76,13 +76,15 @@ function rpi_loopback_cleanup() {
 
 # mount raspberry image
 function rpi_loopback_mount() {
-    log "mounting image..."
+    log "mounting images..."
     # already mounted?
     mount | grep --quiet "${RPI_LOOPBACK_DEVICE}" && return 0
     # wait for sync
     sync
     # mount
+    log " - mounting ${RPI_BOOT}"
     sudo mount "${RPI_LOOPBACK_DEVICE}p1" "${RPI_BOOT}" || return 1
+    log " - mounting ${RPI_ROOT}"
     sudo mount "${RPI_LOOPBACK_DEVICE}p2" "${RPI_ROOT}" || return 1
     return 0
 }
