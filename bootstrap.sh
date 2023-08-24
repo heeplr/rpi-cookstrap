@@ -15,6 +15,7 @@ RPI_ROOT="${RPI_ROOT:=.bootstrap-work/root}"
 RPI_BOOT="${RPI_BOOT:=.bootstrap-work/boot}"
 RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
 
+
 # ---------------------------------------------------------------------
 # font effects
 bold="$(tput bold)"
@@ -30,6 +31,11 @@ function commarray() {
     local varname="$1"
     local defaultvalue="$2"
     local content
+    # var is array?
+    if [[ "$(declare -p ${varname})" =~ "declare -a" ]] ; then
+        # don't touch var
+        return
+    fi
     content="${!varname}"
     # shellcheck disable=SC2162
     IFS=$'\t'$'\n'", " read -a "${varname?}" <<< "${content:-${defaultvalue}}"
@@ -71,7 +77,9 @@ function warn() {
 # print error msg
 function error() {
     echo "[${red}ERROR${normal}]: ${bold}$* failed.${normal}" >&2
+    # just exit normally with error code when testing
     [[ "${RPI_TESTING}" == "true" ]] && exit 1
+    # make sure to stop even if we run in a subprocess
     kill -s TERM "${TOP_PID}"
 }
 
@@ -298,6 +306,7 @@ if [[ -f "$(dirname "$0")/bootstrap.cfg" ]] ; then
     # shellcheck disable=SC1091
     # shellcheck disable=SC1090
     . "$(dirname "$0")/bootstrap.cfg" || warn "loading bootstrap.cfg failed"
+    _log "loaded \"$(dirname "$0")/bootstrap.cfg\""
 fi
 # load user config (overrides project config)
 if [[ -f "${RPI_USER_CONFIG}" ]] && [[ "${RPI_IGNORE_USER_SETTINGS}" != "true" ]] ; then
