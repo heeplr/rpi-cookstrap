@@ -32,7 +32,7 @@ function commarray() {
     local defaultvalue="$2"
     local content
     # var is array?
-    if [[ "$(declare -p "${varname}")" =~ "declare -a" ]] ; then
+    if [[ "$(declare -p "${varname}" 2>/dev/null)" =~ "declare -a" ]] ; then
         # don't touch var
         return
     fi
