@@ -2,6 +2,18 @@
 
 # setup remote logging
 
+# @example
+# enable pi remote logging to localhost (tunnel) with default settings
+# RPI_RSYSLOGD_TARGET="127.0.0.1"
+# RPI_RSYSLOGD_TYPE="omfwd"
+# RPI_RSYSLOGD_PORT="55514"
+# RPI_RSYSLOGD_LOCAL="false"
+# RPI_RSYSLOGD_PROTOCOL="tcp"
+# RPI_RSYSLOGD_RESUME_RETRY_COUNT="100"
+# RPI_RSYSLOGD_QUEUE_TYPE="linkedList"
+# RPI_RSYSLOGD_QUEUE_SIZE="10000"
+
+
 # default options
 RPI_RSYSLOGD_TYPE="${RPI_RSYSLOGD_TYPE:=omfwd}"
 RPI_RSYSLOGD_TARGET="${RPI_RSYSLOGD_TARGET:=127.0.0.1}"
