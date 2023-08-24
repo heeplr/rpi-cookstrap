@@ -42,6 +42,7 @@ function loopback_linux() {
     # already attached?
     local device
     base_name="$(basename "${image}")"
+    # shellcheck disable=SC2312
     device="$(sudo losetup -l | grep "${base_name}" | cut -d " " -f1)"
     if [[ -z "${device}" ]] ; then
         # attach image
@@ -79,6 +80,7 @@ function rpi_loopback_cleanup() {
 function rpi_loopback_mount() {
     log "mounting images..."
     # already mounted?
+    # shellcheck disable=SC2312
     mount | grep --quiet "${RPI_LOOPBACK_DEVICE}" && return 0
     # wait for sync
     sync
