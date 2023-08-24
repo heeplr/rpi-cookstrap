@@ -6,6 +6,9 @@
 # copy "etc/timezone" from ./bootstrap-dist or ~/.bootstrap-dist to image
 # RPI_DIST_COPY="/etc/timezone"
 
+# @example
+# copy directories "etc", "home" and "usr" from ./bootstrap-dist or ~/.bootstrap-dist to image
+# RPI_DIST_COPY=( "/etc", "/home", "/usr" )
 
 # default options
 commarray RPI_DIST_COPY
