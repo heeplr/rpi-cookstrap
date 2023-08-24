@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# add user
+
+# @example
+# create new user "syslog" and "joe"
+# RPI_USERADD=( "syslog" "joe" )
+
+
+# load dependencies
+plugin_load run || return 1
+
+
+function rpi_useradd_prerun() {
+    true
+}
+
+function rpi_useradd_run() {
+    for u in "${RPI_USERADD[@]}" ; do
+        rpi_run_once "sudo useradd ${u}" || error "add new user ${u}"
+    done
+}
+
+function rpi_useradd_description() {
+    echo "create new user"
+}
+
+function rpi_useradd_help_params() {
+    help_param "RPI_USERADD" "user(s) to create"
+}
