@@ -32,7 +32,7 @@ function commarray() {
     local defaultvalue="$2"
     local content
     # var is array?
-    if [[ "$(declare -p ${varname})" =~ "declare -a" ]] ; then
+    if [[ "$(declare -p "${varname}")" =~ "declare -a" ]] ; then
         # don't touch var
         return
     fi
@@ -104,7 +104,8 @@ function help_plugin() {
     plugin_load "${p}"
     # general description
     if plugin_check_for_func "rpi_${p}_description" ; then
-        printf "%-20s - %s\n\n" "${invert}${bold}${p}${normal}" "${underline}$("rpi_${p}_description")${normal}"
+        description="$("rpi_${p}_description")"
+        printf "%-20s - %s\n\n" "${invert}${bold}${p}${normal}" "${underline}${description}${normal}"
     else
         printf "%-20s\n\n" "${invert}${bold}${p}${normal}"
     fi
@@ -325,7 +326,8 @@ banner
 plugin_load_all
 
 # print list of variables
-verbose "$(allvars)"
+vars="$(allvars)"
+verbose "${vars}"
 
 
 # create root mountpoint
