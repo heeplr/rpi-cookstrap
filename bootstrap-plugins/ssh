@@ -71,7 +71,8 @@ function rpi_ssh_run() {
                 -q -N \'\' \
                 -f "${keyname}" || error "ssh-keygen"
             # replace hostname
-            sudo sed "s|$(hostname)|${RPI_HOSTNAME}|g" -i "${keyname}.pub" || "sed"
+            name="$(hostname)"
+            sudo sed "s|${name}|${RPI_HOSTNAME}|g" -i "${keyname}.pub" || "sed"
             # set owner
             rpi_chown_pi "/home/pi/.ssh" "true" || error "chown"
             # print pubkey
