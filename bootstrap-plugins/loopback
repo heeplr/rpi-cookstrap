@@ -41,7 +41,8 @@ rpi_loopback_help_params() {
 function loopback_linux() {
     # already attached?
     local device
-    device="$(sudo losetup -l | grep "$(basename "${image}")" | cut -d " " -f1)"
+    base_name="$(basename "${image}")"
+    device="$(sudo losetup -l | grep "${base_name}" | cut -d " " -f1)"
     if [[ -z "${device}" ]] ; then
         # attach image
         device="$(sudo losetup --show --find --partscan "${image}")" || error losetup
@@ -94,4 +95,3 @@ function rpi_loopback_umount() {
     sudo "umount" "${RPI_BOOT}" || warn "${RPI_BOOT} not mounted"
     sudo "umount" "${RPI_ROOT}" || warn "${RPI_ROOT} not mounted"
 }
-
