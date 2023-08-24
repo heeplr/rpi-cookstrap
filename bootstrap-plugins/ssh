@@ -74,6 +74,9 @@ function rpi_ssh_run() {
             sudo sed "s|$(hostname)|${RPI_HOSTNAME}|g" -i "${keyname}.pub" || "sed"
             # set owner
             rpi_chown_pi "/home/pi/.ssh" "true" || error "chown"
+            # print pubkey
+            local pubkey
+            printf " authorize this pubkey for sshfs: %s\n" "$(< "${keyname}.pub")"
         fi
     fi
 
