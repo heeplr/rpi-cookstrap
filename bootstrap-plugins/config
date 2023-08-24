@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# customize config.txt
+# customize /boot/config.txt
 
 # @example
 # turn off audio
