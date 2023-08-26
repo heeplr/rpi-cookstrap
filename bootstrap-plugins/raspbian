@@ -4,16 +4,18 @@
 
 # @example
 # download raspbian full
-# RPI_RASPBIAN_FLAVOR="full"
+# RPI_RASPBIAN_FLAVOR="raspbian_full"
 
 # @example
 # use local file instead of download
 # RPI_RASPBIAN_URL="/path/to/downloaded.zip"
 
+# @example use lite 64 bit version for raspberry pi 4
+# RPI_RASPBIAN_FLAVOR="raspios_lite_arm64"
 
 # default options
-RPI_RASPBIAN_FLAVOR="${RPI_RASPBIAN_FLAVOR:=lite}"
-RPI_RASPBIAN_URL="${RPI_RASPBIAN_URL:=https://downloads.raspberrypi.org/raspbian_${RPI_RASPBIAN_FLAVOR}_latest}"
+RPI_RASPBIAN_FLAVOR="${RPI_RASPBIAN_FLAVOR:=raspbian_lite}"
+RPI_RASPBIAN_URL="${RPI_RASPBIAN_URL:=https://downloads.raspberrypi.org/${RPI_RASPBIAN_FLAVOR}_latest}"
 
 # load dependencies
 plugin_load download || return 1
@@ -38,12 +40,36 @@ function rpi_raspbian_run() {
       tmpfile="$(TMPDIR=${RPI_TMPDIR} mktemp || error mktemp)"
       # download
       rpi_download_file "${RPI_RASPBIAN_URL}" "${tmpfile}" || error "download ${_}"
-      # unzip
-      log "unzipping \"${tmpfile}\""
-      unzip "${tmpfile}" || error unzip
-      sync
-      rm "${tmpfile}" || error rm
-      mv ./*raspbian-*.img "${dest}" || error mv
+      # detect archive type
+      suffix="$(file --extension ${tmpfile})"
+      # extract suffix
+      suffix="${suffix##*: }"
+
+      # extract
+      case "${suffix}" in
+
+        "xz")
+            log "unxzing \"${tmpfile}\""
+            # append suffix to filename
+            mv "${tmpfile}" "${tmpfile}.${suffix}" || error mv
+            xz --decompress "${tmpfile}.${suffix}" || error unxz
+            mv "${tmpfile}" "${dest}" || error mv
+            ;;
+
+        "zip")
+            log "unzipping \"${tmpfile}\""
+            unzip "${tmpfile}" || error unzip
+            sync
+            rm -f "${tmpfile}"
+            mv ./*raspbian-*.img "${dest}" || error mv
+            ;;
+
+        *)
+            error "unknown filetype: ${suffix}"
+            ;;
+      esac
+
+
     fi
 
     # mount image
@@ -84,4 +110,3 @@ function rpi_raspbian_help_params() {
     help_param "RPI_RASPBIAN_FLAVOR" "flavor of raspbian to use: lite or full"
     help_param "RPI_RASPBIAN_URL" "alternative download URL or local path to downloaded zip"
 }
-
