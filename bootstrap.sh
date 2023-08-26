@@ -17,7 +17,7 @@ RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
 
 
 # ---------------------------------------------------------------------
-VERSION="0.0.1"
+VERSION="0.1.0"
 
 # font effects
 bold="$(tput bold)"
