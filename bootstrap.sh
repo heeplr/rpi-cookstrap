@@ -237,7 +237,7 @@ function plugin_load() {
         # shellcheck disable=SC1090
         . "${RPI_PLUGINDIR}/${plugin}"
     else
-        error "plugin \"${plugin}\" load"
+        error "plugin \"${plugin}\" load: not found in \"${RPI_PLUGINDIR}\" or \"${RPI_USER_PLUGINDIR}\""
     fi
     # check for mandatory functions
     plugin_check_for_func "rpi_${plugin}_run" || ( warn "plugin \"${plugin}\" needs a \"rpi_${plugin}_run\" function." ; return 1 )
