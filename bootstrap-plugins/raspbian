@@ -37,26 +37,25 @@ function rpi_raspbian_run() {
     # already downloaded?
     if ! [[ -f "${dest}" ]] ; then
       local tmpfile
+      local mimetype
       tmpfile="$(TMPDIR=${RPI_TMPDIR} mktemp || error mktemp)"
       # download
       rpi_download_file "${RPI_RASPBIAN_URL}" "${tmpfile}" || error "download ${_}"
       # detect archive type
-      suffix="$(file --extension "${tmpfile}")"
-      # extract suffix
-      suffix="${suffix##*: }"
-
+      mimetype="$(file --mime-type "${tmpfile}")"
+      mimetype="${mimetype##*: }"
       # extract
-      case "${suffix}" in
+      case "${mimetype}" in
 
-        "xz")
+        "application/x-xz")
             log "unxzing \"${tmpfile}\""
             # append suffix to filename
-            mv "${tmpfile}" "${tmpfile}.${suffix}" || error mv
-            xz --decompress "${tmpfile}.${suffix}" || error unxz
+            mv "${tmpfile}" "${tmpfile}.xz" || error mv
+            xz --decompress "${tmpfile}.xz" || error unxz
             mv "${tmpfile}" "${dest}" || error mv
             ;;
 
-        "zip")
+        "application/zip")
             log "unzipping \"${tmpfile}\""
             unzip "${tmpfile}" || error unzip
             sync
@@ -65,7 +64,7 @@ function rpi_raspbian_run() {
             ;;
 
         *)
-            error "unknown filetype: ${suffix}"
+            error "unknown filetype: ${mimetype}"
             ;;
       esac
 
