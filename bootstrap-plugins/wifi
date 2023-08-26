@@ -32,13 +32,13 @@ function rpi_wifi_run() {
         log "creating /etc/wpa_supplicant.conf"
         # optionally set country
         local country="#country=\"${RPI_WIFI_COUNTRY}\""
-        [[ -n "${RPI_WIFI_COUNTRY}" ]] && country="country=\"${RPI_WIFI_COUNTRY}\""
+        [[ -n "${RPI_WIFI_COUNTRY}" ]] && country="country=${RPI_WIFI_COUNTRY}"
         rpi_append_stdin "${RPI_ROOT}/etc/wpa_supplicant/wpa_supplicant.conf" << EOF
 ${country}
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 network={
-        ssid="${RPI_WIFI_SSID}"
+        ssid=${RPI_WIFI_SSID}
         psk="${RPI_WIFI_PSK}"
 }
 EOF
