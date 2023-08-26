@@ -18,7 +18,7 @@ function rpi_userconf_prerun() {
 
 function rpi_userconf_run() {
     for i in $(seq "${#RPI_USERCONF_USER[@]}") ; do
-        i=$(((i-1)))
+        i=$((i-1))
         user="${RPI_USERCONF_USER[${i}]}"
         password="${RPI_USERCONF_PASS[${i}]}"
         # encrypt password
