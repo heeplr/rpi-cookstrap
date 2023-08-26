@@ -36,6 +36,7 @@ function commarray() {
         # don't touch var
         return
     fi
+    # parse comma separated string
     content="${!varname}"
     # shellcheck disable=SC2162
     IFS=$'\t'$'\n'", " read -a "${varname?}" <<< "${content:-${defaultvalue}}"
@@ -302,18 +303,20 @@ parse_cmdline_args "$@"
 commarray RPI_BOOTSTRAP_PLUGINS
 
 # load project config
-if [[ -f "$(dirname "$0")/bootstrap.cfg" ]] ; then
+project_config="$(dirname "$0")/bootstrap.cfg"
+if [[ -f "${project_config}" ]] ; then
     # (file doesn't need to exist during shellcheck)
     # shellcheck disable=SC1091
     # shellcheck disable=SC1090
-    . "$(dirname "$0")/bootstrap.cfg" || warn "loading bootstrap.cfg failed"
-    _log "loaded \"$(dirname "$0")/bootstrap.cfg\""
+    . "$(dirname "$0")/bootstrap.cfg" || warn "loading \"${project_config}\" failed"
+    _log "loaded \"${project_config}\""
 fi
 # load user config (overrides project config)
 if [[ -f "${RPI_USER_CONFIG}" ]] && [[ "${RPI_IGNORE_USER_SETTINGS}" != "true" ]] ; then
     # (shellcheck cannot source non-constant source)
     # shellcheck disable=SC1090
-    . "${RPI_USER_CONFIG}" 2>/dev/null && _log "loaded \"${RPI_USER_CONFIG}\""
+    . "${RPI_USER_CONFIG}" 2>/dev/null || warn "loading \"${RPI_USER_CONFIG}\" failed"
+    _log "loaded \"${RPI_USER_CONFIG}\""
 fi
 
 # say hello
