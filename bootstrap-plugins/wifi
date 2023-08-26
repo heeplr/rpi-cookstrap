@@ -9,9 +9,10 @@
 
 
 # default options
+default_country="$(locale country_ab2)"
 RPI_WIFI_SSID="${RPI_WIFI_SSID:=}"
 RPI_WIFI_PSK="${RPI_WIFI_PSK:=}"
-RPI_WIFI_COUNTRY="${RPI_WIFI_COUNTRY:=}"
+RPI_WIFI_COUNTRY="${RPI_WIFI_COUNTRY:=${default_country}}"
 RPI_WIFI_POWERSAVE="${RPI_WIFI_POWERSAVE:=false}"
 
 # load dependencies
