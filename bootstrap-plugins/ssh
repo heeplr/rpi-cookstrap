@@ -47,6 +47,7 @@ function rpi_ssh_run() {
         sudo touch "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "touch"
         for key in "${RPI_SSH_AUTHORIZE[@]}" ; do
             rpi_append_to_file "${key}" "${RPI_ROOT}/home/pi/.ssh/authorized_keys" || error "append"
+            log "  authorized: ${key}"
         done
         rpi_chmod_pi 0600 "/home/pi/.ssh/authorized_keys" "true" || error "chmod"
         rpi_chown_pi "/home/pi/.ssh/authorized_keys" "true" || error "chown"
@@ -76,7 +77,7 @@ function rpi_ssh_run() {
             # set owner
             rpi_chown_pi "/home/pi/.ssh" "true" || error "chown"
             # print pubkey
-            printf " authorize this pubkey for sshfs: %s\n" "$(< "${keyname}.pub")"
+            log "  created new pubkey for ${RPI_HOSTNAME}: %s\n" "$(< "${keyname}.pub")"
         fi
     fi
 
