@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# add user before running bootstrap via userconf.txt
+
+# @example
+# create new user "syslog" and "joe" with password "raspberry"
+# RPI_USERCONF_USER=( "pi" "joe" )
+# RPI_USERCONF_PASS=( "raspberry" "raspberry" )
+
+
+# load dependencies
+plugin_load append || return 1
+
+
+function rpi_userconf_prerun() {
+    true
+}
+
+function rpi_userconf_run() {
+    for i in $(seq "${#RPI_USERCONF_USER[@]}") ; do
+        i=$(((i-1)))
+        user="${RPI_USERCONF_USER[${i}]}"
+        password="${RPI_USERCONF_PASS[${i}]}"
+        # encrypt password
+        password="$(openssl passwd -6 -stdin <<< "${password}")"
+        # don't append user twice
+        [[ -f "${RPI_BOOT}/userconf.txt" ]] && grep --quiet "^${user}:" "${RPI_BOOT}/userconf.txt" && continue
+        # append username:password
+        rpi_append_to_file "${user}:${password}" "${RPI_BOOT}/userconf.txt"  || error "append"
+        log "added user \"${user}\""
+    done
+}
+
+function rpi_userconf_description() {
+    echo "create new user"
+}
+
+function rpi_userconf_help_params() {
+    help_param "RPI_USERCONF_USER" "user(s) to create"
+    help_param "RPI_USERCONF_PASS" "password(s) to set"
+}
