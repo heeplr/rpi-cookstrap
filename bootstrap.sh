@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# bootstrap self provisioning raspi image
+# rpi-cookstrap - bootstrap self provisioning raspi image
 # GPLv3
 # Author: Daniel Hiepler (d-cookstrap@coderdu.de) - 2021
 
@@ -17,6 +17,8 @@ RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
 
 
 # ---------------------------------------------------------------------
+VERSION="0.0.1"
+
 # font effects
 bold="$(tput bold)"
 underline="$(tput smul)"
@@ -95,6 +97,7 @@ Usage: $0 [-h] [-l] [-v]
  -v          verbose mode
  -l          leave loopback mounted, don't clean up
  -i          ignore ~/.bootstrap*
+ -V          show version
 EOF
 }
 
@@ -159,7 +162,7 @@ function help_distfile() {
 # parse commandline arguments
 function parse_cmdline_args() {
     local arg
-    while getopts "hlipP:v" arg ; do
+    while getopts "hlipP:vV" arg ; do
         case "${arg}" in
             "h")
                 # print main help
@@ -187,6 +190,11 @@ function parse_cmdline_args() {
 
             "v")
                 V="1"
+                ;;
+
+            "V")
+                echo "rpi-cookstrap v${VERSION}"
+                exit 1
                 ;;
 
             ?|*)
