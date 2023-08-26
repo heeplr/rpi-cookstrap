@@ -41,7 +41,7 @@ function rpi_raspbian_run() {
       # download
       rpi_download_file "${RPI_RASPBIAN_URL}" "${tmpfile}" || error "download ${_}"
       # detect archive type
-      suffix="$(file --extension ${tmpfile})"
+      suffix="$(file --extension "${tmpfile}")"
       # extract suffix
       suffix="${suffix##*: }"
 
