@@ -1,7 +1,7 @@
 
 # raspi-config
 
-Use [raspi-config](https://www.raspberrypi.org/documentation/configuration/raspi-config.md) noninteractive mode.
+Use the [raspi-config](https://www.raspberrypi.org/documentation/configuration/raspi-config.md) in noninteractive mode to cook image.
 s. [bootstrap.cfg](bootstrap.cfg) as example.
 
 run:
