@@ -77,7 +77,7 @@ function rpi_ssh_run() {
             # set owner
             rpi_chown_pi "/home/pi/.ssh" "true" || error "chown"
             # print pubkey
-            log "  created new pubkey for ${RPI_HOSTNAME}: %s\n" "$(< "${keyname}.pub")"
+            log "  created new pubkey for ${RPI_HOSTNAME}: $(< "${keyname}.pub")"
         fi
     fi
 
