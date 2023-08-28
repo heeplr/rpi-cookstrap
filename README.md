@@ -8,13 +8,12 @@ A lightweight, plugin based shell script framework to bake, customize, bootstrap
 
 # Features
 
-* **lightweight** - written in bash, will run on plain raspberry image,
-                no additional installation needed on the pi, configure with any text editor
-* **reusable** - [plugins](../../wiki/Doc-Plugins) + [bootstrap.cfg](../../wiki/Doc-Config) are building blocks to create
-             raspberry pi installations
-* **customizable** - do your personal customizations once (e.g.
-                 your personal wifi credentials) and use them with every project 
+* **lightweight** - written in bash, should run on any POSIX compatible system, no additional installation needed on the pi, configure with any text editor
+* **single shot** - just generate the image on the host and everything else will happen automatically on the first boot (or first login if you choose so)
+* **dynamic** - since the config is a bash script, you can create different images with the same configuration by setting config-values programmatically.
+* **customizable** - do your personal customizations in ~ and use them with every project (e.g. your personal wifi credentials will override wifi credentials that are configured in a project)
 * **interoperable** - uses shellscripts and standard tools
+* **reusable** - [plugins](../../wiki/Doc-Plugins) + [bootstrap.cfg](../../wiki/Doc-Config) are building blocks to bake raspberry pi images
 * **extendable** - plugins can use other [plugins](../../wiki/Doc-Plugins) and can be written easily
 
 
