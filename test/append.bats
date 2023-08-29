@@ -72,6 +72,7 @@ setup() {
     run plugin_run append
     assert_success
     [ "$(wc -l "${file}" | cut -f1 -d' ')" == "1" ]
+    grep --quiet "testpi" "${file}"
 
     # check if string append succeeds
     RPI_APPEND_FILE="${file}"
@@ -80,8 +81,7 @@ setup() {
     run plugin_run append
     assert_success
     [ "$(wc -l "${file}" | cut -f1 -d' ')" == "2" ]
-    grep --quiet "testpi" "${file}"
-    grep --quiet "# foo" "${file}"
+    grep -Pz --quiet "(?s)testpi\n# foo" "${file}"
 
 }
 
@@ -96,13 +96,11 @@ setup() {
     run plugin_run append
     assert_success
     [ "$(wc -l "${file}" | cut -f1 -d' ')" == "2" ]
-    grep --quiet "Hello!" "${file}"
-    grep --quiet "foo" "${file}"
+    grep -Pz --quiet "(?s)Hello!\nfoo" "${file}"
 
     # check if double file append is prevented
     run plugin_run append
     assert_success
     [ "$(wc -l "${file}" | cut -f1 -d' ')" == "2" ]
-    grep --quiet "Hello!" "${file}"
-    grep --quiet "foo" "${file}"
+    grep -Pz --quiet "(?s)Hello!\nfoo" "${file}"
 }
