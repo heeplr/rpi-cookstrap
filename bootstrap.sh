@@ -84,6 +84,7 @@ function error() {
     [[ "${RPI_TESTING}" == "true" ]] && exit 1
     # make sure to stop even if we run in a subprocess
     kill -s TERM "${TOP_PID}"
+    exit 1
 }
 
 # print usage info
