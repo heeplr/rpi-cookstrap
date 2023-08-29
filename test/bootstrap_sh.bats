@@ -74,7 +74,7 @@ EOF
 
 @test "comma array parser" {
     RPI_FOO="bla\,bla, foo, bar,baz"
-    commarray RPI_FOO
+    to_array RPI_FOO
     [ "${RPI_FOO[0]}" == "bla,bla" ]
     [ "${RPI_FOO[1]}" == "foo" ]
     [ "${RPI_FOO[2]}" == "bar" ]

@@ -8,7 +8,7 @@
 
 
 # default options
-commarray RPI_SYSTEMCTL_CMDS
+to_array RPI_SYSTEMCTL_CMDS
 
 # load dependencies
 plugin_load run || return 1

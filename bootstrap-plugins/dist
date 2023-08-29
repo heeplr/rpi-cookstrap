@@ -11,8 +11,8 @@
 # RPI_DIST_COPY=( "/etc", "/home", "/usr" )
 
 # default options
-commarray RPI_DIST_COPY
-commarray RPI_DIST_APPEND
+to_array RPI_DIST_COPY
+to_array RPI_DIST_APPEND
 
 # load dependencies
 plugin_load append || return 1

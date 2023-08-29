@@ -15,7 +15,7 @@
 
 # default options
 RPI_REMOVE_PATTERN="${RPI_REMOVE_PATTERN:=}"
-commarray RPI_REMOVE_FILE
+to_array RPI_REMOVE_FILE
 
 
 function rpi_remove_prerun() {

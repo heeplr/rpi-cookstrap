@@ -21,7 +21,7 @@
 
 
 # default options
-commarray RPI_RASPICONFIG_NONINT
+to_array RPI_RASPICONFIG_NONINT
 
 # load dependencies
 plugin_load run || return 1

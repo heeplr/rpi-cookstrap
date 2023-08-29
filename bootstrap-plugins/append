@@ -3,9 +3,9 @@
 # append string, file, stdin to file & avoid doubles
 
 # default options
-commarray RPI_APPEND_FILE
-commarray RPI_APPEND_STRING
-commarray RPI_APPEND_APPENDIX
+to_array RPI_APPEND_FILE
+to_array RPI_APPEND_STRING
+to_array RPI_APPEND_APPENDIX
 
 
 function rpi_append_prerun() {

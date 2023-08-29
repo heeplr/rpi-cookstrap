@@ -7,8 +7,8 @@
 # RPI_REPLACE_PATTERN="exit 0/# exit 0"
 # RPI_REPLACE_FILE="${RPI_ROOT}/etc/rc.local"
 
-commarray RPI_REPLACE_PATTERN
-commarray RPI_REPLACE_FILE
+to_array RPI_REPLACE_PATTERN
+to_array RPI_REPLACE_FILE
 
 
 function rpi_replace_prerun() {

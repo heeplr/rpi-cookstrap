@@ -29,7 +29,7 @@ green="$(tput setaf 2)"
 yellow="$(tput setaf 11)"
 
 # parse comma separated array from var and store in same var
-function commarray() {
+function to_array() {
     local varname="$1"
     local defaultvalue="$2"
     local content
@@ -309,7 +309,7 @@ fi
 parse_cmdline_args "$@"
 
 # parse comma separated array from env var
-commarray RPI_BOOTSTRAP_PLUGINS
+to_array RPI_BOOTSTRAP_PLUGINS
 
 # load project config
 project_config="$(dirname "$0")/bootstrap.cfg"
