@@ -327,6 +327,10 @@ if [[ -f "${RPI_USER_CONFIG}" ]] && [[ "${RPI_IGNORE_USER_SETTINGS}" != "true" ]
     _log "loaded \"${RPI_USER_CONFIG}\""
 fi
 
+# remove duplicate entries from RPI_BOOTSTRAP_PLUGINS
+# shellcheck disable=SC2312
+IFS=" " read -r -a RPI_BOOTSTRAP_PLUGINS <<< "$(tr ' ' '\n' <<< "${RPI_BOOTSTRAP_PLUGINS[@]}" | uniq | tr '\n' ' ')"
+
 # say hello
 banner
 
