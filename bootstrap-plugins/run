@@ -4,7 +4,8 @@
 
 # @example
 # print a custom message once
-# RPI_RUN_ONCE=(
+# RPI_RUN_ONCE=true
+# RPI_RUN=(
 #     'echo "*********************************************************"'
 #     'echo "Welcome to this install."'
 #     'echo "It is $(date) and we are about to bake this pi."'
@@ -16,7 +17,6 @@
 RPI_RUN_PHASE="${RPI_RUN_PHASE:=login}"
 
 to_array RPI_RUN
-to_array RPI_RUN_ONCE
 
 # load dependencies
 plugin_load append || return 1
@@ -66,7 +66,6 @@ function rpi_run_on_login() {
 }
 
 # run command once upon first login
-# (you should use rpi_run_once() instead)
 function rpi_run_on_first_login() {
     [[ -n "$*" ]] || error "missing argument"
     local once_script="/home/pi/.bootstrap_run_on_first_login"
@@ -99,7 +98,6 @@ function rpi_run_on_boot() {
 }
 
 # run command once upon first boot
-# (you should use rpi_run_once() instead)
 function rpi_run_on_first_boot() {
     [[ -n "$*" ]] || error "missing argument"
     local once_script="/home/pi/.bootstrap_run_on_first_boot"
