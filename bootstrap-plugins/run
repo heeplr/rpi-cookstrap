@@ -124,7 +124,7 @@ function rpi_run_on_first_boot() {
 function rpi_run_on_bake() {
     for cmd in "$@" ; do
         log "running: \"${cmd}\""
-        "${cmd}" || error "${cmd}"
+        ( eval "${cmd}" ) || error "${cmd}"
     done
 }
 
