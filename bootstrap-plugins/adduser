@@ -20,7 +20,7 @@ rpi_adduser_prerun() {
 
 rpi_adduser_run() {
     for g in "${RPI_ADDUSER_GROUP[@]}" ; do
-        RPI_RUN_ONCE=true rpi_run "sudo adduser pi ${g}" || error "add to group ${g}"
+        rpi_run_on_first_boot "sudo adduser pi ${g}" || error "add to group ${g}"
     done
 }
 

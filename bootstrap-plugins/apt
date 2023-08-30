@@ -9,14 +9,38 @@
 
 # default options
 RPI_APT_INTERACTIVE="${RPI_APT_INTERACTIVE:=false}"
+RPI_APT_ON="${RPI_APT_ON:=login}"
 to_array RPI_APT_CMDS
 
 # load dependencies
 plugin_load run || return 1
 
 
+function run() {
+    case "${RPI_APT_ON}" in
+        "login")
+            rpi_run_on_first_login "$@"
+            ;;
+
+        "boot")
+            rpi_run_on_first_boot "$@"
+            ;;
+
+        ?|*)
+            error "invalid RPI_APT_ON=${RPI_APT_ON}"
+    esac
+}
+
 rpi_apt_prerun() {
     [[ -n "${RPI_APT_CMDS}" ]] || return 1
+    case "${RPI_APT_ON}" in
+        "login")
+            ;;
+        "boot")
+            ;;
+        ?|*)
+            error "invalid RPI_APT_ON=${RPI_APT_ON} - valid: login, boot"
+    esac
     return 0
 }
 
@@ -25,10 +49,10 @@ rpi_apt_run() {
     for cmd in "${RPI_APT_CMDS[@]}" ; do
         # run in interactive mode?
         if [[ "${RPI_APT_INTERACTIVE}" == "true" ]] ; then
-            RPI_RUN_ONCE=true rpi_run "sudo apt ${cmd}" || error "apt"
+            run "sudo apt ${cmd}" || error "apt"
         # run in non-interactive mode
         else
-            RPI_RUN_ONCE=true rpi_run "sudo DEBIAN_FRONTEND=noninteractive apt --yes --quiet ${cmd}" || error "install apt update"
+            run "sudo DEBIAN_FRONTEND=noninteractive apt --yes --quiet ${cmd}" || error "install apt update"
         fi
     done
 }
@@ -40,4 +64,5 @@ function rpi_apt_description() {
 function rpi_apt_help_params() {
     help_param "RPI_APT_CMDS" "array of apt commands to execute"
     help_param "RPI_APT_INTERACTIVE" "run in interactive mode"
+    help_param "RPI_APT_ON" "login=run on login, boot=run on boot"
 }

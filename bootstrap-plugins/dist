@@ -11,6 +11,7 @@
 # RPI_DIST_COPY=( "/etc", "/home", "/usr" )
 
 # default options
+RPI_DIST_ON="${RPI_DIST_ON:=bake}"
 to_array RPI_DIST_COPY
 to_array RPI_DIST_APPEND
 
@@ -20,6 +21,25 @@ plugin_load run || return 1
 plugin_load chmod || return 1
 plugin_load chown || return 1
 
+
+function run() {
+    case "${RPI_DIST_ON}" in
+        "bake")
+            rpi_run_on_bake "$@"
+            ;;
+
+        "login")
+            rpi_run_on_first_login "$@"
+            ;;
+
+        "boot")
+            rpi_run_on_first_boot "$@"
+            ;;
+
+        ?|*)
+            error "invalid RPI_DIST_ON=${RPI_DIST_ON}"
+    esac
+}
 
 function rpi_dist_prerun() {
     true
@@ -50,6 +70,7 @@ function rpi_dist_help_params() {
     help_param "RPI_DIST_COPY" "array of files to copy to disk image"
     help_param "RPI_DIST_COPY_BOOT" "array of files to copy when the pi is booting"
     help_param "RPI_DIST_APPEND" "array of files to append to files on disk image"
+    help_param "RPI_DIST_ON" "copy on \"bake\", first \"boot\" or first \"login\""
 }
 
 # ---------------------------------------------------------------------
@@ -115,15 +136,15 @@ function rpi_dist_cp_after_boot() {
         # copy to image
         sudo cp -r "${RPI_USER_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || sudo cp -r "${RPI_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || error "cp"
         # register copy command
-        RPI_RUN_ONCE=true rpi_run "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}")" || error "rpi_run"
+        run "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}")" || error "rpi_run"
     # copy file?
     else
         sudo cp -r "${RPI_USER_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || sudo cp -r "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
-        RPI_RUN_ONCE=true rpi_run "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\"" || error "rpi_run"
+        run "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\"" || error "rpi_run"
     fi
     # chmod?
-    [[ -n "${permissions}" ]] && { RPI_RUN_ONCE=true rpi_run "sudo chmod -R \"${permissions}\" \"${path}\"" || error "chmod" ; }
+    [[ -n "${permissions}" ]] && { run "sudo chmod -R \"${permissions}\" \"${path}\"" || error "chmod" ; }
     # chown
-    RPI_RUN_ONCE=true rpi_run "sudo chown -R pi:pi \"${path}\"" || error "chown"
+    run "sudo chown -R pi:pi \"${path}\"" || error "chown"
 
 }

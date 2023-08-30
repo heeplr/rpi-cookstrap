@@ -3,9 +3,8 @@
 # run command on image
 
 # @example
-# print a custom message once
-# RPI_RUN_ONCE=true
-# RPI_RUN=(
+# print a custom message once at login
+# RPI_RUN_LOGIN_ONCE=(
 #     'echo "*********************************************************"'
 #     'echo "Welcome to this install."'
 #     'echo "It is $(date) and we are about to bake this pi."'
@@ -13,10 +12,12 @@
 # )
 
 
-# default options
-RPI_RUN_PHASE="${RPI_RUN_PHASE:=login}"
-
-to_array RPI_RUN
+to_array RPI_RUN_LOGIN
+to_array RPI_RUN_LOGIN_ONCE
+to_array RPI_RUN_BOOT
+to_array RPI_RUN_BOOT_ONCE
+to_array RPI_RUN_BAKE
+to_array RPI_RUN_BAKE_ONCE
 
 # load dependencies
 plugin_load append || return 1
@@ -25,25 +26,36 @@ plugin_load chown || return 1
 
 
 function rpi_run_prerun() {
-    [[ -n "${RPI_RUN_PHASE}" ]] || error "RPI_RUN_PHASE unset."
-    [[ -n "${RPI_RUN}" ]] || error "RPI_RUN unset."
-    case "${RPI_RUN_PHASE}" in
-        "bake")
-            ;;
-
-        "login")
-            ;;
-
-        "boot")
-            ;;
-
-        ?|*)
-            error "invalid RPI_RUN_PHASE. Use one of bake, boot, login"
-    esac
+    {
+        [[ -n "${RPI_RUN_LOGIN}" ]] ||
+        [[ -n "${RPI_RUN_LOGIN_ONCE}" ]] ||
+        [[ -n "${RPI_RUN_BOOT}" ]] ||
+        [[ -n "${RPI_RUN_BOOT_ONCE}" ]] ||
+        [[ -n "${RPI_RUN_BAKE}" ]]
+    } || error "got nothing to run."
 }
 
 function rpi_run_run() {
-        rpi_run "${RPI_RUN[@]}"
+    if [[ -n "${RPI_RUN_BAKE}" ]] ; then
+        rpi_run_on_bake "${RPI_RUN_BAKE[@]}"
+        unset RPI_RUN_BAKE
+    fi
+    if [[ -n "${RPI_RUN_LOGIN_ONCE}" ]] ; then
+        rpi_run_on_first_login "${RPI_RUN_LOGIN_ONCE[@]}"
+        unset RPI_RUN_LOGIN_ONCE
+    fi
+    if [[ -n "${RPI_RUN_LOGIN}" ]] ; then
+        rpi_run_on_login "${RPI_RUN_LOGIN[@]}"
+        unset RPI_RUN_LOGIN
+    fi
+    if [[ -n "${RPI_RUN_BOOT_ONCE}" ]] ; then
+        rpi_run_on_first_boot "${RPI_RUN_BOOT_ONCE}[@]"
+        unset RPI_RUN_BOOT_ONCE
+    fi
+    if [[ -n "${RPI_RUN_BOOT}" ]] ; then
+        rpi_run_on_boot "${RPI_RUN_BOOT[@]}"
+        unset RPI_RUN_BOOT
+    fi
 }
 
 function rpi_run_description() {
@@ -51,9 +63,11 @@ function rpi_run_description() {
 }
 
 function rpi_run_help_params() {
-    help_param "RPI_RUN" "command or path to script to run"
-    help_param "RPI_RUN_PHASE" "boot (run on boot), login (run on login), bake (run on host during image generation)"
-    help_param "RPI_RUN_ONCE" "only run once if set"
+    help_param "RPI_RUN_LOGIN" "command or script to run on every login"
+    help_param "RPI_RUN_LOGIN_ONCE" "command or script to run on first login"
+    help_param "RPI_RUN_BOOT" "command or script to run on every boot"
+    help_param "RPI_RUN_BOOT_ONCE" "command or script to run on first boot"
+    help_param "RPI_RUN_BAKE" "command or script to run on host during image generation"
 }
 
 # ---------------------------------------------------------------------
@@ -122,35 +136,10 @@ function rpi_run_on_first_boot() {
 function rpi_run_on_bake() {
     for cmd in "$@" ; do
         log "running: \"${cmd}\""
-        ( eval "${cmd}" ) || error "${cmd}"
+        # export complete environment for command
+        set -a
+        bash -c "${cmd}" || error "${cmd}"
+        # don't export env for commands
+        set +a
     done
-}
-
-# run command (either on boot or on login)
-function rpi_run() {
-    [[ -n "$*" ]] || error "missing argument"
-    case "${RPI_RUN_PHASE}" in
-        "bake")
-            rpi_run_on_bake "$@"
-            ;;
-
-        "login")
-            if [[ -n "${RPI_RUN_ONCE}" ]] ; then
-                rpi_run_on_first_login "$@"
-            else
-                rpi_run_on_login "$@"
-            fi
-            ;;
-
-        "boot")
-            if [[ -n "${RPI_RUN_ONCE}" ]] ; then
-                rpi_run_on_first_boot "$@"
-            else
-                rpi_run_on_boot "$@"
-            fi
-            ;;
-
-        ?|*)
-            error "invalid RPI_RUN_PHASE."
-    esac
 }

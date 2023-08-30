@@ -8,11 +8,27 @@
 
 
 # default options
+RPI_SYSTEMCTL_ON="${RPI_SYSTEMCTL_ON:=login}"
 to_array RPI_SYSTEMCTL_CMDS
 
 # load dependencies
 plugin_load run || return 1
 
+
+function run() {
+    case "${RPI_SYSTEMCTL_ON}" in
+        "login")
+            rpi_run_on_first_login "$@"
+            ;;
+
+        "boot")
+            rpi_run_on_first_boot "$@"
+            ;;
+
+        ?|*)
+            error "invalid RPI_SYSTEMCTL_ON=${RPI_SYSTEMCTL_ON}"
+    esac
+}
 
 function rpi_systemctl_prerun() {
     [[ -n "${RPI_SYSTEMCTL_CMDS}" ]] || { warn "RPI_SYSTEMCTL_CMDS must be set" ; return 1 ; }
@@ -21,7 +37,7 @@ function rpi_systemctl_prerun() {
 
 function rpi_systemctl_run() {
     for cmd in "${RPI_SYSTEMCTL_CMDS[@]}" ; do
-        RPI_RUN_ONCE=true rpi_run "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
+        run "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
     done
 }
 
@@ -31,4 +47,5 @@ function rpi_systemctl_description() {
 
 function rpi_systemctl_help_params() {
     help_param "RPI_SYSTEMCTL_CMDS" "array of systemctl commands"
+    help_param "RPI_SYSTEMCTL_ON" "run on first \"boot\" or first \"login\""
 }
