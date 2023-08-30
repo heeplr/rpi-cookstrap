@@ -90,17 +90,20 @@ function rpi_dist_cp() {
     [[ -n "${path}" ]] || error "missing parameter. rpi_dist_cp"
     log "copying ${path} ..."
     # directory?
-    dst="${RPI_ROOT}/$(dirname "${path}")"
+    dst="${RPI_ROOT}/${path}"
     if [[ -d "${RPI_DISTDIR}/${path}" ]] ; then
+        log "  ${RPI_DISTDIR}/${path}/* ${dst}"
         sudo cp -r "${RPI_DISTDIR}/${path}/"* "${dst}" || error "cp -r ${path}/* to ${dst}"
-    elif [[ -d "${RPI_USER_DISTDIR}/${path}" ]] ; then
-        sudo cp -r "${RPI_USER_DISTDIR}/${path}/"* "${dst}" || error "cp -r ${path}/* to ${dst}"
     elif [[ -f "${RPI_DISTDIR}/${path}" ]] ; then
+        log "  ${RPI_DISTDIR}/${path} -> ${dst}"
         sudo cp "${RPI_DISTDIR}/${path}" "${dst}" || error "cp ${path} to ${dst}"
+    fi
+    if [[ -d "${RPI_USER_DISTDIR}/${path}" ]] ; then
+        log "  ${RPI_USER_DISTDIR}/${path}/* ${dst}"
+        sudo cp -r "${RPI_USER_DISTDIR}/${path}/"* "${dst}" || error "cp -r ${path}/* to ${dst}"
     elif [[ -f "${RPI_USER_DISTDIR}/${path}" ]] ; then
+        log "  ${RPI_USER_DISTDIR}/${path} -> ${dst}"
         sudo cp "${RPI_USER_DISTDIR}/${path}" "${dst}" || error "cp ${path} to ${dst}"
-    else
-        error "cp ${path} ${dst}"
     fi
     # chmod?
     [[ -n "${permissions}" ]] && rpi_chmod_pi "${permissions}" "${path}"
