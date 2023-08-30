@@ -32,7 +32,7 @@ function rpi_userconf_run() {
 }
 
 function rpi_userconf_description() {
-    echo "create new user"
+    echo "add user before running bootstrap via userconf.txt"
 }
 
 function rpi_userconf_help_params() {
