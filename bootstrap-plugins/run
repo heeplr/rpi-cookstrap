@@ -135,11 +135,14 @@ function rpi_run_on_first_boot() {
 # output command to once-script
 function rpi_run_on_bake() {
     for cmd in "$@" ; do
-        log "running: \"${cmd}\""
-        # export complete environment for command
-        set -a
-        bash -c "${cmd}" || error "${cmd}"
-        # don't export env for commands
-        set +a
+        if [[ -f "${cmd}" ]] ; then
+            # execute script
+            log "running script: \"${cmd}\""
+            ( . "${cmd}" || error "${cmd}" )
+        else
+            # execute command
+            log "running: \"${cmd}\""
+            eval "${cmd}" || error "${cmd}"
+        fi
     done
 }
