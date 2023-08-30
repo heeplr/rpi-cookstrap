@@ -79,7 +79,7 @@ function warn() {
 
 # print error msg
 function error() {
-    echo "[${red}ERROR${normal}]: ${bold}$* failed.${normal}" >&2
+    echo "[${red}ERROR${normal}]: ${bold}$*${normal}" >&2
     # just exit normally with error code when testing
     [[ "${RPI_TESTING}" == "true" ]] && exit 1
     # make sure to stop even if we run in a subprocess
