@@ -138,6 +138,8 @@ function rpi_run_on_bake() {
         if [[ -f "${cmd}" ]] ; then
             # execute script
             log "running script: \"${cmd}\""
+            # (shellcheck cannot source non-constant source)
+            # shellcheck disable=SC1090
             ( . "${cmd}" || error "${cmd}" )
         else
             # execute command
