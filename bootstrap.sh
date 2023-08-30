@@ -4,15 +4,15 @@
 # GPLv3
 # Author: Daniel Hiepler (d-cookstrap@coderdu.de) - 2021
 
-RPI_WORKDIR="${RPI_WORKDIR:=.bootstrap-work}"
-RPI_PLUGINDIR="${RPI_PLUGINDIR:=bootstrap-plugins}"
-RPI_DISTDIR="${RPI_DISTDIR:=bootstrap-dist}"
+RPI_WORKDIR="${RPI_WORKDIR:=${PWD}/.bootstrap-work}"
+RPI_PLUGINDIR="${RPI_PLUGINDIR:=${PWD}/bootstrap-plugins}"
+RPI_DISTDIR="${RPI_DISTDIR:=${PWD}/bootstrap-dist}"
 RPI_USER_PLUGINDIR="${RPI_USER_PLUGINDIR:=${HOME}/.bootstrap-plugins}"
 RPI_USER_DISTDIR="${RPI_USER_DISTDIR:=${HOME}/.bootstrap-dist}"
 RPI_USER_CONFIG="${RPI_USER_CONFIG:=${HOME}/.bootstrap.cfg}"
 RPI_TMPDIR="${RPI_TMPDIR:=/tmp}"
-RPI_ROOT="${RPI_ROOT:=.bootstrap-work/root}"
-RPI_BOOT="${RPI_BOOT:=.bootstrap-work/boot}"
+RPI_ROOT="${RPI_ROOT:=${RPI_WORKDIR}/root}"
+RPI_BOOT="${RPI_BOOT:=${RPI_WORKDIR}/boot}"
 RPI_HOSTNAME="${RPI_HOSTNAME:=unnamed}"
 
 
