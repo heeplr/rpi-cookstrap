@@ -19,38 +19,38 @@ setup() {
 
 @test "plugin_prerun run" {
     RPI_RUN=""
-    RPI_RUN_ONCE="foo"
-    RPI_RUN_MODE="bar"
+    RPI_RUN_ONCE="1"
+    RPI_RUN_PHASE="bar"
     run plugin_prerun run
     assert_failure
 
     RPI_RUN="foo"
     RPI_RUN_ONCE=""
-    RPI_RUN_MODE="bar"
+    RPI_RUN_PHASE="bar"
     run plugin_prerun run
     assert_failure
 
     RPI_RUN=""
     RPI_RUN_ONCE=""
-    RPI_RUN_MODE="login"
+    RPI_RUN_PHASE="login"
     run plugin_prerun run
     assert_failure
 
     RPI_RUN="foo"
     RPI_RUN_ONCE=""
-    RPI_RUN_MODE="login"
+    RPI_RUN_PHASE="login"
     run plugin_prerun run
     assert_success
 
     RPI_RUN="foo"
     RPI_RUN_ONCE=""
-    RPI_RUN_MODE="script"
+    RPI_RUN_PHASE="bake"
     run plugin_prerun run
     assert_success
 
     RPI_RUN="foo"
     RPI_RUN_ONCE=""
-    RPI_RUN_MODE="boot"
+    RPI_RUN_PHASE="boot"
     run plugin_prerun run
     assert_success
 }
@@ -58,14 +58,14 @@ setup() {
 @test "plugin_run run" {
     RPI_RUN="echo \"foo\""
     RPI_RUN_ONCE=""
-    RPI_RUN_MODE="login"
+    RPI_RUN_PHASE="login"
     plugin_run run
     [ -f "${RPI_ROOT}/home/pi/.bashrc" ]
     grep --quiet 'echo "foo"' "${RPI_ROOT}/home/pi/.bashrc"
 
-    RPI_RUN=""
-    RPI_RUN_ONCE="echo \"foo\""
-    RPI_RUN_MODE="login"
+    RPI_RUN="echo \"foo\""
+    RPI_RUN_ONCE="1"
+    RPI_RUN_PHASE="login"
     plugin_run run
     [ -f "${RPI_ROOT}/home/pi/.bootstrap_run_on_first_login" ]
     grep --quiet 'echo "foo"' "${RPI_ROOT}/home/pi/.bootstrap_run_on_first_login"
@@ -73,31 +73,29 @@ setup() {
 
     RPI_RUN="echo \"foo\""
     RPI_RUN_ONCE=""
-    RPI_RUN_MODE="boot"
+    RPI_RUN_PHASE="boot"
     plugin_run run
     [ -f "${RPI_ROOT}/etc/rc.local" ]
     grep --quiet 'echo "foo"' "${RPI_ROOT}/etc/rc.local"
 
-    RPI_RUN=""
-    RPI_RUN_ONCE="echo \"foo\""
-    RPI_RUN_MODE="boot"
+    RPI_RUN="echo \"foo\""
+    RPI_RUN_ONCE="1"
+    RPI_RUN_PHASE="boot"
     plugin_run run
     [ -f "${RPI_ROOT}/home/pi/.bootstrap_run_on_first_boot" ]
     grep --quiet 'echo "foo"' "${RPI_ROOT}/home/pi/.bootstrap_run_on_first_boot"
     grep --quiet 'bootstrap_run_on_first_boot' "${RPI_ROOT}/etc/rc.local"
 
-    RPI_RUN="echo \"foo\""
+    RPI_RUN="touch \"${RPI_WORKDIR}/ran_on_bake\""
     RPI_RUN_ONCE=""
-    RPI_RUN_MODE="script"
+    RPI_RUN_PHASE="bake"
     plugin_run run
-    [ -f "${RPI_WORKDIR}/rpi_run.sh" ]
-    grep --quiet 'echo "foo"' "${RPI_WORKDIR}/rpi_run.sh"
+    [ -f "${RPI_WORKDIR}/ran_on_bake" ]
 
-    RPI_RUN=""
-    RPI_RUN_ONCE="echo \"foo\""
-    RPI_RUN_MODE="script"
+    RPI_RUN="touch \"${RPI_WORKDIR}/ran_on_bake_once\""
+    RPI_RUN_ONCE="1"
+    RPI_RUN_PHASE="bake"
     plugin_run run
-    [ -f "${RPI_WORKDIR}/rpi_run_once.sh" ]
-    grep --quiet 'echo "foo"' "${RPI_WORKDIR}/rpi_run_once.sh"
+    [ -f "${RPI_WORKDIR}/ran_on_bake_once" ]
 
 }
