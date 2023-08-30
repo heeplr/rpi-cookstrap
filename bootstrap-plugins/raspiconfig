@@ -34,7 +34,7 @@ rpi_raspiconfig_prerun() {
 rpi_raspiconfig_run() {
     local cmd
     for cmd in "${RPI_RASPICONFIG_NONINT[@]}" ; do
-        rpi_run_once "sudo raspi-config nonint ${cmd}" || error "install systemctl ${cmd}"
+        RPI_RUN_ONCE=true rpi_run "sudo raspi-config nonint ${cmd}" || error "install systemctl ${cmd}"
     done
 }
 

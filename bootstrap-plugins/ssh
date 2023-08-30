@@ -85,7 +85,7 @@ function rpi_ssh_run() {
     if [[ "${RPI_SSH_KEYGEN_SERVER}" == "true" ]] ; then
         log "regenerating /etc/ssh/ssh_host_*"
         sudo rm -f "${RPI_ROOT}/etc/ssh/ssh_host_"*
-        rpi_run_once "sudo dpkg-reconfigure openssh-server"
+        RPI_RUN_ONCE=true rpi_run "sudo dpkg-reconfigure openssh-server"
     fi
 }
 

@@ -25,10 +25,10 @@ rpi_apt_run() {
     for cmd in "${RPI_APT_CMDS[@]}" ; do
         # run in interactive mode?
         if [[ "${RPI_APT_INTERACTIVE}" == "true" ]] ; then
-            rpi_run_once "sudo apt ${cmd}" || error "apt"
+            RPI_RUN_ONCE=true rpi_run "sudo apt ${cmd}" || error "apt"
         # run in non-interactive mode
         else
-            rpi_run_once "sudo DEBIAN_FRONTEND=noninteractive apt --yes --quiet ${cmd}" || error "install apt update"
+            RPI_RUN_ONCE=true rpi_run "sudo DEBIAN_FRONTEND=noninteractive apt --yes --quiet ${cmd}" || error "install apt update"
         fi
     done
 }
@@ -41,4 +41,3 @@ function rpi_apt_help_params() {
     help_param "RPI_APT_CMDS" "array of apt commands to execute"
     help_param "RPI_APT_INTERACTIVE" "run in interactive mode"
 }
-

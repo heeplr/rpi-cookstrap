@@ -21,7 +21,7 @@ function rpi_systemctl_prerun() {
 
 function rpi_systemctl_run() {
     for cmd in "${RPI_SYSTEMCTL_CMDS[@]}" ; do
-        rpi_run_once "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
+        RPI_RUN_ONCE=true rpi_run "sudo systemctl ${cmd}" || error "install systemctl ${cmd}"
     done
 }
 

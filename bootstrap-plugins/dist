@@ -115,15 +115,15 @@ function rpi_dist_cp_after_boot() {
         # copy to image
         sudo cp -r "${RPI_USER_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || sudo cp -r "${RPI_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || error "cp"
         # register copy command
-        rpi_run_once "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}")" || error "rpi_run_once"
+        RPI_RUN_ONCE=true rpi_run "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}")" || error "rpi_run"
     # copy file?
     else
         sudo cp -r "${RPI_USER_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || sudo cp -r "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
-        rpi_run_once "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\"" || error "rpi_run_once"
+        RPI_RUN_ONCE=true rpi_run "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\"" || error "rpi_run"
     fi
     # chmod?
-    [[ -n "${permissions}" ]] && { rpi_run_once "sudo chmod -R \"${permissions}\" \"${path}\"" || error "chmod" ; }
+    [[ -n "${permissions}" ]] && { RPI_RUN_ONCE=true rpi_run "sudo chmod -R \"${permissions}\" \"${path}\"" || error "chmod" ; }
     # chown
-    rpi_run_once "sudo chown -R pi:pi \"${path}\"" || error "chown"
+    RPI_RUN_ONCE=true rpi_run "sudo chown -R pi:pi \"${path}\"" || error "chown"
 
 }
