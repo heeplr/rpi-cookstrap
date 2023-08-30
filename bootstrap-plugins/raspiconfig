@@ -21,20 +21,37 @@
 
 
 # default options
+RPI_RASPICONFIG_ON="${RPI_RASPICONFIG_ON:=login}"
 to_array RPI_RASPICONFIG_NONINT
 
 # load dependencies
 plugin_load run || return 1
 
 
+function run() {
+    case "${RPI_RASPICONFIG_ON}" in
+        "login")
+            rpi_run_on_first_login "$@"
+            ;;
+
+        "boot")
+            rpi_run_on_first_boot "$@"
+            ;;
+
+        ?|*)
+            error "invalid RPI_RASPICONFIG_ON=${RPI_RASPICONFIG_ON}"
+    esac
+}
+
 rpi_raspiconfig_prerun() {
-    [[ -n "${RPI_RASPICONFIG_NONINT}" ]] || error "RPI_RASPICONFIG_NONINT check"
+    [[ -n "${RPI_RASPICONFIG_ON}" ]] || error "RPI_RASPICONFIG_ON not set"
+    [[ -n "${RPI_RASPICONFIG_NONINT}" ]] || error "RPI_RASPICONFIG_NONINT not set"
 }
 
 rpi_raspiconfig_run() {
     local cmd
     for cmd in "${RPI_RASPICONFIG_NONINT[@]}" ; do
-        RPI_RUN_ONCE=true rpi_run "sudo raspi-config nonint ${cmd}" || error "install systemctl ${cmd}"
+        run "sudo raspi-config nonint ${cmd}" || error "install systemctl ${cmd}"
     done
 }
 
@@ -44,4 +61,5 @@ rpi_raspiconfig_description() {
 
 rpi_raspiconfig_help_params() {
     help_param "RPI_RASPICONFIG_NONINT" "list of /usr/bin/raspi-config functions + parameters to run"
+    help_param "RPI_RASPICONFIG_ON" "run on first \"login\" or \"boot\""
 }
