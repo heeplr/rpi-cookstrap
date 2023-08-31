@@ -4,14 +4,13 @@
 
 # default options
 to_array RPI_APPEND_FILE
-to_array RPI_APPEND_STRING
 to_array RPI_APPEND_APPENDIX
 
 
 function rpi_append_prerun() {
     # check arguments
     [[ -n "${RPI_APPEND_FILE}" ]] || error "RPI_APPEND_FILE unset. appending to unknown file"
-    { [[ -n "${RPI_APPEND_STRING}" ]] || [[ -n "${RPI_APPEND_APPENDIX}" ]] ; } || error "either need RPI_APPEND_STRING or RPI_APPEND_APPENDIX"
+    [[ -n "${RPI_APPEND_APPENDIX}" ]] || error "RPI_APPEND_APPENDIX unset. nothing to append."s
 }
 
 function rpi_append_run() {
@@ -24,16 +23,12 @@ function rpi_append_run() {
         i=0
         for appendix in "${RPI_APPEND_APPENDIX[@]}" ; do
             file="${RPI_APPEND_FILE["${i}"]}"
-            rpi_append_file_to_file "${appendix}" "${file}" || error "rpi_append_file_to_file"
-            i+=1
-        done
-    fi
-    # append string to file ?
-    if [[ -n "${RPI_APPEND_STRING[*]}" ]] ; then
-        i=0
-        for string in "${RPI_APPEND_STRING[@]}" ; do
-            file="${RPI_APPEND_FILE["${i}"]}"
-            rpi_append_to_file "${string}" "${file}" || error "rpi_append_to_file"
+            # appendix is path to file?
+            if [[ -f "${appendix}" ]] ; then
+                rpi_append_file_to_file "${appendix}" "${file}" || error "rpi_append_file_to_file ${appendix} ${file}"
+            # appendix is string
+                rpi_append_to_file "${appendix}" "${file}" || error "rpi_append_to_file ${appendix} ${file}"
+            fi
             i+=1
         done
     fi
@@ -45,8 +40,7 @@ function rpi_append_description() {
 
 function rpi_append_help_params() {
     help_param "RPI_APPEND_FILE" "the file to append to"
-    help_param "RPI_APPEND_STRING" "string to append"
-    help_param "RPI_APPEND_APPENDIX" "file which contents should be appended"
+    help_param "RPI_APPEND_APPENDIX" "string or file which contents should be appended"
 }
 
 # ---------------------------------------------------------------------
