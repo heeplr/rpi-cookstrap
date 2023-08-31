@@ -87,16 +87,27 @@ function rpi_run_on_first_login() {
     if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
         # call script from .bashrc
         rpi_run_on_login "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ;  time /bin/bash -c \"${once_script} && rm ${once_script} && rm -rf /home/pi/bootstrap-dist\" ; echo \"Done. Please reboot now.\" ; fi"
+        # once-script dir existing?
+        [[ -d "${RPI_ROOT}/$(dirname "${once_script}")" ]] || mkdir -p "${RPI_ROOT}/$(dirname "${once_script}")"
+        # create once-script
         sudo touch "${RPI_ROOT}/${once_script}" || error "touch"
         sudo chmod +x "${RPI_ROOT}/${once_script}" || error "sudo chmod +x"
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
     fi
     for cmd in "$@" ; do
-        # append to script
-        rpi_append_to_file "echo -e '--------------------------------------\nexecuting: ${cmd}\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
-        rpi_append_to_file "${cmd} || exit 1"         "${RPI_ROOT}/${once_script}"
-        rpi_chown_pi "${once_script}" || error "chown"
-        log "(first login) cmd installed: \"${cmd}\""
+        # got path to script file?
+        if [[ -f "${cmd}" ]] ; then
+            rpi_append_to_file "echo -e '------\nexecuting script: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
+            rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
+            [[ -d "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
+            cp "${cmd}" "${RPI_IMG_DISTDIR}"
+            rpi_chown_pi "${RPI_IMG_DISTDIR}/${cmd}" || error "rpi_chown_pi"
+        # got command string
+        else
+            rpi_append_to_file "echo -e '------\nexecuting: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
+            rpi_append_to_file "${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
+            log "(first login) cmd installed: \"${cmd}\""
+        fi
     done
 }
 
@@ -106,8 +117,17 @@ function rpi_run_on_boot() {
     # can simply append commands
     rpi_remove_pattern_from_file "exit 0" "${RPI_ROOT}/etc/rc.local" || error "remove exit from rc.local"
     for cmd in "$@" ; do
-        rpi_append_to_file "${cmd}" "${RPI_ROOT}/etc/rc.local" || error "append ${cmd} to rc.local"
-        log "(boot) cmd installed: \"${cmd}\""
+        # got path to script file?
+        if [[ -f "${cmd}" ]] ; then
+            rpi_append_to_file "echo -e '------\nexecuting script: ${cmd}\n------'" "${RPI_ROOT}/etc/rc.local"
+            rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/etc/rc.local"
+            [[ -d "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
+            cp "${cmd}" "${RPI_IMG_DISTDIR}"
+            rpi_chown_pi "${RPI_IMG_DISTDIR}/${cmd}" || error "rpi_chown_pi"
+        else
+            rpi_append_to_file "${cmd}" "${RPI_ROOT}/etc/rc.local" || error "append ${cmd} to rc.local"
+            log "(boot) cmd installed: \"${cmd}\""
+        fi
     done
 }
 
@@ -119,15 +139,27 @@ function rpi_run_on_first_boot() {
     if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
         # call script from /etc/rc.local
         rpi_run_on_boot "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ; time /bin/bash -c \"${once_script} && rm ${once_script} && rm -rf /home/pi/bootstrap-dist\" ; echo \"Done. Please reboot now.\" ; fi"
-        sudo touch "${RPI_ROOT}/${once_script}" || error "touch"
+        # once-script dir existing?
+        [[ -d "${RPI_ROOT}/$(dirname "${once_script}")" ]] || mkdir -p "${RPI_ROOT}/$(dirname "${once_script}")"
+        # create script
+        sudo touch "${RPI_ROOT}/${once_script}" || error "touch ${RPI_ROOT}/${once_script}"
         sudo chmod +x "${RPI_ROOT}/${once_script}" || error "sudo chmod +x"
         sudo chown root:root "${RPI_ROOT}/${once_script}" || error "chown"
     fi
     for cmd in "$@" ; do
-        # append to script
-        rpi_append_to_file "echo -e '--------------------------------------\nexecuting: ${cmd}\n--------------------------------------'" "${RPI_ROOT}/${once_script}"
-        rpi_append_to_file "${cmd} || exit 1"         "${RPI_ROOT}/${once_script}"
-        rpi_chown_pi "${once_script}" || error "chown"
+        # got path to script file?
+        if [[ -f "${cmd}" ]] ; then
+            rpi_append_to_file "echo -e '------\nexecuting script: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
+            rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
+            [[ -d "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
+            cp "${cmd}" "${RPI_IMG_DISTDIR}"
+            rpi_chown_pi "${RPI_IMG_DISTDIR}/${cmd}" || error "rpi_chown_pi"
+        # got command string
+        else
+            # append to script
+            rpi_append_to_file "echo -e '------\nexecuting: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
+            rpi_append_to_file "${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
+        fi
         log "(first boot) cmd installed: \"${cmd}\""
     done
 }
