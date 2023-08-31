@@ -33,6 +33,7 @@ function rpi_hostname_run() {
         # /etc/hostname
         log "setting /etc/hostname"
         sudo rm -f "${RPI_ROOT}/etc/hostname"
+        [[ -d "${RPI_ROOT}/etc" ]] || mkdir -p "${RPI_ROOT}/etc"
         rpi_append_to_file "${RPI_HOSTNAME}" "${RPI_ROOT}/etc/hostname"
     fi
     # copy distfile
