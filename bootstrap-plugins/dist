@@ -11,9 +11,10 @@
 # RPI_DIST_COPY=( "/etc", "/home", "/usr" )
 
 # default options
-RPI_DIST_ON="${RPI_DIST_ON:=bake}"
-to_array RPI_DIST_COPY
-to_array RPI_DIST_APPEND
+to_array RPI_DIST_COPY_ON_BAKE
+to_array RPI_DIST_COPY_ON_LOGIN
+to_array RPI_DIST_COPY_ON_BOOT
+
 
 # load dependencies
 plugin_load append || return 1
@@ -22,41 +23,28 @@ plugin_load chmod || return 1
 plugin_load chown || return 1
 
 
-function run() {
-    case "${RPI_DIST_ON}" in
-        "bake")
-            rpi_run_on_bake "$@"
-            ;;
-
-        "login")
-            rpi_run_on_first_login "$@"
-            ;;
-
-        "boot")
-            rpi_run_on_first_boot "$@"
-            ;;
-
-        ?|*)
-            error "invalid RPI_DIST_ON=${RPI_DIST_ON}"
-    esac
-}
-
 function rpi_dist_prerun() {
-    true
+    {
+        [[ -n "${RPI_DIST_COPY_ON_BAKE}" ]] || \
+        [[ -n "${RPI_DIST_COPY_ON_BOOT}" ]] || \
+        [[ -n "${RPI_DIST_COPY_ON_LOGIN}" ]] ;
+    } || error "need at least one of RPI_DIST_COPY_ON_BAKE, _BOOT or _LOGIN"
+    [[ -n "${RPI_DISTDIR}" ]] || error "RPI_DISTDIR not set"
+    [[ -n "${RPI_IMG_DISTDIR}" ]] || error "RPI_IMG_DISTDIR not set"
 }
 
 function rpi_dist_run() {
     local f
-    [[ -n "${RPI_DIST_COPY}" ]] && for f in "${RPI_DIST_COPY[@]}" ; do
+    [[ -n "${RPI_DIST_COPY_ON_BAKE}" ]] && for f in "${RPI_DIST_COPY_ON_BAKE[@]}" ; do
         rpi_dist_cp_if_exist "${f}" || error "copy ${f}"
     done
 
-    [[ -n "${RPI_DIST_COPY_BOOT}" ]] && for f in "${RPI_DIST_COPY_BOOT[@]}" ; do
+    [[ -n "${RPI_DIST_COPY_ON_BOOT}" ]] && for f in "${RPI_DIST_COPY_ON_BOOT[@]}" ; do
         rpi_dist_cp_after_boot "${f}" || error "copy after boot ${f}"
     done
 
-    [[ -n "${RPI_DIST_APPEND}" ]] && for f in "${RPI_DIST_APPEND[@]}" ; do
-        rpi_append_file_to_file "${f}" "${RPI_ROOT}/${f}" || error "append ${f}"
+    [[ -n "${RPI_DIST_COPY_ON_LOGIN}" ]] && for f in "${RPI_DIST_COPY_ON_LOGIN[@]}" ; do
+        rpi_dist_cp_after_login "${f}" || error "copy after login ${f}"
     done
 
     return 0
@@ -67,13 +55,36 @@ function rpi_dist_description() {
 }
 
 function rpi_dist_help_params() {
-    help_param "RPI_DIST_COPY" "array of files to copy to disk image"
-    help_param "RPI_DIST_COPY_BOOT" "array of files to copy when the pi is booting"
-    help_param "RPI_DIST_APPEND" "array of files to append to files on disk image"
-    help_param "RPI_DIST_ON" "copy on \"bake\", first \"boot\" or first \"login\""
+    help_param "RPI_DIST_COPY_ON_LOGIN" "array of files to copy on first login"
+    help_param "RPI_DIST_COPY_ON_BOOT" "array of files to copy on first boot"
+    help_param "RPI_DIST_COPY_ON_BAKE" "array of files to copy during bake"
+    help_param "RPI_DISTDIR" "path to directory where project stores distfiles"
+    help_param "RPI_USER_DISTDIR" "path where user specific distfiles are stored"
+    help_param "RPI_IMG_DISTDIR" "path relative to image root where distfiles are stored"
 }
 
 # ---------------------------------------------------------------------
+# run command either after first login, boot or during image bake
+function run_on() {
+    local phase="$1"
+    local cmd="$2"
+
+    case "${phase}" in
+        "login")
+            log "registering ${path} for copying after login ..."
+            rpi_run_on_first_login "${cmd[@]}"
+            ;;
+
+        "boot")
+            log "registering ${path} for copying after boot ..."
+            rpi_run_on_first_boot "${cmd[@]}"
+            ;;
+        ?|*)
+            error "unknown run phase: ${phase}"
+            ;;
+    esac
+}
+
 # check if dist file exists
 function rpi_dist_exist() {
     local file="$1"
@@ -85,28 +96,28 @@ function rpi_dist_exist() {
 # copy from dist directory to root directory
 function rpi_dist_cp() {
     local path="$1"
-    local permissions="$2"
-    local dst
-    [[ -n "${path}" ]] || error "missing parameter. rpi_dist_cp"
+    local dst="${RPI_ROOT}/${path}"
+    [[ -n "${path}" ]] || error "missing path"
     log "copying ${path} ..."
     # directory?
-    dst="${RPI_ROOT}/${path}"
     if [[ -d "${RPI_DISTDIR}/${path}" ]] ; then
         log "  ${RPI_DISTDIR}/${path}/* ${dst}"
+        mkdir -p "${dst}" || error "mkdir ${dst} failed"
         sudo cp -r "${RPI_DISTDIR}/${path}/"* "${dst}" || error "cp -r ${path}/* to ${dst}"
     elif [[ -f "${RPI_DISTDIR}/${path}" ]] ; then
         log "  ${RPI_DISTDIR}/${path} -> ${dst}"
+        mkdir -p "$(dirname "${dst}")" || error "mkdir $(dirname "${dst}") failed"
         sudo cp "${RPI_DISTDIR}/${path}" "${dst}" || error "cp ${path} to ${dst}"
     fi
     if [[ -d "${RPI_USER_DISTDIR}/${path}" ]] ; then
         log "  ${RPI_USER_DISTDIR}/${path}/* ${dst}"
+        mkdir -p "${dst}" || error "mkdir ${dst} failed"
         sudo cp -r "${RPI_USER_DISTDIR}/${path}/"* "${dst}" || error "cp -r ${path}/* to ${dst}"
     elif [[ -f "${RPI_USER_DISTDIR}/${path}" ]] ; then
         log "  ${RPI_USER_DISTDIR}/${path} -> ${dst}"
+        mkdir -p "$(dirname "${dst}")" || error "mkdir $(dirname "${dst}") failed"
         sudo cp "${RPI_USER_DISTDIR}/${path}" "${dst}" || error "cp ${path} to ${dst}"
     fi
-    # chmod?
-    [[ -n "${permissions}" ]] && rpi_chmod_pi "${permissions}" "${path}"
 }
 
 # copy if srcfile exists
@@ -119,35 +130,64 @@ function rpi_dist_cp_if_exist() {
     return 1
 }
 
-# copy from dist directory after boot
-function rpi_dist_cp_after_boot() {
-    local path="$1"
-    local permissions="$2"
-    local distdir="${RPI_ROOT}/home/pi/bootstrap-dist"
-    [[ -n "${path}" ]] || error "missing parameter. rpi_dist_cp_after_boot"
-    log "registering ${path} for copying after boot ..."
+# copy to image dist dir and then to destination at login or boot
+function rpi_dist_cp_image() {
+    local phase="$1"
+    local path="$2"
+    local distdir="${RPI_ROOT}/${RPI_IMG_DISTDIR}"
+
+    [[ -n "${path}" ]] || error "rpi_dist_cp_image: need path"
+
     # create directory?
     [[ -d "${distdir}" ]] || {
-        sudo mkdir "${distdir}" || error "mkdir"
-        rpi_chmod_pi "0770" "/home/pi/bootstrap-dist" || error "rpi_chmod_pi"
-        rpi_chown_pi "/home/pi/bootstrap-dist" || error "rpi_chown_pi"
+        sudo mkdir -p "${distdir}" || error "mkdir ${distdir}"
+        rpi_chmod_pi "0770" "${RPI_IMG_DISTDIR}" || error "rpi_chmod_pi"
+        rpi_chown_pi "${RPI_IMG_DISTDIR}" || error "rpi_chown_pi"
     }
-    # crate path
-    sudo mkdir -p "${distdir}/$(dirname "${path}")/"
-    # copy directory?
-    if [[ -d "${path}" ]] ; then
-        # copy to image
-        sudo cp -r "${RPI_USER_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || sudo cp -r "${RPI_DISTDIR}/${path}"/* "${distdir}/$(dirname "${path}")" || error "cp"
-        # register copy command
-        run "sudo cp -r \"/home/pi/bootstrap-dist/${path}/\"* \"/$(dirname "${path}")" || error "rpi_run"
-    # copy file?
-    else
-        sudo cp -r "${RPI_USER_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || sudo cp -r "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
-        run "sudo cp \"/home/pi/bootstrap-dist/${path}\" \"/$(dirname "${path}")/\"" || error "rpi_run"
-    fi
-    # chmod?
-    [[ -n "${permissions}" ]] && { run "sudo chmod -R \"${permissions}\" \"${path}\"" || error "chmod" ; }
-    # chown
-    run "sudo chown -R pi:pi \"${path}\"" || error "chown"
 
+    # copy from directory?
+    if [[ -d "${RPI_USER_DISTDIR}/${path}" ]] || [[ -d "${RPI_DISTDIR}/${path}" ]] ; then
+        # create dst path
+        [[ -d "${distdir}/${path}" ]] || {
+            sudo mkdir -p "${distdir}/${path}/" || error "mkdir"
+        }
+        # copy to image (from project distdir)
+        [[ -d "${RPI_DISTDIR}/${path}" ]] && {
+            verbose "cp -r ${RPI_DISTDIR}/${path}/* ${distdir}/${path}"
+            sudo cp -r "${RPI_DISTDIR}/${path}"/* "${distdir}/${path}" || error "cp"
+        }
+        # copy to image (from user distdir in ~)
+        [[ -d "${RPI_USER_DISTDIR}/${path}" ]] && {
+            verbose "cp -r ${RPI_USER_DISTDIR}/${path}/* ${distdir}/${path}"
+            sudo cp -r "${RPI_USER_DISTDIR}/${path}"/* "${distdir}/${path}"
+        }
+        # register copy command
+        run_on "${phase}" "sudo cp -r \"${RPI_IMG_DISTDIR}/${path}/\"* \"/${path}\"" || error "run_on"
+    # copy a file?
+    else
+        # create dst path
+        [[ -d "${distdir}/${path}" ]] || {
+            sudo mkdir -p "${distdir}/$(dirname "${path}")" || error "mkdir"
+        }
+        # copy to image
+        [[ -f "${RPI_DISTDIR}/${path}" ]] && {
+            sudo cp -r "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
+        }
+        [[ -f "${RPI_USER_DISTDIR}/${path}" ]] && {
+            sudo cp -r "${RPI_USER_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
+        }
+        # register copy command
+        run_on "${phase}" "sudo cp \"${RPI_IMG_DISTDIR}/${path}\" \"/$(dirname "${path}")/\"" || error "run_on"
+    fi
+
+}
+
+# copy from dist directory after first boot
+function rpi_dist_cp_after_boot() {
+    rpi_dist_cp_image "boot" "$@"
+}
+
+# copy from dist directory after first login
+function rpi_dist_cp_after_login() {
+    rpi_dist_cp_image "login" "$@"
 }
