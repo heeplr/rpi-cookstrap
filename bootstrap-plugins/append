@@ -19,19 +19,18 @@ function rpi_append_run() {
     local appendix
     local string
     # append file to file ?
-    if [[ -n "${RPI_APPEND_APPENDIX[*]}" ]] ; then
-        i=0
-        for appendix in "${RPI_APPEND_APPENDIX[@]}" ; do
-            file="${RPI_APPEND_FILE["${i}"]}"
-            # appendix is path to file?
-            if [[ -f "${appendix}" ]] ; then
-                rpi_append_file_to_file "${appendix}" "${file}" || error "rpi_append_file_to_file ${appendix} ${file}"
-            # appendix is string
-                rpi_append_to_file "${appendix}" "${file}" || error "rpi_append_to_file ${appendix} ${file}"
-            fi
-            i+=1
-        done
-    fi
+    i=0
+    for appendix in "${RPI_APPEND_APPENDIX[@]}" ; do
+        file="${RPI_APPEND_FILE["${i}"]}"
+        # appendix is path to file?
+        if [[ -f "${appendix}" ]] ; then
+            rpi_append_file_to_file "${appendix}" "${file}" || error "rpi_append_file_to_file ${appendix} ${file}"
+        # appendix is string
+        else
+            rpi_append_to_file "${appendix}" "${file}" || error "rpi_append_to_file ${appendix} ${file}"
+        fi
+        i+=1
+    done
 }
 
 function rpi_append_description() {

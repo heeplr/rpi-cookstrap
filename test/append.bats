@@ -1,5 +1,6 @@
 
 setup() {
+    V=1
     load 'test_helper/bats-assert/load'
     load 'test_helper/bats-support/load'
     DIR="$( cd "$( dirname "$BATS_TEST_FILENAME" )" >/dev/null 2>&1 && pwd )"
@@ -21,44 +22,22 @@ setup() {
 
 @test "plugin_prerun append" {
     RPI_APPEND_FILE=""
-    RPI_APPEND_STRING="foo"
-    RPI_APPEND_APPENDIX="bar"
+    RPI_APPEND_APPENDIX=""
     run plugin_prerun append
     assert_failure
 
     RPI_APPEND_FILE="foo"
-    RPI_APPEND_STRING=""
-    RPI_APPEND_APPENDIX="bar"
-    run plugin_prerun append
-    assert_success
-
-    RPI_APPEND_FILE="foo"
-    RPI_APPEND_STRING="bar"
-    RPI_APPEND_APPENDIX=""
-    run plugin_prerun append
-    assert_success
-
-    RPI_APPEND_FILE="foo"
-    RPI_APPEND_STRING=""
     RPI_APPEND_APPENDIX=""
     run plugin_prerun append
     assert_failure
 
     RPI_APPEND_FILE=""
-    RPI_APPEND_STRING=""
-    RPI_APPEND_APPENDIX="baz"
-    run plugin_prerun append
-    assert_failure
-
-    RPI_APPEND_FILE=""
-    RPI_APPEND_STRING="bar"
-    RPI_APPEND_APPENDIX=""
+    RPI_APPEND_APPENDIX="bar"
     run plugin_prerun append
     assert_failure
 
     RPI_APPEND_FILE="foo"
-    RPI_APPEND_STRING="bar"
-    RPI_APPEND_APPENDIX="baz"
+    RPI_APPEND_APPENDIX="bar"
     run plugin_prerun append
     assert_success
 }
@@ -67,8 +46,7 @@ setup() {
     local file="${RPI_ROOT}/etc/hostname"
     # check if double string append is prevented
     RPI_APPEND_FILE="${file}"
-    RPI_APPEND_STRING="testpi"
-    RPI_APPEND_APPENDIX=""
+    RPI_APPEND_APPENDIX="testpi"
     run plugin_run append
     assert_success
     [ "$(wc -l "${file}" | cut -f1 -d' ')" == "1" ]
@@ -76,8 +54,7 @@ setup() {
 
     # check if string append succeeds
     RPI_APPEND_FILE="${file}"
-    RPI_APPEND_STRING="# foo"
-    RPI_APPEND_APPENDIX=""
+    RPI_APPEND_APPENDIX="# foo"
     run plugin_run append
     assert_success
     [ "$(wc -l "${file}" | cut -f1 -d' ')" == "2" ]
@@ -87,11 +64,10 @@ setup() {
 
 @test "plugin_run append: file" {
     local file="${RPI_ROOT}/etc/issue"
-    local appendix="${BATS_TMPDIR}/foo"
+    local appendix="${BATS_TMPDIR}/foo.${RANDOM}"
     printf "foo\n" > "${appendix}"
     # check if file append succeeds
     RPI_APPEND_FILE="${file}"
-    RPI_APPEND_STRING=""
     RPI_APPEND_APPENDIX="${appendix}"
     run plugin_run append
     assert_success
@@ -103,4 +79,7 @@ setup() {
     assert_success
     [ "$(wc -l "${file}" | cut -f1 -d' ')" == "2" ]
     grep -Pz --quiet "(?s)Hello!\nfoo" "${file}"
+
+    # cleanup
+    rm "${appendix}"
 }
