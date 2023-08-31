@@ -1,6 +1,6 @@
 ## RPi CookStrap - [![CI](https://github.com/heeplr/rpi-cookstrap/actions/workflows/main.yml/badge.svg)](https://github.com/heeplr/rpi-cookstrap/actions/workflows/blank.yml)
 
-A lightweight, plugin based shell script framework to bake, customize, bootstrap & provision raspberry pi OS disk images that leaves no traces.
+A shell script to bake raspberry pi OS disk images
 
 
 <div style="font-size:larger;">&#160;</div>
@@ -8,7 +8,8 @@ A lightweight, plugin based shell script framework to bake, customize, bootstrap
 
 # Features
 
-* **lightweight** - written in bash, should run on any POSIX compatible system, no additional installation needed on the pi, configure with any text editor
+* **versatile** - use plugins to download & mount image to copy/configure things to do on the first boot/login
+* **lightweight** - written in bash, should run on any POSIX compatible system, no additional installation needed on the pi, configure with any text editor, will delete itself to leave no traces
 * **single shot** - just generate the image on the host and everything else will happen automatically on the first boot (or first login if you choose so)
 * **dynamic** - since the config is a bash script, you can create different images with the same configuration by setting config-values programmatically.
 * **customizable** - do your personal customizations in ~ and use them with every project (e.g. your personal wifi credentials will override wifi credentials that are configured in a project)
