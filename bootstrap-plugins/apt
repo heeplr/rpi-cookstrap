@@ -52,7 +52,7 @@ rpi_apt_run() {
             run "sudo apt ${cmd}" || error "apt"
         # run in non-interactive mode
         else
-            run "sudo DEBIAN_FRONTEND=noninteractive apt --yes --quiet ${cmd}" || error "install apt update"
+            run "sudo DEBIAN_FRONTEND=noninteractive apt --quiet ${cmd}" || error "install apt update"
         fi
     done
 }
