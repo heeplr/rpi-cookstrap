@@ -34,7 +34,7 @@ function rpi_chown_pi() {
     local recursive="$2"
     [[ -n "${path}" ]] || error "missing argument"
     if [[ "${recursive}" == "true" ]] ; then
-        sudo chown -R "${RPI_CHOWN_USER}" "${RPI_ROOT}/${path}" || error "chown ${RPI_ROOT}/${path}"
+        sudo chown -R "${RPI_CHOWN_USER}" "${RPI_ROOT}/${path}" || error "chown -R ${RPI_ROOT}/${path}"
     else
         sudo chown "${RPI_CHOWN_USER}" "${RPI_ROOT}/${path}" || error "chown ${RPI_ROOT}/${path}"
     fi
