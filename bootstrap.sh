@@ -368,4 +368,4 @@ fi
 
 printf "\n\n%s\n" \
     "Image creation successful. Copy \"${RPI_LOOPBACK_IMAGE}\" to an SD card." \
-    "(e.g. dd if=${RPI_LOOPBACK_IMAGE} of=/dev/sdcard bs=4M conv=fsync status=progress )"
+    "(e.g. dd if=${RPI_LOOPBACK_IMAGE} of=/dev/sdcard bs=64M status=progress )"
