@@ -39,11 +39,11 @@ setup() {
     plugin_load dist
 }
 
-#teardown() {
-    #sudo rm -rf "${RPI_DISTDIR}"
-    #sudo rm -rf "${RPI_ROOT}"
-    #sudo rm -rf "${RPI_BOOT}"
-#}
+teardown() {
+    sudo rm -rf "${RPI_DISTDIR}"
+    sudo rm -rf "${RPI_ROOT}"
+    sudo rm -rf "${RPI_BOOT}"
+}
 
 
 @test "plugin_prerun dist" {
