@@ -7,7 +7,7 @@
 RPI_WORKDIR="${RPI_WORKDIR:=${PWD}/.bootstrap-work}"
 RPI_PLUGINDIR="${RPI_PLUGINDIR:=${PWD}/bootstrap-plugins}"
 RPI_DISTDIR="${RPI_DISTDIR:=${PWD}/bootstrap-dist}"
-RPI_IMG_DISTDIR="${RPI_IMG_DISTDIR:=/var/tmp/bootstrap-dist}"
+RPI_IMG_DISTDIR="${RPI_IMG_DISTDIR:=/var/lib/bootstrap-dist}"
 RPI_USER_PLUGINDIR="${RPI_USER_PLUGINDIR:=${HOME}/.bootstrap-plugins}"
 RPI_USER_DISTDIR="${RPI_USER_DISTDIR:=${HOME}/.bootstrap-dist}"
 RPI_USER_CONFIG="${RPI_USER_CONFIG:=${HOME}/.bootstrap.cfg}"
