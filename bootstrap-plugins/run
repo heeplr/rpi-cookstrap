@@ -141,7 +141,7 @@ function rpi_run_on_boot() {
             rpi_append_to_file "echo -e '------\nexecuting script: ${cmd}\n------'" "${RPI_ROOT}/etc/rc.local"
             rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/etc/rc.local"
             [[ -d "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
-            sudo cp "${cmd}" "${RPI_ROOT}/${RPI_IMG_DISTDIR}" || error "cp ${cmd} ${RPI_ROOT}/${RPI_IMG_DISTDIR}"
+            sudo cp "${cmd}" "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" || error "cp ${cmd} ${RPI_ROOT}/${RPI_IMG_DISTDIR}"
             rpi_chown_pi "${RPI_IMG_DISTDIR}/${cmd}" || error "rpi_chown_pi"
         else
             log "(boot) installing cmd: \"${cmd}\""
@@ -174,7 +174,7 @@ function rpi_run_on_first_boot() {
             rpi_append_to_file "echo -e '------\nexecuting script: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
             rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
             [[ -d "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
-            sudo cp "${cmd}" "${RPI_ROOT}/${RPI_IMG_DISTDIR}/" || error "cp ${cmd} ${RPI_ROOT}/${RPI_IMG_DISTDIR}/"
+            sudo cp "${cmd}" "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" || error "cp ${cmd} ${RPI_ROOT}/${RPI_IMG_DISTDIR}/"
             rpi_chown_pi "${RPI_IMG_DISTDIR}/${cmd}" || error "rpi_chown_pi"
         # got command string
         else
