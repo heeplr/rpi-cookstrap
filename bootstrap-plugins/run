@@ -73,9 +73,10 @@ function rpi_run_help_params() {
 # ---------------------------------------------------------------------
 # run command on login
 function rpi_run_on_login() {
+    log "run on login:"
     for cmd in "$@" ; do
+        log "(login) installing cmd: \"${cmd}\""
         rpi_append_to_file "${cmd}" "${RPI_ROOT}/home/pi/.bashrc" || error "rpi_append_to_file"
-        log "(login) cmd installed: \"${cmd}\""
     done
 }
 
@@ -83,6 +84,8 @@ function rpi_run_on_login() {
 function rpi_run_on_first_login() {
     [[ -n "$*" ]] || error "missing argument"
     local once_script="/home/pi/.bootstrap_run_on_first_login"
+
+    log "run on first login:"
     # prepare script
     if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
         # call script from .bashrc
@@ -97,36 +100,39 @@ function rpi_run_on_first_login() {
     for cmd in "$@" ; do
         # got path to script file?
         if [[ -f "${cmd}" ]] ; then
+            log "(first login) installing script: \"${cmd}\""
             rpi_append_to_file "echo -e '------\nexecuting script: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
             rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
-            [[ -d "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
-            cp "${cmd}" "${RPI_IMG_DISTDIR}"
+            [[ -d "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
+            sudo cp "${cmd}" "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" || error "cp ${cmd} ${RPI_ROOT}/${RPI_IMG_DISTDIR}/"
             rpi_chown_pi "${RPI_IMG_DISTDIR}/${cmd}" || error "rpi_chown_pi"
         # got command string
         else
+            log "(first login) installing command: \"${cmd}\""
             rpi_append_to_file "echo -e '------\nexecuting: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
             rpi_append_to_file "${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
-            log "(first login) cmd installed: \"${cmd}\""
         fi
     done
 }
 
 # run on every boot
 function rpi_run_on_boot() {
+    log "run on boot:"
     # remove "exit 0" at the end if it's there, so we
     # can simply append commands
     rpi_remove_pattern_from_file "exit 0" "${RPI_ROOT}/etc/rc.local" || error "remove exit from rc.local"
     for cmd in "$@" ; do
         # got path to script file?
         if [[ -f "${cmd}" ]] ; then
+            log "(boot) installing script: \"${cmd}\""
             rpi_append_to_file "echo -e '------\nexecuting script: ${cmd}\n------'" "${RPI_ROOT}/etc/rc.local"
             rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/etc/rc.local"
-            [[ -d "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
-            cp "${cmd}" "${RPI_IMG_DISTDIR}"
+            [[ -d "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
+            sudo cp "${cmd}" "${RPI_ROOT}/${RPI_IMG_DISTDIR}" || error "cp ${cmd} ${RPI_ROOT}/${RPI_IMG_DISTDIR}"
             rpi_chown_pi "${RPI_IMG_DISTDIR}/${cmd}" || error "rpi_chown_pi"
         else
+            log "(boot) installing cmd: \"${cmd}\""
             rpi_append_to_file "${cmd}" "${RPI_ROOT}/etc/rc.local" || error "append ${cmd} to rc.local"
-            log "(boot) cmd installed: \"${cmd}\""
         fi
     done
 }
@@ -135,6 +141,8 @@ function rpi_run_on_boot() {
 function rpi_run_on_first_boot() {
     [[ -n "$*" ]] || error "missing argument"
     local once_script="/home/pi/.bootstrap_run_on_first_boot"
+
+    log "run on first boot:"
     # prepare script
     if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
         # call script from /etc/rc.local
@@ -149,33 +157,35 @@ function rpi_run_on_first_boot() {
     for cmd in "$@" ; do
         # got path to script file?
         if [[ -f "${cmd}" ]] ; then
+            log "(first boot) installing script: \"${cmd}\""
             rpi_append_to_file "echo -e '------\nexecuting script: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
             rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
-            [[ -d "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
-            cp "${cmd}" "${RPI_IMG_DISTDIR}"
+            [[ -d "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
+            sudo cp "${cmd}" "${RPI_ROOT}/${RPI_IMG_DISTDIR}/" || error "cp ${cmd} ${RPI_ROOT}/${RPI_IMG_DISTDIR}/"
             rpi_chown_pi "${RPI_IMG_DISTDIR}/${cmd}" || error "rpi_chown_pi"
         # got command string
         else
+            log "(first boot) installing cmd: \"${cmd}\""
             # append to script
             rpi_append_to_file "echo -e '------\nexecuting: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
             rpi_append_to_file "${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
         fi
-        log "(first boot) cmd installed: \"${cmd}\""
     done
 }
 
 # output command to once-script
 function rpi_run_on_bake() {
+    log "run on bake:"
     for cmd in "$@" ; do
         if [[ -f "${cmd}" ]] ; then
             # execute script
-            log "running script: \"${cmd}\""
+            log "(now) running script: \"${cmd}\""
             # (shellcheck cannot source non-constant source)
             # shellcheck disable=SC1090
             ( . "${cmd}" || error "${cmd}" )
         else
             # execute command
-            log "running: \"${cmd}\""
+            log "(now) running: \"${cmd}\""
             eval "${cmd}" || error "${cmd}"
         fi
     done
