@@ -150,6 +150,7 @@ function rpi_dist_cp_image() {
         # create dst path
         [[ -d "${distdir}/${path}" ]] || {
             sudo mkdir -p "${distdir}/${path}/" || error "mkdir"
+            rpi_chown_pi "${RPI_IMG_DISTDIR}/${path}" || error "rpi_chown_pi"
         }
         # copy to image (from project distdir)
         [[ -d "${RPI_DISTDIR}/${path}" ]] && {
@@ -166,7 +167,7 @@ function rpi_dist_cp_image() {
     # copy a file?
     else
         # create dst path
-        [[ -d "${distdir}/${path}" ]] || {
+        [[ -d "${distdir}/$(dirname "${path}")" ]] || {
             sudo mkdir -p "${distdir}/$(dirname "${path}")" || error "mkdir"
         }
         # copy to image
