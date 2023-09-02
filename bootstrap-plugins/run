@@ -77,7 +77,7 @@ function rpi_run_on_login() {
     for cmd in "$@" ; do
         # got path to script file?
         if [[ -f "${cmd}" ]] ; then
-            log "(login) installing script: \"${cmd}\""
+            log "  (login) installing script: \"${cmd}\""
             # create script dir
             [[ -d "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
             # copy script
@@ -87,7 +87,7 @@ function rpi_run_on_login() {
 
         # got command string
         else
-            log "(login) installing cmd: \"${cmd}\""
+            log "  (login) installing cmd: \"${cmd}\""
             rpi_append_to_file "${cmd}" "${RPI_ROOT}/home/pi/.bashrc" || error "rpi_append_to_file"
         fi
     done
@@ -113,7 +113,7 @@ function rpi_run_on_first_login() {
     for cmd in "$@" ; do
         # got path to script file?
         if [[ -f "${cmd}" ]] ; then
-            log "(first login) installing script: \"${cmd}\""
+            log "  (first login) installing script: \"${cmd}\""
             rpi_append_to_file "echo -e '------\nexecuting script: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
             rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
             [[ -d "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
@@ -121,9 +121,9 @@ function rpi_run_on_first_login() {
             rpi_chown_pi "${RPI_IMG_DISTDIR}/${cmd}" || error "rpi_chown_pi"
         # got command string
         else
-            log "(first login) installing command: \"${cmd}\""
+            log "  (first login) installing command: \"${cmd}\""
             rpi_append_to_file "echo -e '------\nexecuting: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
-            rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
+            rpi_append_to_file "${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
         fi
     done
 }
@@ -137,14 +137,15 @@ function rpi_run_on_boot() {
     for cmd in "$@" ; do
         # got path to script file?
         if [[ -f "${cmd}" ]] ; then
-            log "(boot) installing script: \"${cmd}\""
+            log "  (boot) installing script: \"${cmd}\""
             rpi_append_to_file "echo -e '------\nexecuting script: ${cmd}\n------'" "${RPI_ROOT}/etc/rc.local"
             rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/etc/rc.local"
             [[ -d "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
             sudo cp "${cmd}" "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" || error "cp ${cmd} ${RPI_ROOT}/${RPI_IMG_DISTDIR}"
             rpi_chown_pi "${RPI_IMG_DISTDIR}/${cmd}" || error "rpi_chown_pi"
+        # got command string
         else
-            log "(boot) installing cmd: \"${cmd}\""
+            log "  (boot) installing cmd: \"${cmd}\""
             rpi_append_to_file "${cmd}" "${RPI_ROOT}/etc/rc.local" || error "append ${cmd} to rc.local"
         fi
     done
@@ -170,7 +171,7 @@ function rpi_run_on_first_boot() {
     for cmd in "$@" ; do
         # got path to script file?
         if [[ -f "${cmd}" ]] ; then
-            log "(first boot) installing script: \"${cmd}\""
+            log "  (first boot) installing script: \"${cmd}\""
             rpi_append_to_file "echo -e '------\nexecuting script: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
             rpi_append_to_file "${RPI_IMG_DISTDIR}/${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
             [[ -d "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")" ]] || mkdir -p "${RPI_ROOT}/${RPI_IMG_DISTDIR}/$(dirname "${cmd}")"
@@ -178,7 +179,7 @@ function rpi_run_on_first_boot() {
             rpi_chown_pi "${RPI_IMG_DISTDIR}/${cmd}" || error "rpi_chown_pi"
         # got command string
         else
-            log "(first boot) installing cmd: \"${cmd}\""
+            log "  (first boot) installing cmd: \"${cmd}\""
             # append to script
             rpi_append_to_file "echo -e '------\nexecuting: ${cmd}\n------'" "${RPI_ROOT}/${once_script}"
             rpi_append_to_file "${cmd} || exit 1" "${RPI_ROOT}/${once_script}"
@@ -192,13 +193,13 @@ function rpi_run_on_bake() {
     for cmd in "$@" ; do
         if [[ -f "${cmd}" ]] ; then
             # execute script
-            log "(now) running script: \"${cmd}\""
+            log "  (now) running script: \"${cmd}\""
             # (shellcheck cannot source non-constant source)
             # shellcheck disable=SC1090
             ( . "${cmd}" || error "${cmd}" )
         else
             # execute command
-            log "(now) running: \"${cmd}\""
+            log "  (now) running: \"${cmd}\""
             eval "${cmd}" || error "${cmd}"
         fi
     done
