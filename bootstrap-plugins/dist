@@ -140,6 +140,7 @@ function rpi_dist_cp_image() {
 
     # create directory?
     [[ -d "${distdir}" ]] || {
+        verbose "  creating dir: ${distdir}"
         sudo mkdir -p "${distdir}" || error "mkdir ${distdir}"
         rpi_chmod_pi "0770" "${RPI_IMG_DISTDIR}" || error "rpi_chmod_pi"
         rpi_chown_pi "${RPI_IMG_DISTDIR}" || error "rpi_chown_pi"
@@ -149,8 +150,9 @@ function rpi_dist_cp_image() {
     if [[ -d "${RPI_USER_DISTDIR}/${path}" ]] || [[ -d "${RPI_DISTDIR}/${path}" ]] ; then
         # create dst path
         [[ -d "${distdir}/${path}" ]] || {
+            verbose "  creating dir: ${distdir}/${path}"
             sudo mkdir -p "${distdir}/${path}/" || error "mkdir"
-            rpi_chown_pi "${RPI_IMG_DISTDIR}/${path}" || error "rpi_chown_pi"
+            rpi_chown_pi "${RPI_IMG_DISTDIR}/${path}/" || error "rpi_chown_pi"
         }
         # copy to image (from project distdir)
         [[ -d "${RPI_DISTDIR}/${path}" ]] && {
@@ -168,14 +170,19 @@ function rpi_dist_cp_image() {
     else
         # create dst path
         [[ -d "${distdir}/$(dirname "${path}")" ]] || {
+            verbose "  creating dir: ${distdir}/$(dirname "${path}")"
             sudo mkdir -p "${distdir}/$(dirname "${path}")" || error "mkdir"
+            rpi_chown_pi "${RPI_IMG_DISTDIR}/$(dirname "${path}")" || error "rpi_chown_pi"
         }
-        # copy to image
+        # copy to image distdir from project distdir
         [[ -f "${RPI_DISTDIR}/${path}" ]] && {
-            sudo cp -r "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
+            verbose "cp ${RPI_DISTDIR}/${path} ${distdir}/$(dirname "${path}")/"
+            sudo cp "${RPI_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
         }
+        # copy to image distdir from user distdir
         [[ -f "${RPI_USER_DISTDIR}/${path}" ]] && {
-            sudo cp -r "${RPI_USER_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
+            verbose "cp ${RPI_USER_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/"
+            sudo cp "${RPI_USER_DISTDIR}/${path}" "${distdir}/$(dirname "${path}")/" || error "cp"
         }
         # register copy command
         run_on "${phase}" "sudo cp \"${RPI_IMG_DISTDIR}/${path}\" \"/$(dirname "${path}")/\"" || error "run_on"

@@ -49,9 +49,7 @@ teardown() {
 @test "plugin_prerun dist" {
     RPI_DIST_COPY_ON_BAKE=""
     RPI_DIST_COPY_ON_LOGIN=""
-    RPI_DIST_COPY_ON_LOGIN_ONCE=""
     RPI_DIST_COPY_ON_BOOT=""
-    RPI_DIST_COPY_ON_BOOT_ONCE=""
     run plugin_prerun dist
     assert_failure
 }
@@ -60,18 +58,14 @@ teardown() {
     # on bake: check if dir contents are copied
     RPI_DIST_COPY_ON_BAKE="/home/pi"
     RPI_DIST_COPY_ON_BOOT=""
-    RPI_DIST_COPY_ON_BOOT_ONCE=""
     RPI_DIST_COPY_LOGIN=""
-    RPI_DIST_COPY_ON_LOGIN_ONCE=""
     plugin_run dist
     [ -f "${RPI_ROOT}/home/pi/foo" ]
     [ -f "${RPI_ROOT}/home/pi/bar" ]
     # on boot: check if dir is copied to image and copy command is added
     RPI_DIST_COPY_ON_BOOT="/home/pi"
-    RPI_DIST_COPY_ON_BOOT_ONCE=""
     RPI_DIST_COPY_ON_BAKE=""
     RPI_DIST_COPY_LOGIN=""
-    RPI_DIST_COPY_ON_LOGIN_ONCE=""
     plugin_run dist
     [ -f "${RPI_ROOT}/${RPI_IMG_DISTDIR}/home/pi/foo" ]
     [ -f "${RPI_ROOT}/${RPI_IMG_DISTDIR}/home/pi/bar" ]
@@ -82,16 +76,12 @@ teardown() {
     # on bake: check if file is copied
     RPI_DIST_COPY_ON_BAKE="/etc/issue"
     RPI_DIST_COPY_ON_BOOT=""
-    RPI_DIST_COPY_ON_BOOT_ONCE=""
     RPI_DIST_COPY_LOGIN=""
-    RPI_DIST_COPY_ON_LOGIN_ONCE=""
     plugin_run dist
     [ -f "${RPI_ROOT}/etc/issue" ]
     RPI_DIST_COPY_ON_BAKE=""
     RPI_DIST_COPY_ON_BOOT="/etc/issue"
-    RPI_DIST_COPY_ON_BOOT_ONCE=""
     RPI_DIST_COPY_LOGIN=""
-    RPI_DIST_COPY_ON_LOGIN_ONCE=""
     plugin_run dist
     [ -f "${RPI_ROOT}/${RPI_IMG_DISTDIR}/etc/issue" ]
     grep --quiet 'sudo cp "/var/lib/bootstrap-dist//etc/issue"' "${RPI_ROOT}/home/pi/.bootstrap_run_on_first_boot"
