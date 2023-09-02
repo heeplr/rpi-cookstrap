@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# modify cmdline.txt
+
+# @example
+# add processor.max_cstate=1
+# remove isolcpus=2,3
+# RPI_CMDLINE_ADD=( "processor.max_cstate=1" )
+# RPI_CMDLINE_REMOVE=( "isolcpus=2,3" )
+
+
+# load dependencies
+plugin_load run || return 1
+
+to_array RPI_CMDLINE_ADD
+to_array RPI_CMDLINE_REMOVE
+
+function rpi_cmdline_prerun() {
+    [[ -n "${RPI_CMDLINE_ADD}" ]] || [[ -n "${RPI_CMDLINE_REMOVE}" ]] || error "RPI_CMDLINE_ADD and RPI_CMDLINE_REMOVE unset"
+}
+
+function rpi_cmdline_run() {
+    for c in "${RPI_CMDLINE_ADD[@]}" ; do
+        log "setting ${c} ..."
+        rpi_append_to_file "${c}" "${RPI_BOOT}/cmdline.txt" || error "adding ${c}"
+    done
+
+    for c in "${RPI_CMDLINE_REMOVE[@]}" ; do
+        log "removing ${c} ..."
+        rpi_remove_pattern_from_file "${c}" "${RPI_BOOT}/cmdline.txt" || error "removing ${c}"
+    done
+}
+
+function rpi_cmdline_description() {
+    echo "modify cmdline.txt"
+}
+
+function rpi_cmdline_help_params() {
+    help_param "RPI_CMDLINE_ADD" "arguments to add"
+    help_param "RPI_CMDLINE_REMOVE" "arguments to remove"
+}
