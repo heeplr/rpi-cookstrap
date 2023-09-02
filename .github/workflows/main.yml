@@ -38,7 +38,7 @@ jobs:
 
       # some tests
       - name: run tests
-        run: ./test/test.sh
+        run: sudo ./test/test.sh
       - name: build examples/complete-test
         run: |
           cd examples/complete-test
