@@ -102,7 +102,7 @@ function rpi_run_on_first_login() {
     # prepare script
     if ! [[ -f "${RPI_ROOT}/${once_script}" ]] ; then
         # call script from .bashrc
-        rpi_run_on_login "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ;  time /bin/bash -c \"${once_script} && rm ${once_script} && rm -rf ${RPI_IMG_DISTDIR}\" ; echo \"Done. Please reboot now.\" ; fi"
+        rpi_run_on_login "if [[ -f \"${once_script}\" ]] ; then echo \"executing first-time setup...\" ;  time /bin/bash -c \"${once_script} && sudo rm -f ${once_script} && sudo rm -rf ${RPI_IMG_DISTDIR}\" ; echo \"Done. Please reboot now.\" ; fi"
         # once-script dir existing?
         [[ -d "${RPI_ROOT}/$(dirname "${once_script}")" ]] || mkdir -p "${RPI_ROOT}/$(dirname "${once_script}")"
         # create once-script
