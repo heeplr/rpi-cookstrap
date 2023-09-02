@@ -17,7 +17,7 @@ function rpi_useradd_prerun() {
 
 function rpi_useradd_run() {
     for u in "${RPI_USERADD[@]}" ; do
-        RPI_RUN_ONCE=true rpi_run "sudo useradd ${u}" || error "add new user ${u}"
+        rpi_run_on_first_boot "sudo useradd ${u}" || error "add new user ${u}"
     done
 }
 
