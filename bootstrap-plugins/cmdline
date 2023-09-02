@@ -29,6 +29,10 @@ function rpi_cmdline_run() {
         log "removing ${c} ..."
         rpi_remove_pattern_from_file "${c}" "${RPI_BOOT}/cmdline.txt" || error "removing ${c}"
     done
+
+    # remove newlines from cmdline.txt
+    tr '\n' ' ' < "${RPI_BOOT}/cmdline.txt" > "${RPI_BOOT}/cmdline.new"
+    mv "${RPI_BOOT}/cmdline.new" "${RPI_BOOT}/cmdline.txt"
 }
 
 function rpi_cmdline_description() {
