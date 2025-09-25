@@ -131,9 +131,7 @@ function rpi_run_on_first_login() {
 # run on every boot
 function rpi_run_on_boot() {
     log "run on boot:"
-    # remove "exit 0" at the end if it's there, so we
-    # can simply append commands
-    rpi_remove_pattern_from_file "exit 0" "${RPI_ROOT}/etc/rc.local" || error "remove exit from rc.local"
+    sudo touch "${RPI_ROOT}/etc/rc.local"    
     for cmd in "$@" ; do
         # got path to script file?
         if [[ -f "${cmd}" ]] ; then
