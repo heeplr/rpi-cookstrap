@@ -29,21 +29,21 @@ function rpi_config_run() {
     local c
     for c in "${RPI_CONFIG_ADD[@]}" ; do
         log "setting ${c} ..."
-        rpi_append_to_file "${c}" "${RPI_BOOT}/config.txt" || error "adding ${c}"
+        rpi_append_to_file "${c}" "${RPI_BOOT}/firmware/config.txt" || error "adding ${c}"
     done
 
     for c in "${RPI_CONFIG_REMOVE[@]}" ; do
         log "removing ${c} ..."
-        rpi_remove_pattern_from_file "${c}" "${RPI_BOOT}/config.txt" || error "removing ${c}"
+        rpi_remove_pattern_from_file "${c}" "${RPI_BOOT}/firmware/config.txt" || error "removing ${c}"
     done
 
-    rpi_dist_cp_if_exist "/boot/config.txt"
+    rpi_dist_cp_if_exist "/boot/firmware/config.txt"
 
     return 0
 }
 
 function rpi_config_description() {
-    echo "modify /boot/config.txt"
+    echo "modify /boot/firmware/config.txt"
 }
 
 function rpi_config_help_params() {
@@ -53,5 +53,5 @@ function rpi_config_help_params() {
 }
 
 function rpi_config_help_distfiles() {
-    help_distfile "/boot/config.txt"
+    help_distfile "/boot/firmware/config.txt"
 }
